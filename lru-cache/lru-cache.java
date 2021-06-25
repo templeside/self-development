@@ -1,79 +1,86 @@
 class LRUCache {
-    class DLinkedList{
-        DLinkedList prev;
-        DLinkedList next;
+    class ListNode{
         int key;
-        int val;
+        int value;
+        ListNode prev;
+        ListNode next;
+        public ListNode(){
+            key = 0;
+            value = 0;
+            prev = null;
+            next = null;
+        }
     }
-    HashMap<Integer, DLinkedList> map;
-    DLinkedList head;
-    DLinkedList tail;
-    int size;
-    int capacity;
+            //<key, listNode>
+    HashMap<Integer, ListNode> map;
+    private int size, capacity;
+    private ListNode head, tail;
     public LRUCache(int capacity) {
-        this.map = new HashMap<Integer, DLinkedList>();
-        this.size = 0;
+        map = new HashMap<>();
+        size = 0;
         this.capacity = capacity;
-        this.head = new DLinkedList();
-        this.tail = new DLinkedList();
         
-        this.head.next = tail;
-        this.tail.prev = head;
+        head = new ListNode();
+        tail = new ListNode();
+        
+        head.next = tail;
+        tail.prev = head;
     }
     
     public int get(int key) {
-        DLinkedList node = map.get(key);
-        if(node == null) return -1;
+        if(!map.containsKey(key))return -1;
+        
+        ListNode node = map.get(key);
         this.moveToHead(node);
-        return node.val;
+        
+        return node.value;
     }
     
     public void put(int key, int value) {
-        if(map.containsKey(key)){                   //when have the node already
-            DLinkedList node = map.get(key);
-            node.val = value;
-            this.get(key);
+        if(map.containsKey(key)){
+            map.get(key).value = value;
+            this.moveToHead(map.get(key));
         }else{
-            DLinkedList newNode = new DLinkedList();
+            ListNode newNode = new ListNode();
             newNode.key = key;
-            newNode.val = value;
+            newNode.value = value;
             
-            map.put(key,newNode);
+            map.put(key, newNode);
             this.addNode(newNode);
-            size++;
+            size ++;
             
             if(size>capacity){
-                DLinkedList removedNode = removeTail();
-                map.remove(removedNode.key);
-                size--;
+                ListNode removed = removeLate();
+                map.remove(removed.key);
+                size --;
             }
         }
     }
-    
-    private void moveToHead(DLinkedList node){
+    private void moveToHead(ListNode node){
         this.removeNode(node);
         this.addNode(node);
     }
     
-    private void removeNode(DLinkedList node){
-        DLinkedList prev = node.prev;
-        DLinkedList next = node.next;
+    private void removeNode(ListNode node){
+        ListNode prev = node.prev;
+        ListNode next = node.next;
         
         prev.next = next;
         next.prev = prev;
     }
     
-    private void addNode(DLinkedList node){
+    private void addNode(ListNode node){
         node.next = head.next;
         node.prev = head;
         
         head.next.prev = node;
-        head.next= node;
+        head.next = node;
     }
-    private DLinkedList removeTail(){
-        DLinkedList removedNode = tail.prev;
-        removeNode(removedNode);
-        return removedNode;
+    private ListNode removeLate(){
+        ListNode removed = tail.prev;
+        removed.prev.next= tail;
+        tail.prev = removed.prev;
+        return removed;
     }
 }
 
