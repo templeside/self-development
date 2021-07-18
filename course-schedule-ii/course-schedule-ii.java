@@ -1,5 +1,5 @@
 class Solution {
-    static int White = 1;			//enum으로 활용 가능할 지도!?
+    static int White = 1;            //enum으로 활용 가능할 지도!?
     static int Gray = 2;
     static int Black = 3;
 
@@ -20,7 +20,7 @@ class Solution {
             this.color.put(i, White);
         }
     }
-    
+
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         this.init(numCourses);      //to start the algorithm.initiation
 
@@ -39,10 +39,10 @@ class Solution {
                 this.dfs(i);
             }
         }
-        
+
         if(!this.isPossible)    //edge case
             return new int[0];
-        
+
         int[] order = new int[numCourses];
         for (int i = 0; i < numCourses; i++)
             order[i] = this.topologicalOrder.get(numCourses - i - 1);   //왜 numCourses-i -1? 갯수라서. 뒤에서 부터 가져오고 싶었기 때문.
@@ -53,7 +53,7 @@ class Solution {
         // Edge case. Don't recurse further if we found a cycle already
         if (!this.isPossible)
             return;
-        
+
         // Start the recursion
         this.color.put(node, Gray);
 
@@ -72,3 +72,4 @@ class Solution {
         this.topologicalOrder.add(node);
     }
 }
+
