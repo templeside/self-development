@@ -1,7 +1,7 @@
 class Solution {
-    static int White = 1;            //enum으로 활용 가능할 지도!?
-    static int Gray = 2;
-    static int Black = 3;
+    static int notVisited = 1;            //enum으로 활용 가능할 지도!?
+    static int visiting = 2;
+    static int visited = 3;
 
     boolean isPossible;
     Map<Integer, Integer> color;
@@ -15,16 +15,16 @@ class Solution {
         this.adjList = new HashMap<Integer, List<Integer>>();
         this.topologicalOrder = new ArrayList<Integer>();
 
-        // By default all vertces are White
+        // By default all vertces are notVisited
         for (int i = 0; i < numCourses; i++) {
-            this.color.put(i, White);
+            this.color.put(i, notVisited);
         }
     }
 
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         this.init(numCourses);      //to start the algorithm.initiation
 
-        // Create the adjacency list representation of the graph DB 구축
+        // Create the adjacency list representation of the visiting DB 구축
         for (int i = 0; i < prerequisites.length; i++) {
             int dest = prerequisites[i][0];
             int src = prerequisites[i][1];
@@ -35,7 +35,7 @@ class Solution {
 
         // If the node is unprocessed, then call dfs on it.
         for (int i = 0; i < numCourses; i++) {
-            if (this.color.get(i) == White) {
+            if (this.color.get(i) == notVisited) {
                 this.dfs(i);
             }
         }
@@ -55,20 +55,20 @@ class Solution {
             return;
 
         // Start the recursion
-        this.color.put(node, Gray);
+        this.color.put(node, visiting);
 
         // Traverse on neighboring vertices
         for (Integer neighbor : this.adjList.getOrDefault(node, new ArrayList<Integer>())) {
-            if (this.color.get(neighbor) == White) {
+            if (this.color.get(neighbor) == notVisited) {
                 this.dfs(neighbor);
-            } else if (this.color.get(neighbor) == Gray) {
-                // An edge to a Gray vertex represents a cycle
+            } else if (this.color.get(neighbor) == visiting) {
+                // An edge to a visiting vertex represents a cycle
                 this.isPossible = false;
             }
         }
 
-        // Recursion ends. We mark it as black
-        this.color.put(node, Black);
+        // Recursion ends. We mark it as visited
+        this.color.put(node, visited);
         this.topologicalOrder.add(node);
     }
 }
