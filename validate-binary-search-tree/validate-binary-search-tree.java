@@ -14,31 +14,17 @@
  * }
  */
 class Solution {
+    Integer prev = null;
     public boolean isValidBST(TreeNode root) {
         if(root ==null) return true;
-        if(root.left == null && root.right ==null) return true;
         
-        boolean checkLeft = true;
-        boolean checkRight = true;
-        if(root.left !=null){
-            TreeNode leftNode = mostRight(root.left);
-            checkLeft = leftNode.val < root.val;
-        }
-        if(root.right !=null){
-            TreeNode rightNode = mostLeft(root.right);
-            checkRight = rightNode.val> root.val;
-        }        
+        if(! isValidBST(root.left))
+            return false;
         
-        return checkLeft && checkRight && isValidBST(root.left) && isValidBST(root.right);
-    }
-    
-    private TreeNode mostRight(TreeNode root){
-        if(root.right == null)return root;
-        return mostRight(root.right);
-    }
-    
-    private TreeNode mostLeft(TreeNode root){
-        if(root.left == null)return root;
-        return mostLeft(root.left);
+        if(prev !=null && prev>= root.val)
+            return false;
+        
+        prev = root.val;
+        return isValidBST(root.right);
     }
 }
