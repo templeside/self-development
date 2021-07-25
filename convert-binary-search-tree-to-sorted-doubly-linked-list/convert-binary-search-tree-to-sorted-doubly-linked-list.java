@@ -20,33 +20,31 @@ class Node {
 */
 
 class Solution {
-    // the smallest (first) and the largest (last) nodes
     Node first = null;
     Node last = null;
-
-    public Node treeToDoublyList(Node root){
-        if(root == null) return null;
+    public Node treeToDoublyList(Node root) {
+        if(root == null)return null;
+        
         helper(root);
-        last. right = first;
+        
+        last.right = first;
         first.left = last;
+        
         return first;
     }
-    
-    private void helper(Node node){
-        if(node == null) return;
-        // left
+    public void helper(Node node){
+        if(node ==null) return;
+        
         helper(node.left);
         
         if(last !=null){
-            last.right = node;      // link with the previous node with current node
-            node.left = last;      
-        }else{
-            first = node;           // if this is the first node of the dfs
-        }
-        last = node;
+            last.right = node;
+            node.left = last;
+        }else
+            first = node;
+        last = node;    // 여기서 last가 바뀜.
         
-        //right
-        helper(node.right);
+        helper(node.right);           
         
     }
 }
