@@ -14,22 +14,33 @@
  * }
  */
 class Solution {
+    HashMap<TreeNode, Integer> robResult = new HashMap<>();
+    HashMap<TreeNode, Integer> notRobResult = new HashMap<>();
+    
     public int rob(TreeNode root) {
-        int[] answer = helper(root);
-        return Math.max(answer[0], answer[1]);
+        return helper(root, false);
     }
     
-    public int[] helper(TreeNode node){
-        if(node ==null){
-            //              {yes rob, no rob}
-            return new int[]{0,0};
+    public int helper(TreeNode node, boolean parentRobbed){
+        //edge case
+        if(node == null)
+            return 0;
+        
+        if(parentRobbed){       //current can be robbed.
+            if(robResult.containsKey(node)){
+                return robResult.get(node);
+            }
+            int  result = helper(node.left, false) + helper(node.right, false);
+            robResult.put(node, result);
+            return result;    
+        }else{                  //current cannot be robbed
+            if(notRobResult.containsKey(node))
+                return notRobResult.get(node);
+            int rob = node.val + helper(node.left,true) + helper(node.right,true);
+            int notRob = helper(node.left,false)+helper(node.right,false);
+            int result = Math.max(rob, notRob);
+            notRobResult.put(node,result);
+            return result;
         }
-        int[] left = helper(node.left);
-        int[] right = helper(node.right);
-        
-        int rob = node.val+left[1]+right[1];        //when robbing. robbing + not robbed left right nodes.
-        int notRob = Math.max(left[0],left[1]) +  Math.max(right[0],right[1]); //not robbign and getitng the largest robbing times.
-        
-        return new int[]{rob,notRob};   //return whichever is big.
     }
 }
