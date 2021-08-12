@@ -23,28 +23,33 @@ class Solution {
     Node first = null;
     Node last = null;
     public Node treeToDoublyList(Node root) {
-        if(root == null)return null;
+        if(root ==null) return null;
         
         helper(root);
         
         last.right = first;
         first.left = last;
-        
         return first;
     }
-    public void helper(Node node){
-        if(node ==null) return;
+    public void helper(Node root){
+        if(root ==null) return;
+        int val = root.val;
+        helper(root.left);
         
-        helper(node.left);
+        if(first != null){   // to find the head.
+            last.right = root;    
+            root.left = last;     
+        }
+        else{
+            first = root;
+
+                    
+        }
+        last = root;
+
         
-        if(last !=null){
-            last.right = node;
-            node.left = last;
-        }else
-            first = node;
-        last = node;    // 여기서 last가 바뀜.
-        
-        helper(node.right);           
-        
+        if(root.right !=null)
+            helper(root.right);
     }
+    
 }
