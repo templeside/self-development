@@ -10,16 +10,15 @@
 
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        int parentVal = root.val;
+        if(root == null)return null;
+        if(root == p || root ==q) return root;
         
-        int pVal = p.val;
-        int qVal = q.val;
+        TreeNode left = lowestCommonAncestor(root.left,p,q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
         
-        if(pVal>parentVal && qVal>parentVal)
-            return lowestCommonAncestor(root.right, p,q);
-        else if(pVal<parentVal && qVal<parentVal)
-            return lowestCommonAncestor(root.left,p,q);
-        else
+        if(left !=null && right !=null)
             return root;
+        
+        return left == null? right : left;
     }
 }
