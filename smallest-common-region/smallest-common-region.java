@@ -1,10 +1,14 @@
 class Solution {
     public String findSmallestRegion(List<List<String>> regions, String region1, String region2) {
+        // db화 만들기
         Map<String, String> parents = new HashMap<>();
         Set<String> ancestryHistory = new HashSet<>();
+
+        // add the values to db.
         for (List<String> region : regions)
             for (int i = 1; i < region.size(); ++i)
                 parents.put(region.get(i), region.get(0));
+
         while (region1 != null) {
             ancestryHistory.add(region1);
             region1 = parents.get(region1);
@@ -14,3 +18,4 @@ class Solution {
         return region2;
     }
 }
+
