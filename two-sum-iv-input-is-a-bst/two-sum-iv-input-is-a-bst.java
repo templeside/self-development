@@ -15,26 +15,33 @@
  */
 class Solution {
     public boolean findTarget(TreeNode root, int k) {
-        HashMap<Integer, TreeNode> set = new HashMap<Integer, TreeNode>();
-        iterate(root, set);
-        
-        
-        for(int i: set.keySet()){
-            if(set.containsKey(k-i)){
-                if(set.get(i) != set.get(k-i))
+        // <num, count>
+        HashMap<Integer, Integer> map =new HashMap<Integer,Integer>();
+        dfs(root, k, map);
+        for(int a: map.keySet()){
+            if(map.containsKey(a)){
+                map.put(a, map.get(a)-1);
+                int diff = k-a;
+                if(map.containsKey(diff) && map.get(diff)>0)
                     return true;
+                else
+                    map.put(a, map.get(a)+1);
             }
         }
         return false;
     }
     
-    public void iterate(TreeNode root, HashMap<Integer, TreeNode> set){
-        if(root ==null)
-            return;
+    public void dfs(TreeNode root, int k, HashMap<Integer, Integer> map){
+        if(root ==null)return;
         
-        set.put(root.val, root);
+        dfs(root.left, k, map);
         
-        iterate(root.left, set);
-        iterate(root.right, set);
+        if(!map.containsKey(root.val)){
+            map.put(root.val, 0);
+        }
+        map.put(root.val, map.get(root.val)+1);
+        
+        dfs(root.right, k, map);
+        return;
     }
 }
