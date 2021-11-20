@@ -15,35 +15,37 @@
  */
 class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
-        if(root ==null)
-            return new ArrayList<>();
-        List<List<Integer>> ans = new ArrayList<>();
         
-        LinkedList<TreeNode> currLevel = new LinkedList<TreeNode>();
-        LinkedList<TreeNode> nextLevel = new LinkedList<TreeNode>();
+        List<List<Integer>> ans = new LinkedList<>();
+        if(root ==null) return ans;
+        
+        LinkedList<TreeNode> currLevel = new LinkedList<>();
+        LinkedList<TreeNode> nextLevel = new LinkedList<>();
+        boolean inorder = true;
         
         nextLevel.add(root);
-        
         while(!nextLevel.isEmpty()){
             currLevel = nextLevel;
-            nextLevel = new LinkedList<TreeNode>();
-            ArrayList<Integer> answerLevel = new ArrayList();
+            nextLevel = new LinkedList<>();
+            List<Integer> ansLevel = new LinkedList<>();
             
             while(!currLevel.isEmpty()){
-                TreeNode currNode = currLevel.poll();
+                TreeNode curr = currLevel.poll();
                 
-                if(currNode.left!=null)
-                    nextLevel.add(currNode.left);
-                if(currNode.right !=null)
-                    nextLevel.add(currNode.right);
+                if(curr.left !=null)
+                    nextLevel.add(curr.left);
+                if(curr.right !=null)
+                    nextLevel.add(curr.right);
                 
-                if(ans.size()%2 == 1)//when 'ans' is odd 홀 수 일때
-                    answerLevel.add(0, currNode.val);
-                else// 짝 수 일때
-                    answerLevel.add(currNode.val);
+                if(inorder){
+                    ansLevel.add(curr.val);
+                }else{
+                    ansLevel.add(0, curr.val);
+                }
             }
-            // 여기서 answer의 level close 하기
-            ans.add(answerLevel);
+            
+            ans.add(ansLevel);
+            inorder = !inorder;
         }
         return ans;
     }
