@@ -14,30 +14,24 @@
  * }
  */
 class Solution {
+    Set<Integer> to_delete_set;
+    List<TreeNode> res;
     public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
-        Set<Integer> deleteSet = new HashSet<>();
-        List<TreeNode> ans = new LinkedList<>();
-        if(root ==null)return ans;
-        
-        for(Integer i: to_delete)
-            deleteSet.add(i);
-
-        if(recurse(root, deleteSet, ans)!=null)
-            ans.add(root);
-        return ans;
-    }
-    private TreeNode recurse(TreeNode root, Set<Integer> deleteSet, List<TreeNode> ans){
-        if(root ==null) return null;
-
-        root.left = recurse(root.left, deleteSet, ans);
-        root.right = recurse(root.right, deleteSet, ans);
-                if(deleteSet.contains(root.val)){
-            if(root.left !=null)
-                ans.add(root.left);
-            if(root.right !=null)
-                ans.add(root.right);
-            return null;
+        to_delete_set = new HashSet<>();
+        res = new ArrayList<>();
+        for(int i: to_delete){
+            to_delete_set.add(i);
         }
-        return root;
+        helper(root, true);
+        return res;
+    }
+    private TreeNode helper(TreeNode root, boolean is_root){
+        if(root ==null)return null;
+        boolean deleted = to_delete_set.contains(root.val);
+        if(is_root && !deleted) 
+            res.add(root);
+        root.left = helper(root.left, deleted);
+        root.right = helper(root.right, deleted);
+        return deleted? null: root;
     }
 }
