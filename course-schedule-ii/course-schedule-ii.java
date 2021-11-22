@@ -4,20 +4,20 @@ class Solution {
     static int visited = 3;
 
     boolean isPossible;
-    Map<Integer, Integer> color;
+    Map<Integer, Integer> visitCheck;
     Map<Integer, List<Integer>> adjList;
     List<Integer> topologicalOrder;
 
     //to start the algorithm.initiation
     private void init(int numCourses) {
         this.isPossible = true;
-        this.color = new HashMap<Integer, Integer>();
+        this.visitCheck = new HashMap<Integer, Integer>();
         this.adjList = new HashMap<Integer, List<Integer>>();
         this.topologicalOrder = new ArrayList<Integer>();
 
         // By default all vertces are notVisited
         for (int i = 0; i < numCourses; i++) {
-            this.color.put(i, notVisited);
+            this.visitCheck.put(i, notVisited);
         }
     }
 
@@ -35,7 +35,7 @@ class Solution {
 
         // If the node is unprocessed, then call dfs on it.
         for (int i = 0; i < numCourses; i++) {
-            if (this.color.get(i) == notVisited) {
+            if (this.visitCheck.get(i) == notVisited) {
                 this.dfs(i);
             }
         }
@@ -55,21 +55,20 @@ class Solution {
             return;
 
         // Start the recursion
-        this.color.put(node, visiting);
+        this.visitCheck.put(node, visiting);
 
         // Traverse on neighboring vertices
         for (Integer neighbor : this.adjList.getOrDefault(node, new ArrayList<Integer>())) {
-            if (this.color.get(neighbor) == notVisited) {
+            if (this.visitCheck.get(neighbor) == notVisited) {
                 this.dfs(neighbor);
-            } else if (this.color.get(neighbor) == visiting) {
+            } else if (this.visitCheck.get(neighbor) == visiting) {
                 // An edge to a visiting vertex represents a cycle
                 this.isPossible = false;
             }
         }
 
         // Recursion ends. We mark it as visited
-        this.color.put(node, visited);
+        this.visitCheck.put(node, visited);
         this.topologicalOrder.add(node);
     }
 }
-
