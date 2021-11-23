@@ -2,64 +2,36 @@ class Solution {
     
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int K) {
      
-        // Build the adjacency matrix
-        int adjMatrix[][] = new int[n][n];
-        for (int[] flight: flights) {
-            adjMatrix[flight[0]][flight[1]] = flight[2];
-        }
+        // We use two arrays for storing distances and keep swapping
+        // between them to save on the memory
+        long[][] distances = new long[2][n];
+        Arrays.fill(distances[0], Integer.MAX_VALUE);
+        Arrays.fill(distances[1], Integer.MAX_VALUE);
+        distances[0][src] = distances[1][src] = 0;
         
-        // Shortest distances dictionary
-        HashMap<Pair<Integer, Integer>, Long> distances = new HashMap<Pair<Integer, Integer>, Long>();
-        distances.put(new Pair<Integer, Integer>(src, 0), 0L);
-        
-        // Number of stops done
-        int stops = 0;
-        
-        // Final answer
-        long ans = Long.MAX_VALUE;
-        
-        // BFS Queue
-        LinkedList<Integer> bfsQueue = new LinkedList<Integer>();
-        bfsQueue.add(src);
-        
-        // Iterate until we exhaust K+1 levels or the queue gets empty
-        while (!bfsQueue.isEmpty() && stops < K + 1) {
+        // K + 1 iterations of Bellman Ford
+        for (int iterations = 0; iterations < K + 1; iterations++) {
             
-            // Iterate on current level
-            int length = bfsQueue.size();
-            for (int i = 0; i < length; ++i) {
+            // Iterate over all the edges
+            for (int[] edge : flights) {
                 
-                // Loop over neighbors of popped node
-                int node = bfsQueue.poll();
-                for (int nei = 0; nei < n; ++nei) {
-                          
-                    if (adjMatrix[node][nei] > 0) {
-                        
-                        long dU = distances.getOrDefault(new Pair<Integer, Integer>(node, stops), Long.MAX_VALUE);
-                        long dV = distances.getOrDefault(new Pair<Integer, Integer>(nei, stops + 1), Long.MAX_VALUE);
-                        long wUV = adjMatrix[node][nei];
-
-                        // No need to update the minimum cost if we have already exhausted our K stops. 
-                        if (stops == K && nei != dst) {
-                            continue;
-                        }
-
-                        if (dU + wUV < dV) {
-                            distances.put(new Pair<Integer, Integer>(nei, stops + 1), dU + wUV);
-                            bfsQueue.add(nei);
-                            
-                            // If the neighbor is infact the destination, update the answer accordingly
-                            if (nei == dst) {
-                                ans = Math.min(ans, dU + wUV);
-                            }
-                        }    
-                    }
+                int s = edge[0], d = edge[1], wUV = edge[2];
+                
+                // Current distance of node "s" from src
+                long dU = distances[1 - iterations&1][s];
+                
+                // Current distance of node "d" from src
+                // Note that this will port existing values as
+                // well from the "previous" array if they didn't already exist
+                long dV = distances[iterations&1][d];
+                
+                // Relax the edge if possible
+                if (dU + wUV < dV) {
+                    distances[iterations&1][d] = dU + wUV;
                 }
             }
-            
-            stops++;
         }
         
-        return ans == Long.MAX_VALUE ? -1 : (int) ans;
+        return distances[K&1][dst] < Integer.MAX_VALUE ? (int)distances[K&1][dst] : -1;
     }
 }
