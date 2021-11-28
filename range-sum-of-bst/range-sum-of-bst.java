@@ -14,14 +14,20 @@
  * }
  */
 class Solution {
+    int[] sum = new int[]{0};
     public int rangeSumBST(TreeNode root, int low, int high) {
-        if(root == null)
-            return 0;
-        int left = rangeSumBST(root.left, low,high);
-        int right = rangeSumBST(root.right, low, high);
-        int curr = 0;
-        if(root.val>= low && root.val<= high)
-            curr = root.val;
-        return left + right + curr;
+        dfs(root, low, high);
+        return sum[0];
+    }
+    public void dfs(TreeNode root, int low, int high){
+        if(root ==null)
+            return;
+        
+        if(root.val>=low && root.val<=high)
+            sum[0] = sum[0] + root.val;
+        
+        dfs(root.left, low, high);
+        dfs(root.right, low, high);
+        return; 
     }
 }
