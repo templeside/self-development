@@ -1,31 +1,21 @@
 class Solution {
-    public String addStrings(String num1, String num2) {       
-        String ans= "";
+    public String addStrings(String num1, String num2) {
+        StringBuilder sb = new StringBuilder();
         
-        int num1Size = num1.length();
-        int num2Size = num2.length();
+        int i = num1.length()-1;
+        int j = num2.length()-1;
+        int count = 0;
         
-        int idx = 0;
-        boolean overTen = false;
-        while(idx< num1.length() || idx<num2.length()){
-            int num = 0;
-            if(overTen) 
-                num++;
-            if(idx<num1Size)
-                num += num1.charAt(num1Size-idx-1)-'0' ;
-            if(idx<num2Size)
-                num += num2.charAt(num2Size-idx-1)-'0';
-            // System.out.println(num);
-            overTen = num>=10;
-            
-            ans = num%10 +ans;
-            idx++;
+        while(i>=0 || j>=0){
+            int val1 = i >=0 ? num1.charAt(i)-'0': 0;
+            int val2 = j>=0? num2.charAt(j)-'0':0;
+            int sum = val1+val2+count;
+            sb.append(sum%10);
+            count = sum/10;
+            i--;
+            j--;
         }
-        
-        
-        if(overTen)
-            return "1"+ans;
-        else
-            return ans;
+        if(count !=0)sb.append(count);
+        return sb.reverse().toString();
     }
 }
