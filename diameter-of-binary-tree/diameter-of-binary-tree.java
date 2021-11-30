@@ -14,20 +14,19 @@
  * }
  */
 class Solution {
+    int[] longest = new int[1];
     public int diameterOfBinaryTree(TreeNode root) {
-        int[] answer = new int[1];
-        helper(root, answer);
-        return answer[0];
+        dfs(root);
+        return longest[0]-1;
     }
-    public int helper(TreeNode root, int[] answer){
-        if(root == null)
-            return 0;
-                
-        int left = helper(root.left,answer);
-        int right = helper(root.right,answer);
+    
+    public int dfs(TreeNode root){
+        if(root ==null)return 0;
         
-        if(left + right > answer[0])
-            answer[0] = left+right;
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        
+        longest[0] = Math.max(longest[0], 1+left+right);
         return Math.max(left, right)+1;
     }
 }
