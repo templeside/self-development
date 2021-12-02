@@ -13,34 +13,34 @@
  *     }
  * }
  */
-class BSTIterator{
-    ArrayList<Integer> list;
-    int nextIdx;
+class BSTIterator {
+    int[] idx;
+    List<Integer> stored_val;
     public BSTIterator(TreeNode root) {
-        list = new ArrayList<>();
-        nextIdx = 0;
-        helper(root);
+        idx = new int[]{-1};
+        stored_val = new ArrayList<>();
+        dfs(root);
     }
-    public void helper(TreeNode root){
-        if(root ==null)return;
+    private void dfs(TreeNode root){
+        if(root ==null) return;
         
-        //left
-        if(root.left !=null)
-            helper(root.left);
+        dfs(root.left);
         
-        list.add(root.val);
+        stored_val.add(root.val);
         
-        // right
-        helper(root.right);
-        return;
+        dfs(root.right);
     }
     
+    
     public int next() {
-        return list.get(nextIdx++);
+        idx[0]++;
+        if(idx[0] >= stored_val.size())
+            return -1;
+        return stored_val.get( idx[0]);
     }
     
     public boolean hasNext() {
-        return nextIdx<list.size();
+        return idx[0] <stored_val.size()-1;
     }
 }
 
