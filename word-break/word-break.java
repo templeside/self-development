@@ -1,17 +1,19 @@
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
-        boolean[] dp = new boolean[s.length()+1];
-        Set<String> wordSet = new HashSet<>(wordDict);
-        dp[0] = true;
+        // 1. dp
+        // s = "leetcode", wordDict = ["leet", "code"]
+        boolean[] segmented = new boolean[s.length()+1];
         
-        for(int end=1; end<= s.length();end++){
-            for(int start= 0; start<end; start++ ){
-                if(dp[start] && wordSet.contains(s.substring(start, end))){
-                   dp[end] = true;
-                   break;
-                }
+        segmented[0] = true;        //it is valid of starting point.
+        HashSet<String> set = new HashSet<>(wordDict);
+        
+        for(int end = 1; end<= s.length();end++){
+            for(int start = 0; start<end; start++){
+                if(segmented[start] && set.contains(s.substring(start,end)))
+                    segmented[end] = true;
             }
         }
-        return dp[s.length()];
+        
+        return segmented[s.length()];
     }
 }
