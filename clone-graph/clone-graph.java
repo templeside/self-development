@@ -19,47 +19,18 @@ class Node {
 */
 
 class Solution {
-    private void createNodes(HashMap<Integer, List<Integer>> db,HashMap<Integer, Node> nodeIndex ){
-        for(int n: db.keySet()){
-            Node temp = new Node(n);
-            nodeIndex.put(n, temp);
-        }
-    }
-    
-    private void findDB(Node node, HashMap<Integer, List<Integer>> db){
-        if(db.containsKey(node.val))return;
-        
-        List<Integer> neighborList = new ArrayList<>();
-        for(Node n: node.neighbors){
-            neighborList.add(n.val);
-        }
-            
-        db.put(node.val, neighborList);
-        
-        for(Node n: node.neighbors){
-            findDB(n, db);
-        }
-    }
-    
+    HashMap<Node, Node> visited = new HashMap<>();
     public Node cloneGraph(Node node) {
-        if(node ==null)return null; //base case
+        if( node == null)return null;
         
-        // <itself, neighborList>
-        HashMap<Integer, List<Integer>> db = new HashMap<>();
-        // <itself number, refernce>
-        HashMap<Integer, Node> nodeIndex = new HashMap<>();
+        if(visited.containsKey(node))return visited.get(node);
         
-        findDB(node, db);
-        createNodes(db, nodeIndex);
+        Node cloneNode = new Node(node.val, new ArrayList<>());
+        visited.put(node, cloneNode);
         
-        for(int k: db.keySet()){
-            Node newNode = nodeIndex.get(k);
-            
-            for(int neighborKey: db.get(k)){
-                newNode.neighbors.add(nodeIndex.get(neighborKey));
-            }
+        for(Node neighbor: node.neighbors){
+            cloneNode.neighbors.add(cloneGraph(neighbor));
         }
-        return nodeIndex.get(node.val);
+        return cloneNode;
     }
-
 }
