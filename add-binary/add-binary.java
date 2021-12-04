@@ -1,19 +1,33 @@
 class Solution {
     public String addBinary(String a, String b) {
-        int a_idx = a.length()-1;
-        int b_idx = b.length()-1;
-        String ans = "";
+        // 1. two indices = aIdx, bIdx
+//         counter .
+        int aIdx = a.length()-1;
+        int bIdx = b.length()-1;
         
-        int countup=0;
-        while(a_idx>=0 || b_idx >=0){
-            int a_int = a_idx>=0? a.charAt(a_idx)-'0':0;
-            int b_int = b_idx>=0? b.charAt(b_idx)-'0':0;
-            ans = (countup + a_int+b_int)%2+ ans;
+        // if(aIdx == 0 || bIdx == 0) return aIdx > bIdx? a: b;
+        
+        StringBuilder sb = new StringBuilder();
+        int carry=0; 
+        while(aIdx>=0 || bIdx >=0){
+            int aVal = aIdx<0 ? 0: a.charAt(aIdx)-'0';
+            int bVal = bIdx<0 ? 0: b.charAt(bIdx)-'0';
             
-            countup = (countup+a_int+b_int)/2;
-            a_idx--;
-            b_idx--;
+            
+            int sum = carry + aVal + bVal;
+            
+            System.out.println(sum);
+            
+            carry = sum/2;
+            sb.append((char)(sum%2+'0'));
+            
+            aIdx --;
+            bIdx--;
         }
-        return countup>0? (countup+ans):ans;
+        if(carry !=0)
+            sb.append('1');
+        
+        return sb.reverse().toString();
+        
     }
 }
