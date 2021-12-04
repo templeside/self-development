@@ -1,31 +1,26 @@
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int product = 1;
-        boolean zeroIncluded = false;
-        boolean multipleZeroIncluded = false;
-        for(int i=0;i<nums.length;i++){
-            if(nums[i] == 0){
-                if(zeroIncluded)
-                    multipleZeroIncluded = true;
-                zeroIncluded = true;
-                
-                continue;
-            }
-            product= product * nums[i];
+        // nums = [1,2,3,4] =>[24,12,8,6]
+        // 1. get left 
+        // 2. get right arr 
+        // 3. multiply 
+        
+        // [1,1,2,6]
+        int[] left = new int[nums.length];
+        left[0] = 1;
+        for(int i=1; i< nums.length;i++){
+            left[i] = left[i-1]*nums[i-1];
         }
         
-        for(int i=0;i<nums.length;i++){
-            if(zeroIncluded){
-                if(multipleZeroIncluded)
-                    nums[i] = 0;
-                else if(nums[i] == 0)
-                    nums[i] = product;
-                else
-                    nums[i] = 0;
-            }else{
-                nums[i] = product/nums[i];
-            }
+        int[]right = new int[nums.length];
+        right[nums.length-1] = 1;
+        for(int i=nums.length-2; i>=0;i--)
+            right[i] = right[i+1] * nums[i+1];
+        
+        int[] res = new int[nums.length];
+        for(int i=0; i< nums.length;i++){
+            res[i] = left[i]*right[i];
         }
-        return nums;
+        return res;
     }
 }
