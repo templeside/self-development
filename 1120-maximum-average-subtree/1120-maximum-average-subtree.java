@@ -14,33 +14,37 @@
  * }
  */
 class Solution {
-    double maxAverage;
-    public double maximumAverageSubtree(TreeNode root) {
-        maxAverage = 0;
+    class Node{
+        public double maxAverage;
+        public int num;
+        public int totalSum;
         
-        dfs(root);
-        return maxAverage;
+        public Node(double m, int n, int t){
+            this.maxAverage = m;
+            this.num = n;
+            this.totalSum = t;
+        }
     }
     
-    //returns [total sum of values, numers of values]
-    public int[] dfs(TreeNode root){
-        // if found bigger average, change the max average.
-        if(root ==null)return new int[2];
+    public double maximumAverageSubtree(TreeNode root) {
+        return dfs(root).maxAverage;
+    }
+    
+    public Node dfs(TreeNode root){
+        if(root ==null)//base case
+            return new Node(0.0,0,0);
         
-        int totalSum = root.val;
-        int num = 1;
+        Node left = dfs(root.left);
+        Node right = dfs(root.right);
         
-        int[] left = dfs(root.left);        // left
-        int[] right = dfs(root.right);      // right
+        int total = left.totalSum + right.totalSum + root.val;
+        int num = left.num + right.num +1;
+        double avg = (double)total/num;
+        avg = avg>=left.maxAverage? avg: left.maxAverage;
+        avg = avg>=right.maxAverage? avg: right.maxAverage;
+        Node curr = new Node(avg, num, total);
         
-        totalSum = totalSum+ left[0] + right[0];
-        num = num+ left[1]+right[1];
+        return curr;
         
-        
-        if((double)totalSum/num > maxAverage)
-            maxAverage = (double)totalSum/num;
-        
-        int[] currStatus = new int[]{totalSum,num};
-        return currStatus;
     }
 }
