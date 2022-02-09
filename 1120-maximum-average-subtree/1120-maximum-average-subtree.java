@@ -1,50 +1,17 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
 class Solution {
-    class Node{
-        public double maxAverage;
-        public int num;
-        public int totalSum;
-        
-        public Node(double m, int n, int t){
-            this.maxAverage = m;
-            this.num = n;
-            this.totalSum = t;
-        }
-    }
-    
+    private double res = 0;
     public double maximumAverageSubtree(TreeNode root) {
-        return dfs(root).maxAverage;
+        helper(root);
+        return res;
     }
     
-    public Node dfs(TreeNode root){
-        if(root ==null)//base case
-            return new Node(0.0,0,0);
-        
-        Node left = dfs(root.left);
-        Node right = dfs(root.right);
-        
-        int total = left.totalSum + right.totalSum + root.val;
-        int num = left.num + right.num +1;
-        double avg = (double)total/num;
-        avg = avg>=left.maxAverage? avg: left.maxAverage;
-        avg = avg>=right.maxAverage? avg: right.maxAverage;
-        Node curr = new Node(avg, num, total);
-        
-        return curr;
-        
+    private int[] helper(TreeNode root) {
+        if (root == null) return new int[]{0, 0}; // sum, num
+        int[] left = helper(root.left);
+        int[] right = helper(root.right);
+        int[] curSub = new int[]{left[0] + right[0] + root.val,
+                                left[1] + right[1] + 1};
+        res = Math.max(res, (double) curSub[0] / (double) curSub[1]);
+        return curSub;
     }
 }
