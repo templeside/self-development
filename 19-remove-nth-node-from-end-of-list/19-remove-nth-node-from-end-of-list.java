@@ -10,27 +10,25 @@
  */
 class Solution {
     /**
-               | 
-            12345
-            123 5
-    left      ^  
-    right        ^
-    n=2
+     null-1-2-3-4-5, n=2
+slow          ^
+fast                ^
     **/
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode dummy = new ListNode(-1, head);
-        ListNode left = dummy;
-        ListNode right = dummy;
+        ListNode tempHead = new ListNode(-1, head);
+        ListNode slow = tempHead;
+        ListNode fast = tempHead;
         
-        for(int i=0; i<= n; i++)
-            right = right.next;
-        
-        while(right!=null){
-            right = right.next;
-            left = left.next;
+        for(int i=0; i< n+1; i++){
+            fast = fast.next;
         }
-        left.next = left.next.next;
-        return dummy.next;
+        
+        while(fast !=null){
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        
+        return tempHead.next;
     }
-    
 }
