@@ -9,20 +9,19 @@
  * }
  */
 class Solution {
-    
-    /**
-         1->2->3->4
-    prev 2->1
-    curr 3->4
-    next 3->4
-    **/
     public ListNode reverseList(ListNode head) {
-        ListNode prev = null;
-        ListNode curr =head;
+    /**
+     1->2->3->4->5
+prev 1->null
+curr 2->3->4->5
+Next 2->3->4->5
+    **/
+        ListNode prev=  null;
+        ListNode curr = head;
         
         while(curr !=null){
             ListNode tempNext = curr.next;
-            curr.next = prev;
+            curr.next =prev;
             prev = curr;
             curr = tempNext;
         }
