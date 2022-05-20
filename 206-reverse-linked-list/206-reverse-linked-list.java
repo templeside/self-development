@@ -9,23 +9,23 @@
  * }
  */
 class Solution {
+    
     /**
-            12345
-    prev    ^
-    curr     ^
-    2 1
+         1->2->3->4
+    prev 2->1
+    curr 3->4
+    next 3->4
     **/
     public ListNode reverseList(ListNode head) {
         ListNode prev = null;
-        ListNode curr = head;
+        ListNode curr =head;
         
         while(curr !=null){
-            ListNode nexttemp = curr.next;
-            curr.next= prev;
+            ListNode tempNext = curr.next;
+            curr.next = prev;
             prev = curr;
-            curr = nexttemp;
+            curr = tempNext;
         }
-        
         return prev;
     }
 }
