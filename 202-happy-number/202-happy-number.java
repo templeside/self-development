@@ -1,27 +1,21 @@
 class Solution {
-    public int magic(int curr){
-        int sum = 0;
-        while(curr>0){
-            int num = curr%10;
-            sum += num*num;
-            curr = curr/10;
+     public int getNext(int n) {
+        int totalSum = 0;
+        while (n > 0) {
+            int d = n % 10;
+            n = n / 10;
+            totalSum += d * d;
         }
-        return sum;
+        return totalSum;
     }
-    
+
     public boolean isHappy(int n) {
-        int curr = n;
-        HashSet<Integer> visited = new HashSet<>();
-        visited.add(1);
-        
-        while(curr>1){
-            curr = magic(curr);
-            if(visited.contains(curr))
-                break;
-            
-            visited.add(curr);
+        int slowRunner = n;
+        int fastRunner = getNext(n);
+        while (fastRunner != 1 && slowRunner != fastRunner) {
+            slowRunner = getNext(slowRunner);
+            fastRunner = getNext(getNext(fastRunner));
         }
-        System.out.println(curr);
-        return curr ==1;
+        return fastRunner == 1;
     }
 }
