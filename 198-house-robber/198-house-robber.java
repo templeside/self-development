@@ -1,34 +1,16 @@
 class Solution {
-    
-    private int[] memo;
-    
     public int rob(int[] nums) {
+        if(nums.length ==0)return 0;
+        else if(nums.length ==1)return nums[0];
+        else if(nums.length ==2)return Math.max(nums[0],nums[1]);
         
-        this.memo = new int[100];
+        int[] memo = new int[nums.length];
+        memo[0] = Math.max(nums[0],0);
+        memo[1] = Math.max(memo[0],nums[1]);
         
-        // Fill with sentinel value representing not-calculated recursions.
-        Arrays.fill(this.memo, -1);
-        
-        return this.robFrom(0, nums);
-    }
-    
-    private int robFrom(int i, int[] nums) {
-        
-        // No more houses left to examine.
-        if (i >= nums.length) {
-            return 0;
+        for(int i=2; i<memo.length;i++){
+            memo[i] = Math.max(memo[i-1], memo[i-2]+nums[i]);
         }
-        
-        // Return cached value.
-        if (this.memo[i] > -1) {
-            return this.memo[i];
-        }
-        
-        // Recursive relation evaluation to get the optimal answer.
-        int ans = Math.max(this.robFrom(i + 1, nums), this.robFrom(i + 2, nums) + nums[i]);
-        
-        // Cache for future use.
-        this.memo[i] = ans;
-        return ans;
+        return memo[memo.length-1];
     }
 }
