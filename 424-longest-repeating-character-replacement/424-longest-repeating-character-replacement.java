@@ -31,7 +31,7 @@ windowEnd     ^
             
             currMax = Math.max(currMax, counter.get(endChar));
             
-            if(windowEnd-windowStart+1 -currMax>k){
+            while(windowEnd-windowStart+1 -currMax>k){
                 char startChar = s.charAt(windowStart);
                 counter.put(startChar, counter.get(startChar)-1);
                 windowStart ++;
