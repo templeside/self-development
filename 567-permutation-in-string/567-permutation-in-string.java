@@ -1,40 +1,33 @@
 class Solution {
-    /**
-    three stages:
-    1. contains s1, but not permutation -  shrink
-    2. contains s1, permutation      return true.
-    3. not contains s1     
-    **/
     public boolean checkInclusion(String s1, String s2) {
-        int windowStart =0;
-        HashMap<Character, Integer> charCounter = new HashMap<>();
-        int matched = 0;
+        HashMap<Character, Integer> counter = new HashMap<>();
         
-        for(char c: s1.toCharArray()){
-            charCounter.put(c, charCounter.getOrDefault(c, 0)+1);
-        }
+        for(char c: s1.toCharArray())
+            counter.put(c, counter.getOrDefault(c, 0)+1);
         
-        for(int windowEnd = 0; windowEnd<s2.length(); windowEnd++){
-            char endChar = s2.charAt(windowEnd);
-            if(charCounter.containsKey(endChar)){
-                charCounter.put(endChar, charCounter.getOrDefault(endChar,0)-1 );
-                if(charCounter.get(endChar) ==0)
-                    matched ++;
+        int windowStart=0;
+        int matchedKey = 0;
+        for(int windowEnd =0; windowEnd< s2.length(); windowEnd++){
+            char charEnd = s2.charAt(windowEnd);
+            if(counter.containsKey(charEnd)){
+                counter.put(charEnd, counter.get(charEnd)-1);
+                if(counter.get(charEnd)==0)
+                    matchedKey++;
             }
+            if(matchedKey == counter.size())
+                return true;
             
-            
-            if(s1.length()< windowEnd-windowStart+1){
-                char startChar = s2.charAt(windowStart);
-                
-                if(charCounter.containsKey(startChar)){
-                    if(charCounter.get(startChar) ==0)
-                        matched --;
-                    charCounter.put(startChar,charCounter.getOrDefault(startChar,0)+1 );
-                }
+            if(windowEnd-windowStart+1>=s1.length()){
+                char charStart = s2.charAt(windowStart);
                 windowStart++;
+                if(counter.containsKey(charStart)){
+                    if(counter.get(charStart)==0)
+                        matchedKey--;
+                    counter.put(charStart, counter.get(charStart)+1);
+                }   
+                
             }
-            // System.out.println(charCounter);
-            if(matched == charCounter.size())return true;
+
         }
         return false;
     }
