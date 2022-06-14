@@ -24,7 +24,7 @@ class Solution {
         }
         
         for(i=0; i< nums.length; i++){
-            if(nums[i]== nums.length || nums[i] != nums[nums[i]]) return i;
+            if(i!=nums[i]) return i;
         }
         return nums.length;
     }
