@@ -10,8 +10,8 @@ Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
     **/
     public List<List<Integer>> subsets(int[] nums) {
         int currIdx = -1;
-        List<Integer> currSubset = new LinkedList<>();
-        List<List<Integer>> returnVal = new LinkedList<>();
+        List<Integer> currSubset = new ArrayList<>();
+        List<List<Integer>> returnVal = new ArrayList<>();
         backtrack(currIdx, currSubset, nums, returnVal);
         
         return returnVal;
