@@ -1,23 +1,31 @@
 class Solution {
+    /**
+Input: nums = [1,2,3]
+                   ^
+[[],[1],[1,2], [1,2,3],[1,3],[2],[2,3],[3]]
+
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+    
+    
+    **/
     public List<List<Integer>> subsets(int[] nums) {
-        List<List<Integer>>  returnVal = new LinkedList<>();
-        
-        //nums, curridx, subsetArr, returnArr
-        backtrack(nums, -1, new LinkedList<>(), returnVal);    
+        int currIdx = -1;
+        List<Integer> currSubset = new LinkedList<>();
+        List<List<Integer>> returnVal = new LinkedList<>();
+        backtrack(currIdx, currSubset, nums, returnVal);
         
         return returnVal;
     }
     
-    public void backtrack(int[] nums, int curridx, LinkedList<Integer> subsetArr, List<List<Integer>> returnVal){
-        if(curridx >=nums.length)
-            return;
+    public void backtrack(int currIdx, List<Integer> currSubset, int[] nums, List<List<Integer>> returnVal){
+        if(currIdx == nums.length) return;
         
-        returnVal.add(new LinkedList(subsetArr));
-        
-        for(int i = curridx+1; i<nums.length;i++){
-            subsetArr.add(nums[i]);
-            backtrack(nums, i, subsetArr, returnVal);
-            subsetArr.removeLast();
+        returnVal.add(new LinkedList<>(currSubset));
+        for(int i=currIdx+1; i<nums.length; i++){
+            currSubset.add(nums[i]);
+            backtrack(i, currSubset, nums, returnVal);
+            currSubset.remove(currSubset.size()-1);
         }
+        return;
     }
 }
