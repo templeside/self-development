@@ -1,31 +1,24 @@
 class Solution {
-    /**
-    ab7c
-    ab7c      |  Ab7c
-    ab7c Ab7c | 
-    **/
-    public List<String> letterCasePermutation(String str) {
-        List<String> permutations = new ArrayList<>();
-        if(str ==null)return permutations;
+    public List<String> letterCasePermutation(String s) {
+        List<String> queue = new ArrayList<>();
+        queue.add(s);
         
-        permutations.add(str);
-        
-        for(int i=0; i<str.length(); i++){      // string iterator
-            if(Character.isLetter(str.charAt(i))){  // character일 때
-                int n= permutations.size();
+        for(int i=0; i< s.length();i++){
+            if(Character.isDigit(s.charAt(i)))continue;
+            int n= queue.size();
+            
+            for(int j=0; j<n; j++){
+                char[] currStringArr = queue.get(j).toCharArray();
                 
-                for(int j=0; j<n; j++){     
-                    char[] chs = permutations.get(j).toCharArray();
-                    
-                    if(Character.isUpperCase(chs[i]))
-                        chs[i] = Character.toLowerCase(chs[i]);
-                    else
-                        chs[i] = Character.toUpperCase(chs[i]);
-                    
-                    permutations.add(String.valueOf(chs));
-                }
+                if(Character.isLowerCase(currStringArr[i]))
+                    currStringArr[i] = Character.toUpperCase(currStringArr[i]);
+                else
+                    currStringArr[i] = Character.toLowerCase(currStringArr[i]);
+                
+                queue.add(String.valueOf(currStringArr));
+                
             }
         }
-        return permutations;
+        return queue;
     }
 }
