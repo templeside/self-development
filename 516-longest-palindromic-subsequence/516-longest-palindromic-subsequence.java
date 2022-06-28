@@ -11,12 +11,12 @@ class Solution {
         
         if(dp[startIdx][endIdx] !=null)return dp[startIdx][endIdx];// dp 이미 있을 때
         
-        if(s.charAt(startIdx) == s.charAt(endIdx)){
+        if(s.charAt(startIdx) == s.charAt(endIdx)){     //palindromic subsequence
             dp[startIdx][endIdx] = 2+ recursion(dp, s, startIdx+1, endIdx-1);
         }else{
             dp[startIdx][endIdx] = Math.max(recursion(dp, s, startIdx+1, endIdx), recursion(dp, s, startIdx, endIdx-1));
         }
-        
+
         return dp[startIdx][endIdx];
     }
 }
