@@ -11,23 +11,24 @@ class Solution {
     moving to the index if the curr index is equal. otherwise, looking for other ways to do.
     changing variables - s1Idx, s2Idx
     dp[s1Idx][s2Idx] = maxval? nope. count should be.
+    
+    dp[i][j] = dp[i-1][j-1];        //when matching
+    dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);    //when not matching.
     **/
     public int longestCommonSubsequence(String s1, String s2) {
-        if(s1.length()<=0 || s2.length()<=0)return 0;
-        Integer[][] dp = new Integer[s1.length()][s2.length()];
-        return recursion(dp, s1, s2, 0, 0);
-    }
-    public int recursion(Integer[][] dp, String s1, String s2, int s1Idx, int s2Idx){
-        if(s1Idx>=s1.length() || s2Idx>= s2.length())return 0;
+        int[][] dp = new int[s1.length()+1][s2.length()+1];
         
-        if(dp[s1Idx][s2Idx]!=null)return dp[s1Idx][s2Idx];
-        
-        if(s1.charAt(s1Idx) == s2.charAt(s2Idx)) 
-            dp[s1Idx][s2Idx] = 1+ recursion(dp, s1,s2, s1Idx+1, s2Idx+1);
-        else{
-            dp[s1Idx][s2Idx] = Math.max(recursion(dp, s1, s2, s1Idx+1, s2Idx), recursion(dp, s1, s2, s1Idx, s2Idx+1));
+        for(int s1Idx=1; s1Idx<= s1.length(); s1Idx++){
+            for(int s2Idx=1; s2Idx<= s2.length(); s2Idx++ ){
+                if(s1.charAt(s1Idx-1)== s2.charAt(s2Idx-1))
+                    dp[s1Idx][s2Idx] = 1+dp[s1Idx-1][s2Idx-1];
+                else{
+                    int c1 = dp[s1Idx-1][s2Idx];
+                    int c2 = dp[s1Idx][s2Idx-1];
+                    dp[s1Idx][s2Idx] = Math.max(c1, c2);
+                }
+            }
         }
-        
-        return dp[s1Idx][s2Idx];
+        return dp[s1.length()][s2.length()];
     }
 }
