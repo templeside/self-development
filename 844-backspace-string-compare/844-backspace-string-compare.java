@@ -4,13 +4,12 @@ class Solution {
         int tIdx = t.length()-1;
         
         while(sIdx>=0 || tIdx>=0){
-            sIdx = findValidPrev(sIdx,s);
-            tIdx = findValidPrev(tIdx,t);
+            sIdx = findValid(s, sIdx);
+            tIdx = findValid(t, tIdx);
             
-            if(sIdx<0 && tIdx<0)return true;
-            else if(sIdx<0 || tIdx<0) return false;
-            
-            if(s.charAt(sIdx)!= t.charAt(tIdx))return false;
+            if(sIdx <0 && tIdx<0) return true;
+            else if( sIdx<0 || tIdx<0)return false;
+            else if( s.charAt(sIdx) != t.charAt(tIdx)) return false;
             
             sIdx--;
             tIdx--;
@@ -18,13 +17,13 @@ class Solution {
         return true;
     }
     
-    public int findValidPrev(int idx, String str){
-        int backwardCount = 0;
-        
+    public int findValid(String s, int idx){
+        int countBackspace = 0;
         while(idx>=0){
-            if(str.charAt(idx)=='#') backwardCount++;
-            else if(backwardCount>0) backwardCount--;
-            else break;
+            if(s.charAt(idx)=='#') countBackspace++;
+            else if( countBackspace>0) countBackspace--;
+            else
+                break;
             idx--;
         }
         return idx;
