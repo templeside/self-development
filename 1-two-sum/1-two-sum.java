@@ -1,27 +1,15 @@
 class Solution {
-    /**
-    values are unique.
-    only have exact one solution
-    
-    nums =[ 2,7,11,15]  target=9
-              ^
-    remainder = 9-7 = 2
-    map = {2:0}
-    
-    return {map.getvalue(2), 0}
-    **/
     public int[] twoSum(int[] nums, int target) {
+                //<key, index>
         HashMap<Integer, Integer> map = new HashMap<>();
-        for(int i=0 ; i<nums.length; i++){
-            int currVal = nums[i];
-            int remainder = target-currVal;
+        for(int i=0; i< nums.length; i++){
+            int curr = nums[i];
+            int comp = target-curr;
             
-            if(map.containsKey(remainder))
-                return new int[]{map.get(remainder), i};
-                
-            map.put(currVal, i);
+            if(map.containsKey(comp)) return new int[]{map.get(comp), i};
             
+            map.put(curr, i);
         }
-        return null;
+        return new int[2];
     }
 }
