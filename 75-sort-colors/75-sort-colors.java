@@ -1,26 +1,34 @@
-class Solution {    
-  public static void swap(int x, int y, int[] arr){
-    int temp = arr[x];
-    arr[x] = arr[y] ;
-    arr[y] = temp;
-  }
-  public static void sortColors(int[] arr) {
-    int left =0;
-    int right=  arr.length-1;
-    
-    for(int i=0; i<=right;){
-      if(arr[i] ==2){
-        swap(i, right, arr);
-        right--;
-      }
-      else if(arr[i] == 1){
-        i++;
-      }
-      else{
-        swap(i, left, arr);
-        left++;
-        i++;
-      }
+class Solution {
+/**
+given array 'nums' three selection. sort in-place.
+
+because we can sort the values by binary with two pointers, the middle can be another category, which means we can sort in three category too.
+
+Input: nums = [0,0,2,1,1,2]
+curr           ^
+left           ^
+right                  ^
+**/
+    public void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
-  }
+    public void sortColors(int[] nums) {
+        int curr=0, left =0, right=nums.length-1;
+        
+        while(curr<=right){
+            int currNum = nums[curr];
+            
+            if(currNum == 0){
+                swap(nums, left, curr);
+                left ++;
+                curr++;
+            }else if(currNum == 2){
+                swap(nums,curr, right);
+                right --;
+            }else
+                curr++;
+        }
+    }
 }
