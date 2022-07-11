@@ -13,21 +13,44 @@
  *     }
  * }
  */
+/**
+kth smallest, which means i need to be in order.
+through the in order k--.
+if there is k==0
+
+          3               k==
+    1(0)     4
+      2
+      
+    saving the returnValue.
+    
+    [5,3,6,2,4,null,null,1] k=3
+            5
+        3       6
+      2   4       
+    1
+    
+**/
 class Solution {
+    public Integer counter;
+    
     public int kthSmallest(TreeNode root, int k) {
-        ArrayDeque<TreeNode> stack= new ArrayDeque<>();
+        counter = 0;
+        return dfs(root, k);   //return the value.
+    }
+    public int dfs(TreeNode root, int k){
+        if(root ==null) return -1;
         
-        while(true){
-            while(root !=null){
-                stack.push(root);
-                root = root.left;
-            }
-            
-            root = stack.pop();
-            k--;
-            if(k==0)return root.val;
-            
-            root = root.right;
-        }
+        int left = dfs(root.left, k);
+        if(left !=-1)return left;
+        
+        counter++;
+        System.out.println(counter+" val is : " +root.val);
+        if(counter==k)return root.val;
+        
+        int right = dfs(root.right, k);
+        if(right !=-1)return right;
+        
+        return -1;
     }
 }
