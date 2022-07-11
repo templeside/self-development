@@ -45,7 +45,6 @@ class Solution {
         if(left !=-1)return left;
         
         counter++;
-        System.out.println(counter+" val is : " +root.val);
         if(counter==k)return root.val;
         
         int right = dfs(root.right, k);
