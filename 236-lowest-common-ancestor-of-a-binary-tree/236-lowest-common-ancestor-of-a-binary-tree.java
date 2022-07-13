@@ -28,17 +28,22 @@ return the ancestor.
 5,4
 **/
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if(root ==null)return null;
-        
-        if(root == p || root ==q)return root;
-        
-        TreeNode left = lowestCommonAncestor(root.left,p,q);
-        TreeNode right = lowestCommonAncestor(root.right,p,q);
-        
-        if(left !=null && right !=null)return root;
-        if(left !=null)return left;
-        if(right !=null)return right;
-        
+        if (root == null) return null;
+
+        // case 2 in above figure
+        if (root.equals(p) || root.equals(q)) return root;
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+        // case 1
+        if (left != null && right != null) return root;
+
+        // at this point, left and right can't be both non-null
+        // case 4 and 5, report target node or LCA back to parent
+        if (left != null) return left;
+        if (right != null) return right;
+
+        // case 4, not found return null
         return null;
     }
 }
