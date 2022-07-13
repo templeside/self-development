@@ -13,50 +13,38 @@
  *     }
  * }
  */
-/**
-Given the root of a binary tree and an integer targetSum, 
-return the number of paths where the sum of the values along the path equals targetSum.
-
-1. having the queue to check the target sum,  compare with the queue.
-2. considering two possibilities: in path or not in path.
-        
-        10
-    5       -3
- 3     2        11
-3 -2    1
-        
-Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
-Output: 3
-Explanation: The paths that sum to 8 are shown.
-        
-
-baseCase
-returnVal
-**/
 class Solution {
-    public int pathSum(TreeNode root, int targetSum) {
-        List<Integer> dataSaver = new ArrayList<>();
-        return dfs(root, targetSum, dataSaver);
-    }
+    /**
+    1. iterate through recursion.
+    2. compare with the values with the datasets containing currnt value.
     
-    public int dfs(TreeNode root, int targetSum, List<Integer> dataSaver){
-        if(root ==null) return 0;
+    base case - when null
+    
+    do the iteration from the end. compare the values with target value.
+    
+    return - count.
+    */
+    public int pathSum(TreeNode root, int targetSum) {
+        ArrayList<Integer> datas = new ArrayList<>();
         
-        dataSaver.add(root.val);
+        return recursion(root, targetSum, datas);
+    }
+    public int recursion(TreeNode root, int targetSum, ArrayList<Integer> datas){
+        if(root ==null)return 0;
         
-        int tempSum= 0;
-        int count =0;
-        for(int i=dataSaver.size()-1; i>=0 ;i--){
-            tempSum += dataSaver.get(i);
+        datas.add(root.val);
+        int tempSum = 0;
+        int tempCount=0;
+        for(int i= datas.size()-1; i>=0; i--){
+            tempSum += datas.get(i);
             if(tempSum == targetSum)
-                count++;
+                tempCount++;
         }
         
-        int leftCount = dfs(root.left, targetSum, dataSaver);
-        int rightCount = dfs(root.right, targetSum, dataSaver);
+        tempCount += recursion(root.left, targetSum, datas);
+        tempCount += recursion(root.right, targetSum, datas);
         
-        dataSaver.remove(dataSaver.size()-1);
-        
-        return count+leftCount+rightCount;
+        datas.remove(datas.size()-1);
+        return tempCount;
     }
 }
