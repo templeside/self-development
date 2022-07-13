@@ -17,14 +17,15 @@
 base case - when null, return 0.
 
 compare left, right
-compare with global variable(left+right-1).
+compare with global variable(left+right).
 
 return - the length of the max path/
 
-dim(1) = dim(2)+dim(3)-
-dim(2) = 1
+dim(1) = dim(2)+dim(3)
+dim(2) = dim(4)+dim(5)
 dim(4) = 0
 dim(5) = 0
+dim(3) = 0
 */
 class Solution {
     public int dim;
