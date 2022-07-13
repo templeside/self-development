@@ -14,17 +14,29 @@
  * }
  */
 class Solution {
-    TreeNode prev = null;
+    /**
+    in order traversal, compare with prev value.
+    **/
+    TreeNode prev;
+    boolean valid;
     public boolean isValidBST(TreeNode root) {
-        if(root ==null)return true;
+        prev = null;
+        valid = true;
+        inorder(root);
+        return valid;
+    }
+    
+    public void inorder(TreeNode root){
+        if(root == null || !valid)return ;
         
-        if(!isValidBST(root.left)) return false;
+        inorder(root.left);
         
-        if(prev!=null&& prev.val>= root.val)
-            return false;
+        if(prev ==null|| prev.val< root.val){
+            prev= root;
+        }else{
+            valid = false;
+        }
         
-        prev = root;
-        return isValidBST(root.right);
-        
+        inorder(root.right);
     }
 }
