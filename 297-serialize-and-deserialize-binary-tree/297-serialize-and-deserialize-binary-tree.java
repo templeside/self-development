@@ -1,38 +1,62 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+/**
+identifier, null pointer
+*/
 public class Codec {
-    private static final String spliter = ",";
-    private static final String NN = "X";
-
+    
     // Encodes a tree to a single string.
+    public static StringBuilder sb;
     public String serialize(TreeNode root) {
-        StringBuilder sb = new StringBuilder();
-        buildString(root, sb);
+        sb = new StringBuilder();
+        serializeDFS(root);
         return sb.toString();
     }
-
-    private void buildString(TreeNode node, StringBuilder sb) {
-        if (node == null) {
-            sb.append(NN).append(spliter);
-        } else {
-            sb.append(node.val).append(spliter);
-            buildString(node.left, sb);
-            buildString(node.right,sb);
+    public void serializeDFS(TreeNode root){
+        if(root == null){
+            sb.append("x");
+            sb.append(" ");
+        }
+        else{
+            sb.append(root.val);
+            sb.append(" ");
+            serializeDFS(root.left);
+            serializeDFS(root.right);
         }
     }
     // Decodes your encoded data to tree.
+    public static Integer splittedIdx;
     public TreeNode deserialize(String data) {
-        Deque<String> nodes = new LinkedList<>();
-        nodes.addAll(Arrays.asList(data.split(spliter)));
-        return buildTree(nodes);
+        String[] splitted = data.split(" ");
+        splittedIdx= 0;
+        return deserializeDFS(splitted);
     }
     
-    private TreeNode buildTree(Deque<String> nodes) {
-        String val = nodes.remove();
-        if (val.equals(NN)) return null;
-        else {
-            TreeNode node = new TreeNode(Integer.valueOf(val));
-            node.left = buildTree(nodes);
-            node.right = buildTree(nodes);
-            return node;
+    
+    public TreeNode deserializeDFS(String[] splitted){
+        // base case : when splittedIdx>= splitted.length, splitted[i] == x
+        if(splittedIdx>= splitted.length)return null;
+        
+        if(splitted[splittedIdx].equals("x")){
+            splittedIdx++;
+            return null;
         }
+        TreeNode returnNode = new TreeNode(Integer.valueOf(splitted[splittedIdx]));
+        splittedIdx++;
+        returnNode.left = deserializeDFS(splitted);
+        returnNode.right = deserializeDFS(splitted);
+        return returnNode;
     }
 }
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));
