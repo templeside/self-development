@@ -4,7 +4,6 @@ class Solution {
         List<List<Integer>> returnVal = new ArrayList<>();
         //so, in the paramter, there should be currsum, target, currVal, returnVal
         // backtrack(0, currVal, currIdx, returnVal, target);
-        // backtrack(0, new ArrayList<>(), -1, returnVal, candidates, target);
         backtrack(0, new ArrayList<>(), 0, returnVal, candidates, target);
         return returnVal;
     }
@@ -26,10 +25,6 @@ class Solution {
             currSum -= candidates[i];
             currVal.remove(currVal.size()-1);
         }
-        
-        
         //while backtracking, find the target, and if the sum is same, then add the item into the returnVal.
-        
-        
     }
 }
