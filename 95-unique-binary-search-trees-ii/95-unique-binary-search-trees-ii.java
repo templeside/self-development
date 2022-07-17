@@ -15,25 +15,26 @@
  */
 class Solution {
     public List<TreeNode> generateTrees(int n) {
-        return backtrack(1,n);
+        return backtrack(1, n);
     }
+    
     public LinkedList<TreeNode> backtrack(int startIdx, int endIdx){
-        LinkedList<TreeNode> returnVal = new LinkedList<TreeNode>();
-        if( startIdx>endIdx){
+        LinkedList<TreeNode> returnVal = new LinkedList<>();
+        
+        if(startIdx>endIdx){
             returnVal.add(null);
             return returnVal;
         }
         
-        for(int i = startIdx; i<=endIdx; i++){
+        for(int i=startIdx; i<=endIdx;i++){
+            LinkedList<TreeNode> leftNodes = backtrack(startIdx, i-1);
+            LinkedList<TreeNode> rightNodes = backtrack(i+1, endIdx);
             
-            LinkedList<TreeNode> left = backtrack(startIdx, i-1);
-            LinkedList<TreeNode> right = backtrack(i+1, endIdx);
-            
-            for(TreeNode l: left){
-                for(TreeNode r: right){
-                    TreeNode currNode = new TreeNode(i);
-                    currNode.left = l;
-                    currNode.right = r;
+            for(TreeNode leftNode: leftNodes){
+                for(TreeNode rightNode: rightNodes){
+                    TreeNode currNode= new TreeNode(i);
+                    currNode.left = leftNode;
+                    currNode.right = rightNode;
                     returnVal.add(currNode);
                 }
             }
