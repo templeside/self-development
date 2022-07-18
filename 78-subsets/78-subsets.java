@@ -1,31 +1,28 @@
 class Solution {
     /**
-Input: nums = [1,2,3]
-                   ^
-[[],[1],[1,2], [1,2,3],[1,3],[2],[2,3],[3]]
-
-Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+    1   2   3   
+            ^
+    []
+    [],[1]
+    [],[1],[2],[1,2]
+    [],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]
     
     
+    i would do cascading. 
+    using bfs, adding new variable again and again by the end of the array.
     **/
     public List<List<Integer>> subsets(int[] nums) {
-        int currIdx = -1;
-        List<Integer> currSubset = new ArrayList<>();
-        List<List<Integer>> returnVal = new ArrayList<>();
-        backtrack(currIdx, currSubset, nums, returnVal);
+        List<List<Integer>> subsets = new ArrayList<>();
+        subsets.add(new ArrayList<>());
         
-        return returnVal;
-    }
-    
-    public void backtrack(int currIdx, List<Integer> currSubset, int[] nums, List<List<Integer>> returnVal){
-        if(currIdx == nums.length) return;
-        
-        returnVal.add(new LinkedList<>(currSubset));
-        for(int i=currIdx+1; i<nums.length; i++){
-            currSubset.add(nums[i]);
-            backtrack(i, currSubset, nums, returnVal);
-            currSubset.remove(currSubset.size()-1);
+        for(int i=0; i< nums.length; i++){
+            int n = subsets.size();
+            for(int j=0; j< n; j++){
+                List<Integer> tempSubset = new ArrayList(subsets.get(j));
+                tempSubset.add(nums[i]);
+                subsets.add(tempSubset);
+            }
         }
-        return;
+        return subsets;
     }
 }
