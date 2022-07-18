@@ -1,30 +1,27 @@
 class Solution {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        // backtracking through all numbers.
         List<List<Integer>> returnVal = new ArrayList<>();
-        //so, in the paramter, there should be currsum, target, currVal, returnVal
-        // backtrack(0, currVal, currIdx, returnVal, target);
-        backtrack(0, new ArrayList<>(), 0, returnVal, candidates, target);
+        List<Integer> currPath= new ArrayList<>();
+        int currIdx =0;
+        backtrack(currIdx, currPath, returnVal, target, candidates);
+        
         return returnVal;
     }
-    public void backtrack(int currSum, List<Integer> currVal, int currIdx, List<List<Integer>> returnVal, int[] candidates, int target){
-        //base case is if the currIdx == currVal.size() or reaches the target.
-        if(currSum > target)
+    
+    public void backtrack(int currIdx, List<Integer> currPath, List<List<Integer>> returnVal, int target, int[] candidates){
+        if(target<=0){
+            if(target ==0){
+                returnVal.add(new ArrayList(currPath));
+            }
             return;
-        
-        // when successful
-        if(currSum == target)
-            returnVal.add(new ArrayList(currVal));
-        
-        for(int i= currIdx; i< candidates.length;i++){
-            // if(i == -1)continue;
-            currSum += candidates[i];
-            currVal.add(candidates[i]);
-            backtrack(currSum, currVal, i, returnVal, candidates, target);
-            
-            currSum -= candidates[i];
-            currVal.remove(currVal.size()-1);
         }
-        //while backtracking, find the target, and if the sum is same, then add the item into the returnVal.
+        
+        for(int i= currIdx; i< candidates.length; i++){
+            currPath.add(candidates[i]);
+            
+            backtrack(i, currPath, returnVal, target-candidates[i], candidates);
+            
+            currPath.remove(currPath.size()-1);
+        }
     }
 }
