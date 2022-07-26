@@ -11,30 +11,27 @@
  */
 public class Solution {
     /**
-    I'll get slow and fast pointer to 
-    1. find cycle
-    2. lets say the start point of the cycle is 0, and the distance from head to the start point of the cycle is t.
-        the point is 
-    
+    i would do the iteration. and 
+    1. find out the matching point.
+    2. starting from the head, move the slow andfast pointer one by one.
+    3. if matched, return the node - because it is the starting point of the cycle.
     **/
     public ListNode detectCycle(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
+        
         while(fast !=null && fast.next !=null){
-            slow= slow.next;
+            slow = slow.next;
             fast = fast.next.next;
-            
-            if(slow==fast)
-                break;
+            if(slow ==fast) break;
         }
-        if(fast ==null || fast.next ==null)return null;
+        if(fast==null || fast.next == null)return null;
         
         slow = head;
-        while(slow != fast){
+        while(slow!= fast){
             slow = slow.next;
             fast = fast.next;
         }
-        
         return slow;
     }
 }
