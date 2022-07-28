@@ -23,7 +23,7 @@ Output: 49
             int leftVal = height[left];
             int rightVal = height[right];
             
-            if(leftVal>= rightVal){
+            if(leftVal> rightVal){
                 maxArea = Math.max(maxArea, rightVal * (right-left));
                 right --;
             }else{
