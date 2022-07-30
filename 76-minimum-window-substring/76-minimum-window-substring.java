@@ -15,47 +15,39 @@ the output = ADOBEC;
 
 what is the criteria to shrink the window size????? 
     **/
-    public String minWindow(String s, String t) {        
-        // 1. count all the t's characters
-        Map<Character,Integer> tCount= new HashMap<>();
-        for(int i=0; i<t.length(); i++){
-            tCount.put(t.charAt(i), tCount.getOrDefault(t.charAt(i),0)+1);// character, count
+public static String minWindow(String str, String pattern) {
+    int windowStart = 0, matched = 0, minLength = str.length() + 1, subStrStart = 0;
+    Map<Character, Integer> charFrequencyMap = new HashMap<>();
+    for (char chr : pattern.toCharArray())
+      charFrequencyMap.put(chr, charFrequencyMap.getOrDefault(chr, 0) + 1);
+
+    // try to extend the range [windowStart, windowEnd]
+    for (int windowEnd = 0; windowEnd < str.length(); windowEnd++) {
+      char rightChar = str.charAt(windowEnd);
+      if (charFrequencyMap.containsKey(rightChar)) {
+        charFrequencyMap.put(rightChar, charFrequencyMap.get(rightChar) - 1);
+        if (charFrequencyMap.get(rightChar) >= 0) // count every matching of a character
+          matched++;
+      }
+
+      // shrink the window if we can, finish as soon as we remove a matched character
+      while (matched == pattern.length()) {
+        if (minLength > windowEnd - windowStart + 1) {
+          minLength = windowEnd - windowStart + 1;
+          subStrStart = windowStart;
         }
-        int tTotal=tCount.size();
-        
-        // 2. move end pointer until the window(start pointer, end pointer) contains all the t's characters
-        int endPtr=0;
-        int startPtr=0;
-        String globalMin="";
-        
-        Map<Character,Integer> windowCounts= new HashMap<>();
-        int satisfied=0;
-        
-        while(endPtr<s.length()){
-            char c=s.charAt(endPtr);
-            windowCounts.put(c, windowCounts.getOrDefault(c,0)+1);
-            
-            if(tCount.containsKey(c) &&
-              windowCounts.get(c).intValue()==tCount.get(c).intValue()) satisfied++;
-            
-            // 3. move start pointer to reduce the sliding window length - stops when it no longer contains all the t's characters
-            while(startPtr<=endPtr && tTotal==satisfied){
-                c=s.charAt(startPtr);
-                
-                // update global min-sliding window length
-                if(globalMin.length()==0 || globalMin.length()>(endPtr-startPtr+1)){
-                    globalMin= s.substring(startPtr, endPtr+1);
-                }
-                
-                windowCounts.put(c, windowCounts.get(c)-1);
-                if(tCount.containsKey(c) &&
-                  windowCounts.get(c).intValue()< tCount.get(c).intValue()) satisfied--;
-                startPtr++;
-            }
-            
-            endPtr++;
+
+        char leftChar = str.charAt(windowStart++);
+        if (charFrequencyMap.containsKey(leftChar)) {
+          // note that we could have redundant matching characters, therefore we'll decrement the
+          // matched count only when a useful occurrence of a matched character is going out of the window
+          if (charFrequencyMap.get(leftChar) == 0)
+            matched--;
+          charFrequencyMap.put(leftChar, charFrequencyMap.get(leftChar) + 1);
         }
-        
-        return globalMin;
+      }
+    }
+
+    return minLength > str.length() ? "" : str.substring(subStrStart, subStrStart + minLength);
     }
 }
