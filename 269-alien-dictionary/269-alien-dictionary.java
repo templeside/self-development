@@ -1,59 +1,61 @@
 class Solution {
+    /**
+    need to find out it is lexicographically ordered.
+    in this case, we can use topological sort.
+    1. initiate two hashmap:
+        inDegree<alphabet, prerequisite counter>
+        childrenMap<currNode, childrenNode>
+    2. iterate through the words, and build the hashmaps
+    3. look for the non-prerequisite characters.
+    4. find the nodes.
+    
+    return in the ordered way.
+    
+    ["abc","ab"]
+    **/
     public String alienOrder(String[] words) {
-        if(words ==null || words.length ==0)return "";
+        HashMap<Character, Integer> inDegree = new HashMap<>();
+        HashMap<Character, List<Character>> childrenMap = new HashMap<>();
         
-        // a. initialize the graph
-        HashMap<Character, Integer> inDegree = new HashMap<>(); // count of incoming edges for every vertex.
-        HashMap<Character, List<Character>> graph = new HashMap<>();    // adjacency list graph.
         for(String word: words){
-            for(char character : word.toCharArray()){
-                inDegree.put(character,0);
-                graph.put(character, new ArrayList<Character>());
+            for(char c: word.toCharArray()){
+                inDegree.put(c, 0);
+                childrenMap.put(c, new ArrayList<>());
             }
         }
-        
-        // b. build the graph
         for(int i=0; i< words.length-1; i++){
-            String w1=words[i], w2=words[i+1];  // find  the ording of characters.
-            // Check that word2 is not a prefix of w1.
-            if (w1.length() > w2.length() && w1.startsWith(w2)) {
+            String prereq = words[i];
+            String curr = words[i+1];
+            // Check that word2 is not a prefix of word1.
+            if (prereq.length() > curr.length() && prereq.startsWith(curr)) 
                 return "";
-            }
-
-            for(int j=0; j<Math.min(w1.length(), w2.length());j++){
-                char parent = w1.charAt(j), child= w2.charAt(j);
-                if(parent !=child){                             //if two characters are different, 
-                    inDegree.put(child, inDegree.get(child)+1); //put the child into it's parent list
-                    graph.get(parent).add(child);               //increment child's inDegree
-                break;                                          //only checking the first different character between the two words
+            for(int j=0; j< Math.min(prereq.length(), curr.length()); j++){
+                if(prereq.charAt(j) != curr.charAt(j)){
+                    char prevChar = prereq.charAt(j);
+                    char currChar = curr.charAt(j);
+                    inDegree.put(currChar, inDegree.get(currChar)+1);
+                    childrenMap.get(prevChar).add(currChar);
+                    break;
                 }
             }
         }
         
-        // 여기 부터는 기존 topological sort와 같음.
-        // c. find all sources i.e., all verticies with 0 inDegrees
-        Queue<Character> sources = new LinkedList<>();
-        for(Map.Entry<Character, Integer> entry: inDegree.entrySet()){
-            if(entry.getValue()==0)
-                sources.add(entry.getKey());
+        StringBuilder currOrder = new StringBuilder();
+        Queue<Character> topoIterator = new LinkedList<>();
+        for(Map.Entry<Character, Integer> set: inDegree.entrySet()){
+            if(set.getValue() ==0)
+                topoIterator.add(set.getKey());
         }
         
-        // d. for each source, add it to the sortedOrder and subtract one from all of its schildren's inDegrees if a hild's inDegree becomes zero, add it to the sources queue.
-        StringBuilder sortedOrder = new StringBuilder();
-        
-        while(!sources.isEmpty()){
-            Character vertex = sources.poll();
-            sortedOrder.append(vertex);
-            List<Character> children = graph.get(vertex);
-            for(Character child: children){
+        while(topoIterator.size()>0){
+            char currChar = topoIterator.poll();
+            currOrder.append(currChar);
+            for(char child: childrenMap.get(currChar)){
                 inDegree.put(child, inDegree.get(child)-1);
                 if(inDegree.get(child) ==0)
-                    sources.add(child);
+                    topoIterator.add(child);
             }
         }
-        
-        if(sortedOrder.length() !=inDegree.size())
-            return "";
-        return sortedOrder.toString();
+        return currOrder.length() == inDegree.size()? currOrder.toString() : "";
     }
 }
