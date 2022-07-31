@@ -29,16 +29,16 @@ class Solution {
     
     **/
 
-    HashMap<Integer, List<Integer>> adjacencyList;
-    HashSet<Integer> visited;
+    // HashMap<Integer, List<Integer>> adjacencyList;
+    // HashSet<Integer> visited;
     
     public boolean validTree(int n, int[][] edges) {
         if(edges.length !=n-1)return false;
         // <parent, child>
-        // HashMap<Integer, List<Integer>> adjacencyList = new HashMap<>();
-        // HashSet<Integer> visited = new HashSet<>();
         HashMap<Integer, List<Integer>> adjacencyList = new HashMap<>();
         HashSet<Integer> visited = new HashSet<>();
+        // HashMap<Integer, List<Integer>> adjacencyList = new HashMap<>();
+        // HashSet<Integer> visited = new HashSet<>();
         
         for(int i=0; i<n; i++){
             adjacencyList.put(i, new ArrayList<>());
