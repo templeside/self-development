@@ -1,66 +1,74 @@
 class Solution {
-    /**
-    find all of the pacific Ocen, atlantic Ocean locations.
-    find duplicated places that are available.
-    
-    1. initiate pacific ocean matrix, atlantic ocean matrix.
-    2. from the pacific ocean matrix, find out as much as it could.
-    3. from the atlantic ocean matrix, find out as much as it could.
-    4. compare atlantic ocean and pacific ocean. 
-    5. returnthe pacificAtlantic coordinates.
-    **/
-    public List<List<Integer>> pacificAtlantic(int[][] heights) {
-        int rMax = heights.length, cMax = heights[0].length;
-        List<List<Integer>> returnVal = new ArrayList<>();
-        
+    private static final int[][] DIRECTIONS = new int[][]{{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
+    private int numRows;
+    private int numCols;
+    private int[][] landHeights;
 
-        Queue<int[]> pacificIterator = new LinkedList<>();
-        Queue<int[]> atlanticIterator = new LinkedList<>();
-        for(int r= 0; r<rMax; r++){
-            pacificIterator.add(new int[]{r,0});
-            atlanticIterator.add(new int[]{r, cMax-1});
-        }
-        for(int c=0; c< cMax; c++){
-            pacificIterator.add(new int[]{0,c});
-            atlanticIterator.add(new int[]{rMax-1, c});
+    public List<List<Integer>> pacificAtlantic(int[][] matrix) {
+        // Check if input is empty
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return new ArrayList<>();
         }
 
-        int[][] pacific = bfs(heights, pacificIterator);
-        int[][] atlantic = bfs(heights, atlanticIterator);
-        
-        for(int r=0; r< rMax; r++){
-            for(int c=0; c< cMax; c++){
-                if(pacific[r][c]==1 && atlantic[r][c]==1)
-                    returnVal.add(List.of(r,c));
-            }
+        // Save initial values to parameters
+        numRows = matrix.length;
+        numCols = matrix[0].length;
+        landHeights = matrix;
+
+        // Setup each queue with cells adjacent to their respective ocean
+        Queue<int[]> pacificQueue = new LinkedList<>();
+        Queue<int[]> atlanticQueue = new LinkedList<>();
+        for (int i = 0; i < numRows; i++) {
+            pacificQueue.offer(new int[]{i, 0});
+            atlanticQueue.offer(new int[]{i, numCols - 1});
         }
-        return returnVal;
-    }
-    
-    // 0 - not visited, -1 - notValid, 1- valid.
-    public int[][] bfs(int[][] heights, Queue<int[]> iterator){
-        int[]rDir = new int[]{0,0,1,-1};
-        int[] cDir = new int[]{1,-1, 0,0};
-        int rMax = heights.length;
-        int cMax = heights[0].length;
-        int[][] map = new int[rMax][cMax];
-        
-        while(iterator.size()>0){
-            int[] coordinate =iterator.poll();
-            int r = coordinate[0];
-            int c=  coordinate[1];
-            map[r][c] = 1;
-            
-            //get the adjacencies.
-            for(int i=0; i<4; i++){
-                int newR = r+ rDir[i];
-                int newC = c+ cDir[i];
-                if(newR>=0 && newC>=0 && newR< rMax && newC< cMax && map[newR][newC] ==0 && heights[r][c] <= heights[newR][newC]){
-                    map[newR][newC] = 1;
-                    iterator.add(new int[]{newR,newC});
+        for (int i = 0; i < numCols; i++) {
+            pacificQueue.offer(new int[]{0, i});
+            atlanticQueue.offer(new int[]{numRows - 1, i});
+        }
+
+        // Perform a BFS for each ocean to find all cells accessible by each ocean
+        boolean[][] pacificReachable = bfs(pacificQueue);
+        boolean[][] atlanticReachable = bfs(atlanticQueue);
+
+        // Find all cells that can reach both oceans
+        List<List<Integer>> commonCells = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            for (int j = 0; j < numCols; j++) {
+                if (pacificReachable[i][j] && atlanticReachable[i][j]) {
+                    commonCells.add(List.of(i, j));
                 }
             }
         }
-        return map;
+        return commonCells;
+    }
+
+    private boolean[][] bfs(Queue<int[]> queue) {
+        boolean[][] reachable = new boolean[numRows][numCols];
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            // This cell is reachable, so mark it
+            reachable[cell[0]][cell[1]] = true;
+            for (int[] dir : DIRECTIONS) { // Check all 4 directions
+                int newRow = cell[0] + dir[0];
+                int newCol = cell[1] + dir[1];
+                // Check if new cell is within bounds
+                if (newRow < 0 || newRow >= numRows || newCol < 0 || newCol >= numCols) {
+                    continue;
+                }
+                // Check that the new cell hasn't already been visited
+                if (reachable[newRow][newCol]) {
+                    continue;
+                }
+                // Check that the new cell has a higher or equal height,
+                // So that water can flow from the new cell to the old cell
+                if (landHeights[newRow][newCol] < landHeights[cell[0]][cell[1]]) {
+                    continue;
+                }
+                // If we've gotten this far, that means the new cell is reachable
+                queue.offer(new int[]{newRow, newCol});
+            }
+        }
+        return reachable;
     }
 }
