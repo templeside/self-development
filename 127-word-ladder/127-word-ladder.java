@@ -14,43 +14,55 @@ class Solution {
     Output: 5
     Explanation: One shortest transformation sequence is "hit" -> "hot" -> "dot" -> "dog" -> cog", which is 5 words long.
     
+    how to check the valid alphabet????
+    having the alphabet array, and iterate 26characters with the index. time complexity of O(1).
+    
+    "hot"
+    "dog"
+    ["hot","dog"]
+    
+    word        - hot
+    bfsIterator - 
+    
     **/
     
-    public static final char[] ALPHABETS = new char[26];
-    static {
-        // ascii representation of english alphabets a - z are numbers 97 - 122
-        for (int i = 0; i < 26; i++) {
-            ALPHABETS[i] = (char) (i + 'a');
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        char[] charArr = new char[26];
+        for(int i=0; i< 26; i++){
+            charArr[i] = (char)('a'+i);
         }
-    }
-
-    public static int ladderLength(String begin, String end, List<String> wordList){
-        // make a set because existence query is O(1) vs O(N) for list
-        Set<String> words = new HashSet<>(wordList);
-        ArrayDeque<String> queue = new ArrayDeque<>();
-        queue.add(begin);
-        int distance = 1;
-        while (queue.size() > 0) {
-            int n = queue.size();
-            distance++;
-            for (int i = 0; i < n; i++) {
-                String word = queue.pop();
-                for (int j = 0; j < word.length(); j++) {
-                    for (char c : ALPHABETS) {
-                        StringBuilder wordBuilder = new StringBuilder(word.length());
-                        wordBuilder.append(word.substring(0, j));
-                        wordBuilder.append(c);
-                        wordBuilder.append(word.substring(j + 1));
-                        String nextWord = wordBuilder.toString();
-                        if (!words.contains(nextWord)) continue;
-                        if (nextWord.equals(end)) return distance;
-                        queue.add(nextWord);
-                        // removing from the set is equivalent as marking the word visited
-                        words.remove(nextWord);
+        HashSet<String> wordSet = new HashSet<>();
+        for(String word: wordList){
+            wordSet.add(word);
+        }
+        if(!wordSet.contains(endWord))return 0;
+        
+        Queue<String> bfsIterator =  new LinkedList<>();
+        bfsIterator.add(beginWord);
+        int shortestCount = 0;
+        while(bfsIterator.size()>0){
+            shortestCount++;
+            int n = bfsIterator.size();
+            for(int i=0; i<n;i++){
+                String word = bfsIterator.poll();
+                if(word.equals(endWord)) return shortestCount;
+                
+                for(int j=0 ;j< word.length(); j++){
+                    // find word.
+                    for(char c: charArr){
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(word.substring(0,j));
+                        sb.append(c);
+                        sb.append(word.substring(j+1));
+                        if(wordSet.contains(sb.toString())){
+                            bfsIterator.add(sb.toString());
+                            wordSet.remove(sb.toString());
+                        }
                     }
                 }
             }
         }
+        
         return 0;
     }
 }
