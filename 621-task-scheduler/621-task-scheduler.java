@@ -1,23 +1,61 @@
 class Solution {
-    public int leastInterval(char[] tasks, int n) {
-        // frequencies of the tasks
-        int[] frequencies = new int[26];
-        for (int t : tasks) {
-            frequencies[t - 'A']++;
-        }
-
-        // max frequency
-        int f_max = 0;
-        for (int f : frequencies) {
-            f_max = Math.max(f_max, f);
-        }
+    public int leastInterval(char[] tasks, int k) {
+        int intervalCount =0;
+        Map<Character, Integer> taskFrequencyMap = new HashMap<>();
+        for(char chr: tasks)
+            taskFrequencyMap.put(chr, taskFrequencyMap.getOrDefault(chr,0)+1);
         
-        // count the most frequent tasks
-        int n_max = 0;
-        for (int f : frequencies) {
-            if (f == f_max) n_max++;
-        }
+        PriorityQueue<Map.Entry<Character, Integer>> maxHeap = new PriorityQueue<>((a,b)-> b.getValue() - a.getValue());
         
-        return Math.max(tasks.length, (f_max - 1) * (n + 1) + n_max);
+        maxHeap.addAll(taskFrequencyMap.entrySet());
+        
+        while(!maxHeap.isEmpty()){
+            List<Map.Entry<Character, Integer>> waitList = new ArrayList<>();
+            int n=k+1;
+            for(; n>0 && !maxHeap.isEmpty();n--){
+                intervalCount++;
+                Map.Entry<Character, Integer> currentEntry = maxHeap.poll();
+                if(currentEntry.getValue()>1){
+                    currentEntry.setValue(currentEntry.getValue()-1);
+                    waitList.add(currentEntry);
+                }
+            }
+            maxHeap.addAll(waitList);
+            if(! maxHeap.isEmpty())
+                intervalCount +=n;
+        }
+        return intervalCount;
     }
 }
+
+//   public static int scheduleTasks(char[] tasks, int k) {
+//     int intervalCount = 0;
+//     Map<Character, Integer> taskFrequencyMap = new HashMap<>();
+//     for (char chr : tasks)
+//       taskFrequencyMap.put(chr, taskFrequencyMap.getOrDefault(chr, 0) + 1);
+
+//     PriorityQueue<Map.Entry<Character, Integer>> maxHeap = new PriorityQueue<Map.Entry<Character, Integer>>(
+//         (e1, e2) -> e2.getValue() - e1.getValue());
+
+//     // add all tasks to the max heap
+//     maxHeap.addAll(taskFrequencyMap.entrySet());
+
+//     while (!maxHeap.isEmpty()) {
+//       List<Map.Entry<Character, Integer>> waitList = new ArrayList<>();
+//       int n = k + 1; // try to execute as many as 'k+1' tasks from the max-heap
+//       for (; n > 0 && !maxHeap.isEmpty(); n--) {
+//         intervalCount++;
+//         Map.Entry<Character, Integer> currentEntry = maxHeap.poll();
+//         if (currentEntry.getValue() > 1) {
+//           currentEntry.setValue(currentEntry.getValue() - 1);
+//           waitList.add(currentEntry);
+//         }
+//       }
+//       maxHeap.addAll(waitList); // put all the waiting list back on the heap
+//       if (!maxHeap.isEmpty())
+//         intervalCount += n; // we'll be having 'n' idle intervals for the next iteration
+//     }
+
+//     return intervalCount;
+//   }
+
