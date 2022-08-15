@@ -21,26 +21,24 @@ Input: lists = [[1,4,5],[1,3,4],[2,6]]
 Output: [1,1,2,3,4,4,5,6]
 **/
     public ListNode mergeKLists(ListNode[] lists) {
-        PriorityQueue<ListNode> sorted = new PriorityQueue<>((a,b)->{
-            return a.val-b.val;
-        });
-        
+        ListNode preHead = new ListNode(-1);
+        ListNode prev=  preHead;
+        PriorityQueue<ListNode> queue = new PriorityQueue<>((a,b)-> a.val - b.val);
         for(ListNode list: lists){
-            while(list !=null){
-                sorted.add(list);
-                list = list.next;
-            }
+            if(list !=null)
+                queue.add(list);
         }
-        ListNode ans = sorted.poll();
-        ListNode curr = ans;
-        while(!sorted.isEmpty()){
-            ListNode nextNode =  sorted.poll();
-            nextNode.next =null;
-            curr.next = nextNode;
+            
+        
+        while(queue.size()>0){
+            ListNode curr = queue.poll();
+            prev.next = curr;
+            prev = curr;
             
             curr = curr.next;
-            
+            if(curr!=null)
+                queue.add(curr);
         }
-        return ans;
+        return preHead.next;
     }
 }
