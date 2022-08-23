@@ -27,17 +27,17 @@ Explanation: there are four ways to make up the amount:
         }
         
         for(int r=0; r<n; r++){
-            for(int currAmount=1; currAmount<= amount; currAmount++){
+            for(int c=1; c<= amount; c++){
                 int currCoinAmount = coins[r];
                 int excludingCount =0, includingCount =0;
                 
                 if(r>0){ // combination with prev.
-                    excludingCount = dp[r-1][currAmount];
+                    excludingCount = dp[r-1][c];
                 }
-                if(currAmount>= currCoinAmount){
-                    includingCount = dp[r][currAmount-currCoinAmount];
+                if(c>= currCoinAmount){
+                    includingCount = dp[r][c-currCoinAmount];
                 }
-                dp[r][currAmount] = excludingCount+includingCount;
+                dp[r][c] = excludingCount+includingCount;
             }
         }
         return dp[n-1][amount];
