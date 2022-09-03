@@ -1,27 +1,30 @@
 class Solution {
     /**
-amount= 0 1   2   3
-2       0 INF 1   INF+1
-3       0 INF INF 1
-5       0 INF INF INF
-MIN     0 INF 1   1
-return arr[length]
+    i can divide into subproblems.
+    amount = [0, n] n is the goal of the amount.
+    in this process, we would let you know how to reach to the coin amount we could get.
+    
+    dp[i] = less coin amount I can get.
+    
     **/
     public int coinChange(int[] coins, int amount) {
-        if(amount ==0)return 0;
-        long[] amountArr = new long[amount+1];
+        int[] dp = new int[amount+1];
+        for(int i=1; i<=amount; i++){
+            dp[i] = Integer.MAX_VALUE;
+        }
+        dp[0] = 0;
         
-        for(int i=0; i< amount+1; i++){
-            amountArr[i] = Integer.MAX_VALUE;
-            for(int coin: coins){
-                int complement = i-coin;
-                if(complement==0) //2,2
-                    amountArr[i] = 1;
-                else if(complement>0){
-                    amountArr[i] = Math.min(amountArr[i], amountArr[complement]+1);
+        for(int currAmount = 1; currAmount<= amount; currAmount++){
+            for(int coinIdx=0; coinIdx<coins.length; coinIdx++){
+                int coin = coins[coinIdx];
+                if(currAmount>= coin && dp[currAmount-coin] != -1){
+                    dp[currAmount] = Math.min(dp[currAmount], dp[currAmount-coin]+1 );
                 }
             }
+            dp[currAmount] = dp[currAmount] == Integer.MAX_VALUE? -1: dp[currAmount];
         }
-        return amountArr[amount] >= Integer.MAX_VALUE? -1: (int)amountArr[amount];
+        // for(int currAmount=1; currAmount<=amount; currAmount++)
+        //     dp[currAmount] = dp[currAmount] == Integer.MAX_VALUE? -1: dp[currAmount];
+        return dp[amount];
     }
 }
