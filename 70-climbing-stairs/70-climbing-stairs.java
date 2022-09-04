@@ -1,24 +1,26 @@
 class Solution {
     /**
-    if n== 2
-            ^
-goal f(1)  f(2)   f(3)   
-     f(0)  f(1)   f(2)
-     f(-1) f(0)   f(1)
-            2       3
-f(i) = f(i-1) + f(i-2)
+    like a fibonacci thing, I would count I would have two cases
+    option 1: step 1
+    option 2: step 2
+    
+    dp[i] = dp[i-1]+ dp[i-2].
+    of course 
+    dp[0] = 1
+    dp[1] = 1
+    
+    dp[3] = 
+    
     **/
     public int climbStairs(int n) {
-        if(n==0)return 0;
-        if(n==1)return 1;
-        if(n==2)return 2;
-        int[] memo = new int[n+1];
-        memo[0] = 0;
-        memo[1] = 1;
-        memo[2] = 2;
-        for(int i=3;i<=n;i++){
-            memo[i]=  memo[i-1]+ memo[i-2];
+        if(n ==1) return 1;
+        int[] dp = new int[n+1];
+        dp[0] = 1;
+        dp[1] = 1;
+        
+        for(int i=2; i<=n; i++){
+            dp[i] = dp[i-1]+ dp[i-2];
         }
-        return memo[n];
+        return dp[n];
     }
 }
