@@ -12,14 +12,20 @@ class Solution {
     
     **/
     public int climbStairs(int n) {
-        int[]dp = new int[n+1];
+        // int[]dp = new int[n+1];
         
-        dp[0] = 1;
-        dp[1] = 1;
+        // dp[0] = 1;
+        // dp[1] = 1;
+        int twoPrev = 1;    //i-2
+        int onePrev = 1;    //i=1
+        
+        
         
         for(int i=2; i<=n; i++){
-            dp[i] = dp[i-1]+dp[i-2];
+            int currStep = twoPrev+onePrev;
+            twoPrev = onePrev;
+            onePrev = currStep;
         }
-        return dp[n];
+        return onePrev;
     }
 }
