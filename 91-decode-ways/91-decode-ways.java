@@ -1,30 +1,49 @@
 class Solution {
+    /**
+    brute force??? how?
+    
+    iterating, finding the way to do, subproblem.
+    :)
+    
+    option 1: just one digit integer
+    option 2: just two digit integer
+    
+    recursion(currIdx, currString, s, dp)
+    return recursion - total numbers of ways.
+    **/
     public int numDecodings(String s) {
-            // <key, count>
-        Map<Integer, Integer> memoArr = new HashMap<>();
+        int currIdx=0;
+        String currString ="";
+        Map<String, Integer> dp = new HashMap<>();
         
-        return memo(0,s, memoArr);
+        return recursion(currIdx, currString, s, dp);
     }
-    // idx는 iterator.
-    // 오른쪽에서부터 memoization을 한다. how????
-    public int memo(int idx, String str, Map<Integer, Integer> memoArr){
-        if(memoArr.containsKey(idx))
-            return memoArr.get(idx);
+    
+    public int recursion(int currIdx, String currString, String s, Map<String, Integer> dp){
+        if(currIdx>= s.length())return 1;
         
-        if(idx == str.length()) return 1; // base case. return 1
+        if(dp.containsKey(currIdx + "|" + s))
+            return dp.get(currIdx + "|" + s);
         
-        if(str.charAt(idx) =='0') return 0; // base case. return 0
+        char currChar = s.charAt(currIdx);
         
-        if(idx == str.length()-1) return 1; // base case. return 1
+        int c1= 0;
+        if(currIdx< s.length()-1){
+            char nextChar = s.charAt(currIdx+1);
+            if(currChar == '1' && nextChar>='0' &&nextChar<='9'){   // 10~19
+                int shift = 10*(int)(currChar-'0') + (int)(nextChar-'0');
+                c1 = recursion(currIdx+2, currString+ (char)('A'+shift), s, dp);
+            }
+            else if(currChar == '2' && nextChar>='0' &&nextChar<='6'){  //20~16
+                int shift = 10*(int)(currChar-'0') + (int)(nextChar-'0');
+                c1 = recursion(currIdx+2, currString+ (char)('A'+shift), s, dp);
+            }
+        }
+        int c2=0;
+        if(currChar !='0')
+            c2 = recursion(currIdx+1, currString+(char)('A'+(int)(currChar-'0')), s, dp);
         
-        
-        int ans = memo(idx+1, str, memoArr); // 오른쪽에 있는 것 부터 memoization을 한다.
-        if(Integer.parseInt(str.substring(idx, idx+2))<=26)
-            ans += memo(idx+2, str, memoArr);      // 왜 index +2?? 이상이상.....
-        
-        memoArr.put(idx, ans);       // save for memoization
-        
-        return ans;
-            
+        dp.put(currIdx + "|" + s, c1+c2);
+        return dp.get(currIdx + "|" + s);
     }
 }
