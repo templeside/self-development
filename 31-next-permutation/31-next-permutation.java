@@ -1,40 +1,37 @@
-class Solution {
-    /**
-    1,2,3
-    
-    ?? is it backtracking???
-    
-    because the permutation stars reverse when finished all the right numberse are reversed. 
-    
-    
-    **/
+class Solution{
     public void nextPermutation(int[] nums) {
-        int pivot = nums.length-2;
-        while(pivot>=0 && nums[pivot] >= nums[pivot+1]){
-            pivot--;
+        if (nums.length == 1) return;
+
+        int firstDecreasing = findFirstDecreasing(nums);
+
+        if (firstDecreasing != -1) {        // only calculate if perm possible
+            int justGreater = findJustGreater(nums, firstDecreasing);
+
+            swap(nums, firstDecreasing, justGreater);
         }
-        if(pivot>=0){
-            int min = nums.length-1;
-            while(nums[pivot] >= nums[min])
-                min --;
-            swap(nums, min, pivot);
-        }
-        reverse(nums, pivot+1);
+        Arrays.sort(nums, firstDecreasing + 1, nums.length);
     }
-    
-    public void swap(int[] nums, int i, int j){
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-    
-    public void reverse(int[] nums, int i){
-        int j=  nums.length-1;
-        
-        while(i<j){
-            swap(nums,i,j);
-            i++;
-            j--;
+
+    private int findFirstDecreasing(int[] nums) {
+        for (int firstDecreasing = nums.length - 1; firstDecreasing >= 0; firstDecreasing--) {
+            if (firstDecreasing < nums.length - 1 && nums[firstDecreasing] < nums[firstDecreasing + 1])
+                return firstDecreasing;
         }
+        return -1;   // can't find any, already sorted, cannot have greater perm
+    }
+
+    private int findJustGreater(int[] nums, int firstDecreasing) {
+        for (int justGreater = firstDecreasing + 1; justGreater < nums.length; justGreater++) {
+            if (nums[justGreater] <= nums[firstDecreasing]) {    // first element less than element
+                return justGreater - 1;                         // return previous element
+            }
+        }
+        return nums.length - 1;     // if no match, last element will be just greater
+    }
+
+    private void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
     }
 }
