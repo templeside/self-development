@@ -14,7 +14,7 @@ class Solution {
                 returnVal[i+1] = digits[i];
             }
             returnVal[0] = 1;
-            tostring(returnVal);
+            
             return returnVal;
         }
         return digits;
