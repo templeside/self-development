@@ -1,25 +1,37 @@
 class Solution {
+    /*
+    most left if left != lower, add range(left, nums[0]-1)
+    middle
+        if nums[i]-nums[i+1] ==1, add nothing
+        if nums[i]-nums[i+1] ==2, add range(nums[i]+1)
+        else, add range(nums[i]+1, nums[i+1]-1)
+    most right if right != right, add range(nums[n-1]+1, right)
+    */
     public List<String> findMissingRanges(int[] nums, int lower, int upper) {
-        // 1. using prev starting from lower-1, iterate the value gettting the range of the integer array.
-        
-        List<String> res = new ArrayList<>();
-        int prev = lower-1;
-        
-        for(int i=0; i<= nums.length; i++){
-            int curr = i==nums.length? upper+1: nums[i];
-            if(prev+1 <= curr-1){
-            String range = RangeCalculate(prev+1, curr-1);
-            res.add(range);
-            }
-            prev= curr;
-
+        List<String> returnVal = new ArrayList<>();
+        if(nums.length ==0){
+            returnVal.add(getRange(lower,upper));
+            return returnVal;
         }
-        return res;
+            
+        
+        if(lower != nums[0])
+            returnVal.add(getRange(lower, nums[0]-1));
+        
+        for(int i=0; i< nums.length-1;i++){
+            if(nums[i]+1 != nums[i+1])
+                returnVal.add(getRange(nums[i]+1, nums[i+1]-1));
+        }
+        if(upper !=nums[nums.length-1])
+            returnVal.add(getRange(nums[nums.length-1]+1, upper));
+        return returnVal;
     }
-    
-    private String RangeCalculate(int left, int right){
-        if( left== right)
-            return String.valueOf(left);
-        return left +"->"+right;
+    public String getRange(int a, int b){
+        String returnString = "";
+        if(a == b)
+            returnString = returnString+b;
+        else
+            returnString = returnString+a+"->"+b;
+        return returnString;
     }
 }
