@@ -1,40 +1,30 @@
 class Solution {
-//     1. store the given digits
-//     2. HH:MM -> total MM(int)
-//     3. find the next available time checking with 1.
-//     4. convert integer to string.
-        
-//     given= 19:34
-//     changedInteger = 01*60+34 = 94
-//                                 95, 96, 97, 98, 99
+    /*
+    divide the time, and update with the value by 1.
+    increment by 1....
+    
+    1. get hashset
+    2. get hours, i=mins
+    split up by the hours, mins
+    */
     public String nextClosestTime(String time) {
-        int hours = Integer.parseInt(time.substring(0,2));
-        int minutes = Integer.parseInt(time.substring(3,5));
-        int totalMinutes = hours*60 + minutes;
-        
-        Set<Integer> timeDigits = new HashSet<Integer>();
-        timeDigits.add(hours/10);
-        timeDigits.add(hours%10);
-        timeDigits.add(minutes/10);
-        timeDigits.add(minutes%10);
-        
-        boolean found = false;
-        while(!found){
-            totalMinutes  = (totalMinutes +1) %(24*60);
-            
-            found = true;
-            // if(only found does not contains)
-            //     notvalid
-            for(int digit : new int[]{totalMinutes/60/10,totalMinutes/60%10,totalMinutes%60/10,totalMinutes%60%10}){
-                if(!timeDigits.contains(digit))
-                    found = false;
-            }
-            
+        HashSet<Integer> set = new HashSet<>();
+        for(int i=0; i< time.length(); i++){
+            if(time.charAt(i) !=':')
+                set.add(time.charAt(i)-'0');
         }
-        hours = totalMinutes/60;
-        minutes = totalMinutes%60;
         
+        int hours = Integer.parseInt(time.substring(0,2));
+        int mins= Integer.parseInt(time.substring(3,5));
         
-        return String.format("%02d:%02d", hours, minutes);
+        while(true){
+            mins++;
+            hours = (hours+ mins/60)%24;
+            mins = mins%60;
+            
+            if(set.contains(hours%10)&& set.contains(hours/10)  &&set.contains(mins%10) &&set.contains(mins/10))
+                break;
+        }
+        return String.format("%02d:%02d",hours,mins);
     }
 }
