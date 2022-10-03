@@ -8,30 +8,42 @@
  *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
  * }
  */
-
 class Solution {
+    /*
+    priorityqueue makes it easier to order the linkedlists.
+    1->4->5,
+     ^
+    
+    1->3->4,
+    ^
+    
+    2->6
+    ^
+
+    1 -
+    
+    from the priorityQueue-> get always the minimum value
+        if the list next is still available, go next
+    */
     public ListNode mergeKLists(ListNode[] lists) {
-        PriorityQueue<ListNode> queue = new PriorityQueue<>((a,b)-> a.val- b.val);
+        PriorityQueue<ListNode> queue = new PriorityQueue<>((a,b)-> a.val-b.val);
+        ListNode preHead = new ListNode();
+        ListNode prev=  preHead;
         
-        ListNode preHead = new ListNode(-1);
-        for(ListNode list: lists)
+        for(ListNode list: lists){
             if(list !=null)
                 queue.add(list);
-        
-        ListNode prev = preHead;
-
-        // need to have node iterator
-        while(queue.size()>0){
-            ListNode curr = queue.poll();
-            prev.next = curr;
-            
-            if(curr.next!=null){
-                curr = curr.next;
-                queue.add(curr);
-            }
-            prev = prev.next;
         }
-        prev.next= null;
+        
+        while(queue.size()>0){
+            ListNode currNode = queue.poll();
+            if(currNode.next !=null)
+                queue.add(currNode.next);
+            currNode.next= null;
+            
+            prev.next = currNode;
+            prev = currNode;
+        }
         return preHead.next;
     }
 }
