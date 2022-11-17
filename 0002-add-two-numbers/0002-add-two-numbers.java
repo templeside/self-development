@@ -10,33 +10,33 @@
  */
 class Solution {
     /*
-    trying to add values. those are on reverse order, which means I can add from the one's digit, pass the offest to the next digit.
-    i would have offset, and move on.
+    2 4 3
+    5 6 4
+    
     */
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        if(l1 == null && l2 == null){
-            return null;
-        }
-            
-        return recurse(l1, l2, 0);
-    }
-    
-    public ListNode recurse(ListNode l1, ListNode l2, int offset){
-        if(l1 ==null && l2 == null && offset ==0)
-            return null;
-        int sum = offset;
-        if(l1 !=null){
-            sum += l1.val;
-            l1 = l1.next;
-        }
-        if(l2!= null){
-            sum += l2.val;
-            l2 = l2.next;
-        }
-            
+        int l1Idx =0, l2Idx = 0;
+        int offset = 0;
         
-        ListNode curr = new ListNode(sum%10);
-        curr.next = recurse(l1, l2, sum/10);
-        return curr;
+        ListNode preHead = new ListNode();
+        ListNode currNode = preHead;
+        while(l1 !=null || l2 !=null || offset !=0){
+            int sum = offset;
+            if(l1 !=null){
+                sum += l1.val;
+                l1 = l1.next;
+            }
+                
+            if(l2 !=null){
+                sum += l2.val;
+                l2 = l2.next;
+            }
+                
+            
+            currNode.next = new ListNode(sum%10);
+            offset = sum/10;
+            currNode = currNode.next;
+        }
+        return preHead.next;
     }
 }
