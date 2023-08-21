@@ -14,6 +14,11 @@ class Interval {
 왜냐면 it is already sorted by start time.
 먼저 interval를 만들어 놓기
 그 만들어진 schedule가지고 free time 찾기 적용하기
+
+priority queue - sorted by start time, and for same start time sort by either largest end time or smallest (it is not matter).
+Everytime you poll from priority queue, just make sure it doesn't intersect with previous interval.
+This mean that there is no coomon interval. Everyone is free time.
+
 */
 
 class Solution {
@@ -25,6 +30,7 @@ class Solution {
         avails.forEach(e -> pq.addAll(e));
 
         Interval temp = pq.poll();
+        
         while(!pq.isEmpty()) {
             if(temp.end < pq.peek().start) { // no intersect
                 result.add(new Interval(temp.end, pq.peek().start));
