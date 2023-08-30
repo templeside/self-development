@@ -11,35 +11,28 @@ class Interval {
         end = _end;
     }
 };
-왜냐면 it is already sorted by start time.
-먼저 interval를 만들어 놓기
-그 만들어진 schedule가지고 free time 찾기 적용하기
-
-priority queue - sorted by start time, and for same start time sort by either largest end time or smallest (it is not matter).
-Everytime you poll from priority queue, just make sure it doesn't intersect with previous interval.
-This mean that there is no coomon interval. Everyone is free time.
-
 */
 
 class Solution {
-    public List<Interval> employeeFreeTime(List<List<Interval>> avails) {
-
+    public List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
+        PriorityQueue<Interval> heap = new PriorityQueue<>((a,b)-> a.start-b.start);
         List<Interval> result = new ArrayList<>();
-
-        PriorityQueue<Interval> pq = new PriorityQueue<>((a, b) -> a.start - b.start);
-        avails.forEach(e -> pq.addAll(e));
-
-        Interval temp = pq.poll();
         
-        while(!pq.isEmpty()) {
-            if(temp.end < pq.peek().start) { // no intersect
-                result.add(new Interval(temp.end, pq.peek().start));
-                temp = pq.poll(); // becomes the next temp interval
-            }else { // intersect or sub merged
-                temp = temp.end < pq.peek().end ? pq.peek() : temp;
-                pq.poll();
+        for(List<Interval> time: schedule)
+            heap.addAll(time);
+        
+        Interval prev = heap.poll();
+        
+        while(heap.size()>0){
+            Interval curr = heap.poll();
+            if(prev.end>= curr.start){   // yes overlapped
+                prev = prev.end > curr.end? prev: curr;
+            }else{
+                result.add(new Interval(prev.end, curr.start));
+                prev = curr;
             }
         }
+        // System.out.println(result);
         return result;
     }
 }
