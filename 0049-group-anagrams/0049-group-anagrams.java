@@ -1,66 +1,51 @@
 class Solution {
     /*
-    update with the groups first.
-    we can use two forloop and figures out it is same anagram or not.
-    for(int i=0; i< n ;i++){
-        for(int j= i+1; j<n; j++){
-            compare i with j
-                if anagram():
-                if not anagram();
-                    skip
-        }
-    }
+    need to sort the strs in same place.
+    to store values in same place, we can use hashmap.
+    hashMap<hashcodeKey, anagram strings>
+    hashMap<String, List<String>>
     
-    time complexity:O(n^2)
-    space complexity: O(1)
+    how to group?
+    common things are - frequency of chars.
+    we can list out in alphabetical order
+    ex) cat - a1c1t1
+    ex) tac - a1c1t1
     
-    how can we do faster? counting is always same. 
-    and if we store the varaibles with the combination of character and integer, then it would be gerat .
-Input: strs = ["eat","tea","tan","ate","nat","bat"]
-Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
-
-        ex) bat - a1b1t1
-            nat - a1n1t1
-            tan - a1n1t1
-            
-            how can i make those in char??
-            because only consist of lowecase English letters.
+    algorithm:
+        iterating strs:
+            convert into hashcodeKey
+            save it into hashmap
+        return the hashmap after convert to List<List<String>>
     */
     public List<List<String>> groupAnagrams(String[] strs) {
-        Map<String, List<String>> map = new HashMap<>();
+        HashMap<String, List<String>> hashmap = new HashMap<>();
         
         for(String str: strs){
-            String hashedStr = hashcode(str);
-            
-            if(!map.containsKey(hashedStr)){
-                List<String> newList = new ArrayList<>();
-                newList.add(str);
-                map.put(hashedStr, newList);
-            }
-            else if(map.containsKey(hashedStr)){
-                map.get(hashedStr).add(str);
-            }
+            String hashcodeKey = hash(str);
+            if(!hashmap.containsKey(hashcodeKey))
+                hashmap.put(hashcodeKey, new ArrayList<>());
+            List<String> hashcodeGroup = hashmap.get(hashcodeKey);
+            hashcodeGroup.add(str);
         }
         
-        List<List<String>> returnVal = new ArrayList<>();
-        for(Map.Entry<String, List<String>> entry: map.entrySet()){
-            returnVal.add(entry.getValue());
+        List<List<String>> returnGroup = new ArrayList<>();
+        for(Map.Entry<String, List<String>> entry : hashmap.entrySet()){
+            returnGroup.add(entry.getValue());
         }
-        return returnVal;
+        return returnGroup;
     }
     
-    public static String hashcode(String s){
-        int[] cArr = new int[26];
-
+    public static String hash(String s){
+        int[] charFreq = new int[26];
         for(char c: s.toCharArray()){
-            cArr[c-'a']++;
+            charFreq[c-'a']++;
         }
-
+        
         StringBuilder sb = new StringBuilder();
         for(int i=0; i<26; i++){
-            if(cArr[i]!=0){
-                sb.append((char)'a'+i);
-                sb.append(cArr[i]);
+            if(charFreq[i] !=0){
+                sb.append((char)('a'+i));
+                sb.append(charFreq[i]);
             }
         }
         return sb.toString();
