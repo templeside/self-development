@@ -45,15 +45,12 @@ class Solution {
     public int postOrder(TreeNode root){
         if(root ==null)return 0;
         
-        int left = postOrder(root.left);
-        int right = postOrder(root.right);
+        int left = Math.max(postOrder(root.left),0);
+        int right = Math.max(postOrder(root.right),0);
         
         int currPath = left+right+ root.val;
-        maxSum = Math.max(currPath, maxSum);
-        maxSum = Math.max(maxSum, root.val);
-        maxSum = Math.max(maxSum, left+root.val);
-        maxSum = Math.max(maxSum, right+root.val);
+        maxSum = Math.max(currPath, maxSum);        //
         
-        return Math.max(Math.max(left, right),0)+ root.val;
+        return Math.max(left, right)+ root.val;
     }
 }
