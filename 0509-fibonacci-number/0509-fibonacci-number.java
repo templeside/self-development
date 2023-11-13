@@ -1,35 +1,31 @@
 class Solution {
     /*
-        f(5) = 
-        /  \
-    f(4) +  f(3)
-    /\      /\
-f(3) f(2) f(2)f(1)
+            f(5)
+            /\
+        f(4) f(3)
+        /\      /\
+    f(3)f(2) f(2)f(1)
+    /\    /\
+f(2)f(1) f(1)f(0)
 
-values - prevent overlap, storing.
-    
+hashMap<n, val> 
+
+        f(0) f(1) f(2) f(3) f(4)
+    fib                      ^
+prev                    ^
+prevprev            ^
     */
-    
-    HashMap<Integer,Integer> storedFib;
-    
     public int fib(int n) {
-        //hash map to prevent overlap   //f(n), val
-        storedFib = new HashMap<>();            
-        storedFib.put(0,0);
-        storedFib.put(1,1);
+        if(n<=1)return n;
+        int prevVal = 1;
+        int prevprevVal = 0;
         
-        return fibFunction(n , storedFib);
-    }
-    
-    public int fibFunction(int n, HashMap<Integer, Integer> storedFib){
-        //checker if already stored or not.
-        if(storedFib.containsKey(n)){
-            return storedFib.get(n);
+        for(int currFib= 2; currFib<= n; currFib++){
+            int sum = prevVal + prevprevVal;    // currFibVal.
+            
+            prevprevVal = prevVal;
+            prevVal = sum;
         }
-        
-        //if not found the already stored key,
-        int val = fib(n-1) + fib(n-2);// O(N^2)
-        storedFib.put(n, val);
-        return val;
+        return prevVal;
     }
 }
