@@ -1,14 +1,18 @@
 # Write your MySQL query statement below
-# prices(product_id, start_date, end_date, price, PRIMARY KEY (product_id, start_date, end_date))
-# UnitsSold(product_id, purchase_date, units)
+# Prices
+# | product_id    | int     |
+# | start_date    | date    |
+# | end_date      | date    |
+# | price         | int     |
 
-# average selling price for each product
+# UnitsSold
+# | product_id    | int     |
+# | purchase_date | date    |
+# | units         | int     |
 
-# calculate by average selling price of product = SUM(units*price)/SUM(units)
-SELECT prices.product_id, IFNULL(ROUND(SUM(prices.price* UnitsSold.units) / SUM(UnitsSold.units),2),0) AS average_price
-from prices
-# join 
-LEFT JOIN UnitsSold
-ON prices.product_id = UnitsSold.product_id AND UnitsSold.purchase_date Between start_date and end_date
-# group by each product
-GROUP BY prices.product_id;
+Select p.product_id, IFNULL(Round(sum(p.price * u.units)/ sum(u.units),2),0) AS average_price
+FROM Prices p
+LEFT JOIN UnitsSold u
+on p.product_id = u.product_id 
+    AND p.start_date <= u.purchase_date and u.purchase_date<= p.end_date
+Group BY p.product_id;
