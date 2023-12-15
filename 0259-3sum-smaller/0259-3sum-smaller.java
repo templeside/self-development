@@ -1,25 +1,31 @@
 class Solution {
+    /*
+    -2 0 1 3
+       ^ ^ ^
+    
+    target=4
+    currSUm = -1 
+    */
     public int threeSumSmaller(int[] nums, int target) {
         Arrays.sort(nums);
-        int sum = 0;
-        for (int i = 0; i < nums.length - 2; i++) {
-            sum += twoSumSmaller(nums, i + 1, target - nums[i]);
-        }
-        return sum;
-    }
+        int count = 0;
+        int n = nums.length;
+        
+        for(int i=0; i< n-2; i++){
+            int left  = i+1;
+            int right = n-1;
+            
+            while(left<right){
+                int currSum = nums[i]+nums[left]+nums[right];
 
-    private int twoSumSmaller(int[] nums, int startIndex, int target) {
-        int sum = 0;
-        int left = startIndex;
-        int right = nums.length - 1;
-        while (left < right) {
-            if (nums[left] + nums[right] < target) {
-                sum += right - left;
-                left++;
-            } else {
-                right--;
+                if(currSum< target){
+                    count +=right-left;
+                    left ++;
+                }
+                else
+                    right--;
             }
         }
-        return sum;
+        return count;
     }
 }
