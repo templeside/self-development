@@ -14,38 +14,41 @@
  * }
  */
 class Solution {
-public static int orderIdx; // order index
-public TreeNode buildTree(int[] preorder, int[] inorder) {
-	// <inorderValue, inorderIndex>
-	Map<Integer, Integer> mapping = new HashMap<>();    
-	int n = preorder.length;
-	
-	for(int i=0; i< n; i++){
-		mapping.put(inorder[i], i);
-	}
-	
-	orderIdx = 0;
-	
-	return postDFS(preorder, inorder, 0, n-1, mapping);
-}
+    /*
+    dfs: 
+        nextRootIdx++
+        mid value = preorder[nextRootIdx]에서 가져오고
+        left, right range = inorder에서 mid 가져오고 given left, right검색.
 
-public TreeNode postDFS(int[] preorder, int[] inorder, int left, int right, Map<Integer, Integer> mapping){
-		if(left>right){    //base case - when out of range
-		return null;
-	}
-	
-	int curr = preorder[orderIdx];
-	orderIdx++;
-	TreeNode root = new TreeNode(curr);
-	
-	if(left == right){   // base case - when leaf
-		return root;
-	}
-	
-	int inIndex = mapping.get(curr);  // middle index 찾아 left, right range
-	
-	root.left = postDFS(preorder, inorder, left, inIndex-1, mapping);
-	root.right = postDFS(preorder, inorder, inIndex+1, right, mapping);
-	return root;
-}
+        left = dfs(left, mid-1)
+        right = dfs(mid+1, right)
+
+        return node
+    */
+    public int currRootIdx;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n = preorder.length;
+        //inorder의<value,idx>
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for(int i=0; i<n; i++)
+            inorderMap.put(inorder[i], i);
+        
+        currRootIdx = 0;
+        int left =0, right = n-1;
+        
+        return dfs(left,right, preorder, inorder, inorderMap);
+    }
+    public TreeNode dfs(int left,int right, int[] preorder, int[] inorder, Map<Integer, Integer>inorderMap){
+        if(left> right)return null;
+        
+        int currRootVal = preorder[currRootIdx];// midval
+        currRootIdx++;
+        
+        TreeNode currRoot = new TreeNode(currRootVal);
+        int midIdx = inorderMap.get(currRootVal);
+        
+        currRoot.left = dfs(left,midIdx-1, preorder, inorder, inorderMap);
+        currRoot.right = dfs(midIdx+1,right, preorder, inorder, inorderMap);
+        return currRoot;
+    }
 }
