@@ -2,7 +2,9 @@ class Solution {
     public boolean sequenceReconstruction(int[] nums, List<List<Integer>> sequences) {
         int n = nums.length;
 
-        int[] inDegree = new int[n + 1];
+        int[] inDegree = new int[n + 1];    // #incoming nodes. a->b -{a:0, b:1}
+        
+        //create graph
         List<List<Integer>> graph = new ArrayList<>();
         for(int listSize = 0; listSize <= n; listSize++) {
             graph.add(new ArrayList<>());
@@ -13,7 +15,7 @@ class Solution {
                 int nodeA = seq.get(index - 1);
                 int nodeB = seq.get(index);
                 
-                if(nodeA < 1 || nodeA > n || nodeB < 1 || nodeB > n) return false;
+                // if(nodeA < 1 || nodeA > n || nodeB < 1 || nodeB > n) return false;
                 
                 graph.get(nodeA).add(nodeB);
                 inDegree[nodeB]++;
