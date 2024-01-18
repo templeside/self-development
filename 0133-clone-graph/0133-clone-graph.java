@@ -20,30 +20,38 @@ class Node {
 
 class Solution {
     /*
-    2-4
-    1-3
-    dfs
-    HashMap<prevNode, newNode>
-        if not found:
-            dfs
-        if found:
-            add to adjacencies
+    iterate DFS with oldNode
+    hashMap<oldNode, newNode>
+    visited<oldNode>
+    
+    dfs(){
+        visited.put(oldNode)
+        for(oldNeighbors: neighbors)
+            if(not in hashmap)
+                if(not visited)
+                dfs(oldNeighbors)
+                
+    }
+    
+    return newNode
     */
     public Node cloneGraph(Node node) {
-        Map<Node, Node> newNodes = new HashMap<>();
-        return createNodes(node, newNodes);
-    }
-    public Node createNodes(Node node, Map<Node, Node> newNodes){
         if(node ==null)return null;
-        Node newNode = newNodes.containsKey(node)? newNodes.get(node) : new Node(node.val);
-        newNodes.put(node, newNode);
+        HashMap<Node, Node> map = new HashMap<>();
         
-        for(Node neighbor: node.neighbors){
-            if(!newNodes.containsKey(neighbor))
-                createNodes(neighbor, newNodes);
+        return dfs(node, map);
+    }
+
+    public Node dfs(Node oldNode, HashMap<Node,Node> map){
+        Node newNode = new Node(oldNode.val);
+        map.put(oldNode, newNode);
+        
+        for(Node oldNeighbor: oldNode.neighbors){
+            if(!map.containsKey(oldNeighbor)){
+                dfs(oldNeighbor, map);
+            }
             
-            Node newNeighborNode = newNodes.get(neighbor);
-            newNode.neighbors.add(newNeighborNode);
+            newNode.neighbors.add(map.get(oldNeighbor));
         }
         return newNode;
     }
