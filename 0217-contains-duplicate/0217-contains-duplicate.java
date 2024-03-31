@@ -1,14 +1,10 @@
 class Solution {
-    /*
-    hashset for chcecking twice
-    */
     public boolean containsDuplicate(int[] nums) {
-        HashSet<Integer> set = new HashSet<>();
-        int n= nums.length;
-        for(int i=0; i< n; i++){
-            if(set.contains(nums[i]))
-                return true;
-            set.add(nums[i]);
+        Set<Integer> contains = new HashSet<>();
+        for(int num: nums){
+            if(contains.contains(num))return true;
+            
+            contains.add(num);
         }
         return false;
     }
