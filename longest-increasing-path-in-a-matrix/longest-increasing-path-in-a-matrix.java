@@ -4,13 +4,13 @@ class Solution {
         research what is what.
     */
     public int longestIncreasingPath(int[][] matrix) {
-        int rows = matrix.length;
-        int cols = matrix[0].length;
+        int m = matrix.length;
+        int n = matrix[0].length;
         int longest = 0;
-        int[][] memo = new int[rows][cols];
+        int[][] memo = new int[m][n];
         
-        for(int r=0; r< rows; r++){
-            for(int c=0; c< cols; c++){
+        for(int r=0; r< m; r++){
+            for(int c=0; c< n; c++){
                 longest = Math.max(longest, dfs(r,c, matrix, memo));
             }
         }
@@ -24,8 +24,8 @@ class Solution {
         if(memo[r][c] !=0)
             return memo[r][c];
         
-        int rows = matrix.length;
-        int cols = matrix[0].length;
+        int m = matrix.length;
+        int n = matrix[0].length;
         
         int longestPath = 1;
         
@@ -33,7 +33,7 @@ class Solution {
             int newR = r+rDir[i];
             int newC = c+cDir[i];
             
-            if(newR>=0 && newR< rows && newC>=0 && newC< cols && matrix[r][c] < matrix[newR][newC])
+            if(newR>=0 && newR< m && newC>=0 && newC< n && matrix[r][c] < matrix[newR][newC])
                 longestPath = Math.max(longestPath, (dfs(newR, newC, matrix, memo)+1));
             
             memo[r][c] = longestPath;
