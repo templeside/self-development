@@ -1,35 +1,28 @@
 class Solution {
     /*
-    would have the class that defines the array. 
-    
-    Str{
-        String string
-        int idx
-        next(){
-            if not, return 'X'
-        }
-    }
-    
-    for Str[],
-        check current values.
+    for loop:
+        find prefix.
     */
     public String longestCommonPrefix(String[] strs) {
-        if(strs.length ==0)return "";
-        int shortest = strs[0].length();
-        for(String str: strs){
-            shortest = Math.min(shortest, str.length());
+        String commonPrefix = strs[0];
+        for(int i=1; i< strs.length; i++){
+            commonPrefix = findPrefix(strs[i], commonPrefix);
         }
+        return commonPrefix;
+    }
+    
+    public String findPrefix(String a, String b){
+        String shorter = a.length()< b.length()? a:b;
+        String longer = shorter.equals(a)? b: a;
         
-        int i = 0;
+        StringBuilder sb = new StringBuilder();
         
-        for(i=0; i<shortest; i++){
-            int currChar = strs[0].charAt(i);
-            for(String str: strs){
-                if(currChar != str.charAt(i)){
-                    return strs[0].substring(0,i);
-                }
-            }
+        for(int i=0; i< shorter.length(); i++){
+            if(a.charAt(i) != b.charAt(i))
+                break;
+            
+            sb.append(a.charAt(i));
         }
-        return strs[0].substring(0,i);
+        return sb.toString();
     }
 }
