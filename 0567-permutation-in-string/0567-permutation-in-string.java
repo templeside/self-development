@@ -1,11 +1,11 @@
 class Solution {
     /*
     when increment:
-        update Frequency
+        update map
         update matched(if map.get(key) == 0)
     when decrement: - decrement when window.length() == s2.length()
         true or false
-        update s1Frequency
+        update map
         update matched
         if found permutation, return true
     */
@@ -26,16 +26,10 @@ class Solution {
                     matched ++;
             }
             
-            // System.out.println(map.entrySet());
-            
-            int length = windowRight - windowLeft +1;
-            //decrement when length is same 
-            // System.out.println(s2.substring(windowLeft, windowRight+1));
-            // System.out.println(length+" matched: "+matched+" map size: "+ map.size());
+            int windowLength = windowRight - windowLeft +1;
             
             
-            
-            if(length == s1.length()){
+            if(windowLength == s1.length()){
                 if(matched == map.size())
                     return true;
                 
