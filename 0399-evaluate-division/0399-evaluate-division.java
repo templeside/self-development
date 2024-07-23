@@ -1,67 +1,67 @@
 class Solution {
-    public double[] calcEquation(List<List<String>> equations, double[] values,
-            List<List<String>> queries) {
-        // <vertex, edges>
-        HashMap<String, HashMap<String, Double>> graph = new HashMap<>();
-
-        // Step 1). build the graph from the equations
-        for (int i = 0; i < equations.size(); i++) {
-            List<String> equation = equations.get(i);
-            String dividend = equation.get(0), divisor = equation.get(1);
-            double quotient = values[i]; //몫
-
-            if (!graph.containsKey(dividend))
-                graph.put(dividend, new HashMap<String, Double>());
-            if (!graph.containsKey(divisor))
-                graph.put(divisor, new HashMap<String, Double>());
-
-            graph.get(dividend).put(divisor, quotient);
-            graph.get(divisor).put(dividend, 1 / quotient);
+private  Map<String, Map<String, Double>> makeGraph(List<List<String>> e, double[] values){
+        // build a graph
+        // like a -> b = values[i]
+        // and b -> a  = 1.0 / values[i];
+        Map<String, Map<String, Double>> graph = new HashMap<>();
+        String u, v;
+        
+        for(int i = 0; i < e.size(); i++){
+            u = e.get(i).get(0);
+            v = e.get(i).get(1);
+            
+            graph.putIfAbsent(u, new HashMap<>());
+            graph.get(u).put(v, values[i]);
+            
+            graph.putIfAbsent(v, new HashMap<>());
+            graph.get(v).put(u, 1/values[i]);
+            
         }
-
-        // Step 2). Evaluate each query via bactracking (DFS)
-        // by verifying if there exists a path from dividend to divisor
-        double[] results = new double[queries.size()];
-        for (int i = 0; i < queries.size(); i++) {
-            List<String> query = queries.get(i);
-            String dividend = query.get(0), divisor = query.get(1);
-
-            if (!graph.containsKey(dividend) || !graph.containsKey(divisor))
-                results[i] = -1.0;
-            else if (dividend == divisor)
-                results[i] = 1.0;
-            else {
-                HashSet<String> visited = new HashSet<>();
-                results[i] = backtrackEvaluate(graph, dividend, divisor, 1, visited);
+        return graph;
+    }
+    
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Map<String, Map<String, Double>> graph = makeGraph(equations, values);
+        
+        double []ans = new double[queries.size()];
+        
+        // check for every Querie
+        // store it in ans array;
+        for(int i = 0; i < queries.size(); i++){
+            ans[i] = dfs(queries.get(i).get(0) , queries.get(i).get(1) , new HashSet<>(), graph);
+        }
+        return ans;
+    }
+    
+    public double dfs(String src, String dest, Set<String> visited, Map<String, Map<String, Double>> graph){
+        // check the terminated Case
+        // if string is not present in graph return -1.0;
+        // like [a, e] or [x, x] :)
+        if(graph.containsKey(src ) == false)
+            return -1.0;
+        
+        // simply say check src and dest are equal :) then return dest 
+        // store it in weight varaible;
+        //case like [a,a] also handle
+        if(graph.get(src).containsKey(dest)){
+            return graph.get(src).get(dest);
+        }
+        
+        visited.add(src);
+        
+        for(Map.Entry<String, Double> nbr : graph.get(src).entrySet()){
+            if(visited.contains(nbr.getKey()) == false){
+                double weight = dfs(nbr.getKey(), dest, visited, graph);
+                
+                // if weight is not -1.0(terminate case)
+                // then mutliply it 
+                // like in querie   a -> c => 2 * 3 = 6
+                if(weight != -1.0){
+                    return nbr.getValue() * weight;
+                }
             }
         }
-
-        return results;
+        return -1.0;
     }
 
-    private double backtrackEvaluate(HashMap<String, HashMap<String, Double>> graph, String currNode, String targetNode, double accProduct, Set<String> visited) {
-
-        // mark the visit
-        visited.add(currNode);
-        double ret = -1.0;
-
-        Map<String, Double> neighbors = graph.get(currNode);
-        if (neighbors.containsKey(targetNode))
-            ret = accProduct * neighbors.get(targetNode);
-        else {
-            for (Map.Entry<String, Double> pair : neighbors.entrySet()) {
-                String nextNode = pair.getKey();
-                if (visited.contains(nextNode))
-                    continue;
-                ret = backtrackEvaluate(graph, nextNode, targetNode,
-                        accProduct * pair.getValue(), visited);
-                if (ret != -1.0)
-                    break;
-            }
-        }
-
-        // unmark the visit, for the next backtracking
-        visited.remove(currNode);
-        return ret;
-    }
 }
