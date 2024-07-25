@@ -1,94 +1,53 @@
-class TrieNode {
-    HashMap<Character, TrieNode> children = new HashMap<Character, TrieNode>();
-    String word = null;
-
-    public TrieNode() {}
-}
-
 class Solution {
-    /*
-    save the trie with words.
-    
-    i can solve the problem which are valid.
-    keep comparing with the trie structure 
-    
-    do the depth first search with comparing trie and current word.
-    current word should have direction.
-    east, south, north, west
-    [0,1] [1,0], [-1,0] [0,-1]
-    */
-    char[][] _board = null;
-    ArrayList<String> _result = new ArrayList<String>();
-
     public List<String> findWords(char[][] board, String[] words) {
-        // Step 1). Construct the Trie
-        TrieNode root = new TrieNode();
-        for (String word : words) {
-            TrieNode node = root;
-
-            for (Character letter : word.toCharArray()) {
-                if (node.children.containsKey(letter)) {
-                    node = node.children.get(letter);
-                } else {
-                    TrieNode newNode = new TrieNode();
-                    node.children.put(letter, newNode);
-                    node = newNode;
-                }
-            }
-            node.word = word; // store words in Trie
-        }
-
-        this._board = board;
-        // Step 2). Backtracking starting for each cell in the board
-        for (int row = 0; row < board.length; ++row) {
-            for (int col = 0; col < board[row].length; ++col) {
-                if (root.children.containsKey(board[row][col])) {
-                    backtracking(row, col, root);
-                }
+        Trie trie = buildTrie(words);
+        Set<String> res = new HashSet<>();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                dfs(board, trie, res, i, j);
             }
         }
-
-        return this._result;
+        return new ArrayList<>(res);
     }
 
-    private void backtracking(int row, int col, TrieNode parent) {
-        Character letter = this._board[row][col];
-        TrieNode currNode = parent.children.get(letter);
-
-        // check if there is any match
-        if (currNode.word != null) {
-            this._result.add(currNode.word);
-            currNode.word = null;
+    public void dfs(char[][] board, Trie node, Set<String> res, int i, int j) {
+        //base case. out of range, visited, next trie not found
+        if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] == '#' || node.next[board[i][j] - 'a'] == null) {
+            return;
+        }
+        //if found, add to result
+        if (node.next[board[i][j] - 'a'].word != null) {
+            res.add(node.next[board[i][j] - 'a'].word);
         }
 
-        // mark the current letter before the EXPLORATION
-        this._board[row][col] = '#';
+        // Go to next char(dfs)
+        node = node.next[board[i][j] - 'a']; 
+        char c = board[i][j];
+        board[i][j] = '#';
+        dfs(board, node, res, i - 1, j);
+        dfs(board, node, res, i + 1, j);
+        dfs(board, node, res, i, j - 1);
+        dfs(board, node, res, i, j + 1);
+        board[i][j] = c;
+    }   
 
-        // explore neighbor cells in around-clock directions: up, right, down, left
-        int[] rowOffset = { -1, 0, 1, 0 };
-        int[] colOffset = { 0, 1, 0, -1 };
-        for (int i = 0; i < 4; ++i) {
-            int newRow = row + rowOffset[i];
-            int newCol = col + colOffset[i];
-            if (
-                newRow < 0 ||
-                newRow >= this._board.length ||
-                newCol < 0 ||
-                newCol >= this._board[0].length
-            ) {
-                continue;
+    public Trie buildTrie(String[] words) {
+        Trie root = new Trie();
+        for (String w : words) {
+            Trie p = root;
+            for (char c : w.toCharArray()) {
+                if (p.next[c - 'a'] == null) {
+                    p.next[c - 'a'] = new Trie();
+                }
+                p = p.next[c - 'a'];  // will point to curr char
             }
-            if (currNode.children.containsKey(this._board[newRow][newCol])) {
-                backtracking(newRow, newCol, currNode);
-            }
+            p.word = w;
         }
+        return root;
+    }
 
-        // End of EXPLORATION, restore the original letter in the board.
-        this._board[row][col] = letter;
-
-        // Optimization: incrementally remove the leaf nodes
-        if (currNode.children.isEmpty()) {
-            parent.children.remove(letter);
-        }
+    private class Trie {
+        Trie[] next = new Trie[26];
+        String word = null;
     }
 }
