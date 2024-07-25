@@ -1,23 +1,11 @@
 class Solution {
-    /*
-    word square???
-    how???? 
-    "ball",
-    "area",
-    "lead",
-    "lady"
-    
-    forming by reorderding the words array.
-    isWordSquare
-    
-    1. backtrack the words
-        //base case n== currWords.size()
-        2. if it is available, 
-            add to the wordsquare is it used or not with hashset<String>
-        recursion with all combinations of words
-    3. return with the value.
-        
-    */
+/*
+We build upon the backtracking algorithm that we listed above, and tweak two parts.
+
+In the first part, we add a new function buildPrefixHashTable(words) to build a hashtable out of the input words.
+
+Then in the second part, in the function getWordsWithPrefix() we simply query the hashtable to retrieve all the words that possess the given prefix.
+*/
     
     int N = 0;
     String[] words = null;
