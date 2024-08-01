@@ -1,53 +1,46 @@
 class Solution {
     /*
-    we are merging the intervals as much as we couuld.
-    ordered by start.
+    use priority queue to sort the starting date of interval.
+    then, compare the initial date and if found the 
     
-    1. adding all the intervals - LinkedList
-    2. sort the intervals - Arrays.sort
-    3. merge the sorted intervals if overlapped
-        [[1,3],[2,5], [6,9]]
-iterator   ^
-checking with the previous interval
-if prev.end >= curr.start 
-    merge: prev.end = curr.end;
-else
-    add new interval
+    [[1,3],[6,9]]
+      ^
     
+    comparator is starting interval
+    
+    if starting newInterval is bigger than end of the interval 
+        merge:
+            compare starting interval
+            compare ending interval
+    else
+        continue
+    new interval - [2,5]
     */
     public int[][] insert(int[][] intervals, int[] newInterval) {
-        PriorityQueue<int[]> newQueue = new PriorityQueue<>((a,b)-> a[0]-b[0]);
+        Queue<int[]> queue =new PriorityQueue<>((a,b)-> a[0]-b[0]);
+
         for(int[] interval: intervals){
-            newQueue.add(interval);
+            queue.add(interval);
         }
+        queue.add(newInterval);
         
-        newQueue.add(newInterval);
+        ArrayList<int[]> intervalList = new ArrayList<>();
+        int[] prev = null;
         
-        int[] prev=  null;
-        LinkedList<int[]> newInterv = new LinkedList<>();
-        
-        
-        while(!newQueue.isEmpty()){
-            int[] currInterval = newQueue.poll();
+        while(!queue.isEmpty()){
+            int[] curr = queue.poll();
             
-            if(prev == null || prev[1] < currInterval[0]){      // no interval
-                newInterv.add(currInterval);
-                prev = currInterval;
-            }else{                                              // interval
-                newInterv.get(newInterv.size()-1)[1] = Math.max(currInterval[1], prev[1]);
-                
-            }
+            if(prev == null || prev[1]< curr[0]){   // no connection, interval
+                intervalList.add(curr);
+                prev = curr;    
+            }else   // have interval{
+                intervalList.get(intervalList.size()-1)[1] = Math.max(curr[1], prev[1]);
         }
         
-        // for(int i=0; i<newInterv.size();i++){
-        //     System.out.println(newInterv.get(i)[0]+" "+newInterv.get(i)[1]);
-        // }
-        
-        int[][] returnInterval = new int[newInterv.size()][2];
-        for(int i=0; i< newInterv.size(); i++){
-            returnInterval[i] = newInterv.get(i);
+        int[][] returnVal = new int[intervalList.size()][2];
+        for(int i=0; i< returnVal.length; i++){
+            returnVal[i] = intervalList.get(i);
         }
-        
-        return returnInterval;
+        return returnVal;
     }
 }
