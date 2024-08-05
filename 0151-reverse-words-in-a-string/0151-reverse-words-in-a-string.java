@@ -15,9 +15,6 @@ class Solution {
     */
     public String reverseWords(String s) {
         s = s.trim();
-        int curr = 0;
-        int tail = 0;
-        
         String[] splitted = s.split(" ");
         
         StringBuilder sb = new StringBuilder();
