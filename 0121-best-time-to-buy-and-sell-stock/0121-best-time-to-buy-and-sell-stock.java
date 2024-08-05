@@ -1,24 +1,24 @@
 class Solution {
     /*
-    [7,1,5,3,6,4]
-buy  ^
-sell ^
-
-max 7
-min 7
-profit 0
-max date, min date update while reaching end
-why this is dynamic programming?
+    two for loops
+    one is for sell
+        one is for buy
+    time complexity of two.
+    
+    better solution...
+    what if keeping the min selling stock?
+    
+    for(iteration)
+        keep min
+        update profit
     */
     public int maxProfit(int[] prices) {
-        int max = prices[0];
-        int min = prices[0];
-        int maxProfit = max-min;
+        int minBuy = prices[0];
+        int maxProfit = 0;
         
-        for(int i=0; i< prices.length; i++){
-            min = Math.min(prices[i], min);
-            int diff = prices[i]-min;
-            maxProfit = Math.max(maxProfit, diff);
+        for(int sell = 1;sell< prices.length; sell++){
+            minBuy = Math.min(minBuy, prices[sell]);
+            maxProfit = Math.max(maxProfit, prices[sell]-minBuy);
         }
         return maxProfit;
     }
