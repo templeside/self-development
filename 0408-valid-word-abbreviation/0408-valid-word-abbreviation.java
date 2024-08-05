@@ -1,29 +1,31 @@
 class Solution {
     public boolean validWordAbbreviation(String word, String abbr) {
-        int i = 0, j=0;
-        int n = word.length(), m = abbr.length();
-
-        while(i < m && j < n) {
-            if(!Character.isDigit(abbr.charAt(i))) {
-                if(word.charAt(j) == abbr.charAt(i)) {
-                    i++; j++;
-                } else return false;
+        int wIdx=0;
+        int aIdx=0;
+        int aDigit=0;
+        
+        while(wIdx <word.length() && aIdx< abbr.length()){
+            // char aChar = abbr.charAt(aIdx);
+            while(aIdx<abbr.length() && Character.isDigit(abbr.charAt(aIdx))){
+                if(aDigit == 0 &&abbr.charAt(aIdx)=='0')
+                    return false;
+                aDigit = aDigit*10 + (int)(abbr.charAt(aIdx)-'0');
+                aIdx++;
             }
-            int start = i;
-            while(i<m && Character.isDigit(abbr.charAt(i))) {
-                if(abbr.charAt(i) == '0' && start == i){
+
+            if(aDigit>0){ 
+                while(aDigit>0){
+                    aDigit--;
+                    wIdx++;
+                }
+            }else{
+                if(word.charAt(wIdx)!=abbr.charAt(aIdx)){
                     return false;
                 }
-                i++;
-            }
-            if(i != start) {
-                int number = Integer.parseInt(abbr.substring(start, i));
-                while(number-- > 0) {
-                    j++;
-                }
+                wIdx++;
+                aIdx++;
             }
         }
-
-        return i == m && j == n;
+        return wIdx == word.length() && aIdx == abbr.length() && aDigit==0;
     }
 }
