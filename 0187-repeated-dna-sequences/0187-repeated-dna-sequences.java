@@ -1,29 +1,28 @@
 class Solution {
+    /*
+    having hashset and sliding window with fixed size, check is it visited.
+    */
     public List<String> findRepeatedDnaSequences(String s) {
-        
-        List<String> result = new ArrayList<>();
-        int startIdx=0, endIdx = 0;
-        int k=10;
-        Map<String,Integer> sequences = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
+        int windowStart=0;
+        int windowEnd = 0;
         StringBuilder sb = new StringBuilder();
         
-        if(k>= s.length())return List.of();
-        
-        for(startIdx=0; startIdx< k-1; startIdx++){
-            sb.append(s.charAt(startIdx));
+        for(; windowStart< s.length(); windowStart++){
+            char currChar = s.charAt(windowStart);
+            sb.append(currChar);
+            
+            if(sb.length()== 10){
+                map.put(sb.toString(), map.getOrDefault(sb.toString(), 0)+1);
+                sb.deleteCharAt(0);
+            }
         }
         
-        for(; startIdx<s.length(); startIdx++){
-            sb.append(s.charAt(startIdx));
-            
-            String currStr = sb.toString();
-            
-            sequences.put(currStr, sequences.getOrDefault(currStr, 0)+1);
-            if(sequences.get(currStr) == 2)
-                result.add(currStr);
-            
-            sb.deleteCharAt(0);
+        List<String> returnVal = new ArrayList();
+        for(Map.Entry<String, Integer> entry: map.entrySet()){
+            if(entry.getValue()>=2)
+                returnVal.add(entry.getKey());
         }
-        return result;
+        return returnVal;
     }
 }
