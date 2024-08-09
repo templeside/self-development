@@ -1,53 +1,46 @@
 class Solution {
     /*
-    backtrack
-    base case - when reaches the end stack
-        add to the returnVal
+    having the parentheses, generate the values
+    set with values
+    backtrack.
+        base case - reaches 2*n length or visited
+        when to close the parentheses
     
-    by iterating the datasource, 
-        if already found in saved then don't backtrack
-        add parenthesis and backtrack
-        
-        len = 2, .insert 0, 1, 2
-        for(int i=0; i<= n; i++)
-     (  )
-    ^  ^ ^
-    ( ) ( ),   ( (  ) )
-   ^ ^ ^ ^ ^  ^ ^  ^ ^ ^
-   ()()(), (())(), ()(()), | (()()), ((()))
+        (
+    ()          (( 
+()(   ())   (((     (()
+
+open close
+backtrack(open, close, currString, n, returnVal)
     */
     public List<String> generateParenthesis(int n) {
-        Set<String> memo= new HashSet<>();
-        List<String> returnVal = new ArrayList();
-        StringBuilder sb = new StringBuilder();
-        
-        backtrack(n, sb, returnVal, memo);
+        int openCount=0;
+        int closeCount=0;
+        StringBuilder currString = new StringBuilder();
+        List<String> returnVal = new ArrayList<>();
+        backtrack(openCount, closeCount, currString, returnVal, n);
         return returnVal;
     }
-    public void backtrack(int n, StringBuilder sb, List<String> returnVal, Set<String> memo){
-    //     base case - when reaches the end stack
-        if(n ==0){
-    //         add to the returnVal
-            if(!memo.contains(sb.toString())){
-                returnVal.add(sb.toString());
-                memo.add(sb.toString());
-            }
+    
+    public void backtrack(int openCount, int closeCount,StringBuilder currString,List<String> returnVal,int n){
+        //base case - openCount == closeCount == n
+        if(openCount == n && closeCount == n){
+            returnVal.add(currString.toString());
             return;
         }
-        // by iterating the datasource, 
-        for(int i=0; i<= sb.length(); i++){
-            if(sb.length() ==0 && i ==1)// when ""
-                continue;
-        // add parenthesis and backtrack
-            sb.insert(i, "()");
-        // if already found in saved then don't backtrack
-            if(!memo.contains(sb.toString())){
-                
-                backtrack(n-1, sb, returnVal, memo);
-                memo.add(sb.toString());
-            }
-            sb.deleteCharAt(i);
-            sb.deleteCharAt(i);
+        
+        //adding open clause
+        if(openCount< n){
+            currString.append("(");
+            backtrack(openCount+1, closeCount, currString, returnVal, n);
+            currString.deleteCharAt(currString.length()-1);
+        }
+        
+        //adding close clause
+        if(openCount> closeCount){
+            currString.append(")");
+            backtrack(openCount, closeCount+1, currString, returnVal, n);
+            currString.deleteCharAt(currString.length()-1);
         }
     }
 }
