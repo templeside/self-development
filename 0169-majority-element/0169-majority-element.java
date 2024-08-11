@@ -1,23 +1,15 @@
 class Solution {
     /*
-    [3,3,4]
-    
+    count with hash table 
     
     */
     public int majorityElement(int[] nums) {
-        int count = 0;
-        int majority = nums[0];
-        
-        for(int num : nums){
-            majority = count ==0? num: majority;
-            
-            if(majority == num)
-                count++;
-            else
-                count--;
-            
-            
+        Map<Integer, Integer> map =new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num, 0)+1);
+            if(map.get(num)> nums.length/2)
+                return num;
         }
-        return majority;
+        return -1;
     }
 }
