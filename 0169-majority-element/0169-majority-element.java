@@ -1,15 +1,20 @@
 class Solution {
     /*
-    count with hash table 
-    
+    3,3,4
+num     ^ 
+element 3
+count 2
     */
     public int majorityElement(int[] nums) {
-        Map<Integer, Integer> map =new HashMap<>();
+        Integer element = null;
+        int count = 0;
+        
         for(int num: nums){
-            map.put(num, map.getOrDefault(num, 0)+1);
-            if(map.get(num)> nums.length/2)
-                return num;
+            if(count == 0)
+                element = num;
+            
+            count = element == num? count+1: count-1;
         }
-        return -1;
+        return element;
     }
 }
