@@ -22,11 +22,8 @@ iterator     ^
             int curr = nums[iterator];
             
             if(curr>=1 && curr<= n && curr != nums[curr-1]){
-            // if(curr>=1 && curr<= n && (curr == n && iterator !=0)){
-                // if((curr == n && iterator !=0) ||curr != nums[curr]){
-                    swap(curr-1, iterator, nums);
-                    continue;
-                // }
+                swap(curr-1, iterator, nums);
+                continue;
             }
             iterator ++;
         }
