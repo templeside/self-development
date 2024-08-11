@@ -1,52 +1,45 @@
 class Solution {
     /*
-    what is present in nums?
-    oh okay, so giving the smallest possible. 
-    track the numbers to make it cyclic sort.
+    if in range 1<= curr <= nums
+    sort out
     
-    positive integers - 0,1,2,3,4
+    from starting from 1, check has missed or not
     
-Input: nums = [3,4,-1,1]
-sorted -      [0,1,-1,1]
-                2
-sort the integer
-    do the swapping the elements for the upcoming vals.
-    do until reaches the end
+    return val is n or n+1
     
-    by iterating find the smallest number
-Output: 2
-nums[curr] 0 1 2 
-curr      [1,2,0]
- ^
- curr = 1
- 
- 
-curr        0 1 2
-nums[curr]  1 2 0
-nums[curr] = curr+1
-
-nums[curr-1] = curr
-*/
+            [3,4,-1,1]
+iterator     ^
+    
+         0       1
+    arr[curr-1] = curr
+    arr[curr] = curr+1
+    */
     public int firstMissingPositive(int[] nums) {
+        int iterator = 0;
         int n = nums.length;
         
-        // do the swapping the elements for the upcoming vals.
-        for(int i=0; i< n; i++){
-            int curr = nums[i];
-            // do until reaches the end
-            while(curr<= n && curr>0 && curr != nums[curr-1]){
-                int temp = nums[curr-1];
-                nums[curr-1] = curr;
-                curr =temp;
+        while(iterator<n){
+            int curr = nums[iterator];
+            
+            if(curr>=1 && curr<= n && curr != nums[curr-1]){
+            // if(curr>=1 && curr<= n && (curr == n && iterator !=0)){
+                // if((curr == n && iterator !=0) ||curr != nums[curr]){
+                    swap(curr-1, iterator, nums);
+                    continue;
+                // }
             }
+            iterator ++;
         }
         
-        // boolean hasN = false;
-        for(int i=0; i<n; i++){    
-            if(nums[i] != i+1)
+        for(int i=0; i<n; i++){
+            if(nums[i] !=i+1)
                 return i+1;
         }
-        
         return n+1;
+    }
+    public void swap(int i, int j, int[] nums){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }
