@@ -1,34 +1,29 @@
 class Solution {
     /*
-    to find duplicates or not.
-    duplicates can be palindrome.
-    additionally, can have one odd character.
+    abccccdd
     
-    by iterating, frequency check
-    
-    frequency<character, frequency> map
-    for(entry: map.entrySet()){
-        if even, add.
-        if odd, update isOdd.
-    }
-    return even+isOdd.
+    a -1
+    b -1
+    c-4
+    d-2
     */
     public int longestPalindrome(String s) {
-        Map<Character, Integer> map = new HashMap<>();
+        int evenCount =0;
+        int oddCount = 0;
+        boolean containsOdd = false;
+        Map<Character, Integer> map=new HashMap<>();
         for(char c: s.toCharArray()){
             map.put(c, map.getOrDefault(c, 0)+1);
         }
         
-        int palindrome = 0;
-        boolean isOdd = false;
-        for(Map.Entry<Character, Integer> entry : map.entrySet()){
-            if(entry.getValue() %2 ==0)
-                palindrome += entry.getValue();
-            else{
-                palindrome += entry.getValue()-1;
-                isOdd = true;
+        for(Map.Entry<Character, Integer> entry: map.entrySet()){
+            if(entry.getValue() %2==0){
+                evenCount = evenCount + entry.getValue();
+            }else{
+                oddCount+=entry.getValue()-1;
+                containsOdd = true;
             }
         }
-        return isOdd? palindrome+1: palindrome;
+        return evenCount + oddCount + (containsOdd? 1:0);
     }
 }
