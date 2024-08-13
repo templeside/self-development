@@ -17,13 +17,6 @@ class Solution {
             rightPrefix[n-1-i] = rightPrefix[n-i] * nums[n-1-i];
         }
         
-        for(int i: leftPrefix){
-            System.out.print(" "+i);
-        }
-        System.out.println();
-        for(int i: rightPrefix){
-            System.out.print(" "+i);
-        }
         
         int[] returnVal = new int[n];
         
