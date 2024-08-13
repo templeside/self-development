@@ -1,50 +1,37 @@
 class Solution {
     /*
-    prevent duplication, make it in order.
-    to remove duplicates, use hashSet or do the specific algorithm
-    
-    having three indicex, keep track of where I am: left, right, middle.
-    
-    having nums[i]+nums[j]+nums[k] = 0.
-    target = -nums[i];
-    find the two sum. except the duplicates.
-    
+    [-4,-1,-1,0,1,2]
+i        ^
+j             ^
+k               ^
+[-1,-1,2] [ ]
     */
     public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> returnVal = new LinkedList<>();
         Arrays.sort(nums);
-        int n =nums.length;
+        int n = nums.length;
+        List<List<Integer>> returnVal = new ArrayList();
+        Set<String> visited = new HashSet<>();
         
-        int i=0;
-        
-        while(i< n){
-            if(i !=0 && nums[i] == nums[i-1]){
-                i++;
-                continue;
-            }
-                
-            
-            int target = -nums[i];
-            int left=i+1;;
-            int right = n-1;            
-            
-            while(left<right){
-                int sum = nums[left]+ nums[right];
-                if(target == sum){
-                    returnVal.add(List.of(nums[i], nums[left], nums[right]));
+        for(int i=0; i<n-2; i++){
+            int j = i+1; 
+            int k = n-1;
+            while(j<k){
+                int sum = nums[i]+nums[j]+nums[k];
+                if(sum ==0){
+                    String val = nums[i]+","+nums[j]+","+nums[k];
+                    if(!visited.contains(val)){
+                        returnVal.add(List.of(nums[i], nums[j], nums[k]));
+                        visited.add(val);
+                    }
+                    j++;
+                    k--;
+                }
                     
-                    while(left<right && nums[left] == nums[left+1]) left++;
-                    while(left<right && nums[right] == nums[right-1]) right--;
-                    left++;
-                    right--;
-                }
-                else if(sum< target){ // 3, 5, then shift the right index
-                    left++;
-                }else{
-                    right--;
-                }
+                else if(sum> 0)
+                    k--;
+                else
+                    j++;
             }
-            i++;
         }
         return returnVal;
     }
