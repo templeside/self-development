@@ -1,46 +1,45 @@
 class Solution {
     /*
-    when increment:
-        update map
-        update matched(if map.get(key) == 0)
-    when decrement: - decrement when window.length() == s2.length()
-        true or false
-        update map
-        update matched
-        if found permutation, return true
+    should be contiguous string.
+    so we can use sliding window for efficient algorithm
+    
+    increment - windowStart
+        update frequency
+    decrement - when window size == s1.length() 
+        update frequency matched or not
+        decrement
+        update matcehd
     */
     public boolean checkInclusion(String s1, String s2) {
         Map<Character, Integer> map = new HashMap<>();
+        int windowStart=0;
+        int windowTail = 0;
+        int matched = 0;
+        
         for(char c: s1.toCharArray()){
             map.put(c, map.getOrDefault(c, 0)+1);
         }
         
-        int windowLeft = 0;
-        int matched = 0;
-        
-        for(int windowRight=0; windowRight< s2.length(); windowRight++){
-            char rightChar = s2.charAt(windowRight);
-            if(map.containsKey(rightChar)){
-                map.put(rightChar, map.get(rightChar)-1);
-                if(map.get(rightChar)== 0)
-                    matched ++;
+        for(; windowStart< s2.length(); windowStart++){
+            char curr = s2.charAt(windowStart);
+            if(map.containsKey(curr)){
+                map.put(curr, map.getOrDefault(curr, 0)-1);
+                if(map.get(curr)== 0)
+                matched ++;
             }
+
             
-            int windowLength = windowRight - windowLeft +1;
-            
-            
-            if(windowLength == s1.length()){
+            while(windowStart- windowTail+1 >= s1.length()){
                 if(matched == map.size())
                     return true;
-                
-                char leftChar = s2.charAt(windowLeft);
-                if(map.containsKey(leftChar)){
-                    if(map.get(leftChar)==0)
+
+                char tailCurr = s2.charAt(windowTail);
+                if(map.containsKey(tailCurr)){
+                    if(map.get(tailCurr)==0)
                         matched --;
-                    map.put(leftChar, map.get(leftChar)+1);
-                    
+                    map.put(tailCurr, map.get(tailCurr)+1);
                 }
-                windowLeft++;
+                windowTail ++;
             }
         }
         return false;
