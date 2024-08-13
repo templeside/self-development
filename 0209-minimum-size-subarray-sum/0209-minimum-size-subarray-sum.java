@@ -1,18 +1,29 @@
 class Solution {
+    /*
+    increment: 
+        update sum
+    
+    decrement: when sum>= target
+        update windowSize
+        decrement sum
+        shift windowTail
+    */
     public int minSubArrayLen(int target, int[] nums) {
-        int currSum = 0;
-        int minSize = nums.length+1;
-        
+        int sum = 0;
+        int min = nums.length+1;
+        int windowStart=0;
         int windowTail = 0;
-        for(int windowStart=0; windowStart< nums.length; windowStart ++){
-            currSum += nums[windowStart];
+        
+        for(; windowStart< nums.length; windowStart++){
+            sum += nums[windowStart];
             
-            while(currSum>= target){
-                minSize = Math.min(minSize, windowStart-windowTail+1);
-                currSum -= nums[windowTail];
-                windowTail++;
+            while(sum>= target){
+                min = Math.min(windowStart-windowTail+1, min);
+                sum -= nums[windowTail];
+                windowTail ++;
             }
         }
-        return minSize == nums.length+1? 0 : minSize;
+        
+        return min ==nums.length+1? 0: min;
     }
 }
