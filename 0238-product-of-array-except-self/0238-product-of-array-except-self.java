@@ -1,32 +1,39 @@
 class Solution {
     /*
-    nums = [1,2,3,4]
-    left = [1,1,2,6]
-    right= [24,12,4,1]
-    
-    I would have two array which is the product of left side & right side
-    left = product(all the left side)
-    right = product(all the right side)
+    two prefix sum
+    leftPrefix
+    rightPrefix
     
     */
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
-        int[] left = new int[n];
-        int[] right = new int[n];
+        int[] leftPrefix = new int[n];
+        int[] rightPrefix = new int[n];
         
-        left[0]=1;
-        for(int i=1; i< n; i++){
-            left[i] = left[i-1] * nums[i-1];
+        leftPrefix[0] = nums[0];
+        rightPrefix[n-1] = nums[n-1];
+        for(int i=1; i<n; i++){
+            leftPrefix[i] = leftPrefix[i-1] * nums[i];
+            rightPrefix[n-1-i] = rightPrefix[n-i] * nums[n-1-i];
         }
         
-        right[n-1] = 1;
-        for(int i=n-2; i>=0; i--){
-            right[i] = right[i+1]*nums[i+1];
+        for(int i: leftPrefix){
+            System.out.print(" "+i);
+        }
+        System.out.println();
+        for(int i: rightPrefix){
+            System.out.print(" "+i);
         }
         
-        for(int i=0; i< n; i++){
-            nums[i] = left[i]*right[i];
+        int[] returnVal = new int[n];
+        
+        returnVal[0]=rightPrefix[1];
+        returnVal[n-1] = leftPrefix[n-2];
+        for(int i=1; i<n-1; i++){
+            int left = leftPrefix[i-1];
+            int right = rightPrefix[i+1];
+            returnVal[i] = left*right;
         }
-        return nums;
+        return returnVal;
     }
 }
