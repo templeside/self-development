@@ -6,9 +6,14 @@ class Solution {
     
     if not possible, return -1
     return min time to visit all Nodes
+    
+    main structures:
+        graph - HashMap<source, Map<target, weight>>
+        heap - PriorityQueue<weight, targetNode>
+        visited - HashSet<Node>
     */
     public int networkDelayTime(int[][] times, int N, int K) {
-        //  <source, <target, weight>>  source -> target
+        //  <source, Map<target, weight>>  source -> target
         Map<Integer, Map<Integer,Integer>> adjMap = new HashMap<>();
         for(int[] time : times){    //times - u(source), v(target), w(weight)
             adjMap.putIfAbsent(time[0], new HashMap<>());
@@ -35,8 +40,8 @@ class Solution {
             res = currDelayTime;
             if(adjMap.containsKey(currNode)){
                 for(int next : adjMap.get(currNode).keySet()){
-                    int newDelayTime = currDelayTime + adjMap.get(currNode).get(next);
-                    pq.add(new int[]{newDelayTime, next});
+                    int nextWeight = currDelayTime + adjMap.get(currNode).get(next);
+                    pq.add(new int[]{nextWeight, next});
                 }
             }
         }
