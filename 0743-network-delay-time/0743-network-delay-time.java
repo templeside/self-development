@@ -1,50 +1,66 @@
 class Solution {
     /*
-    times - u(source), v(target), w(weight)
-    N - number of Nodes
-    K- start Node
+    generate graph<source, target, weight>
+    generate heap<weight, target>
+    generate visited
     
-    if not possible, return -1
-    return min time to visit all Nodes
+    add heap(0, k)
+    while(!heap.isEmpty()){
+        if visited:
+            continue
+        add visited
+        for(adjacnecies):
+            add adjacencies to heap
+    }
     
-    main structures:
-        graph - HashMap<source, Map<target, weight>>
-        heap - PriorityQueue<weight, targetNode>
-        visited - HashSet<Node>
+    return visited == n? return total delay time: -1
+    
+    
     */
-    public int networkDelayTime(int[][] times, int N, int K) {
-        //  <source, Map<target, weight>>  source -> target
-        Map<Integer, Map<Integer,Integer>> adjMap = new HashMap<>();
-        for(int[] time : times){    //times - u(source), v(target), w(weight)
-            adjMap.putIfAbsent(time[0], new HashMap<>());
-            adjMap.get(time[0]).put(time[1], time[2]);
+    public int networkDelayTime(int[][] times, int n, int k) {
+//         generate graph<source, target, weight>
+        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+        
+        for(int[] time: times){
+            int source = time[0];   //source -> target
+            int target = time[1];
+            int weight = time[2];
+            Map<Integer,Integer> adjList = map.getOrDefault(source, new HashMap<>());
+            adjList.put(target, weight);
+            map.put(source, adjList);
         }
         
-        //<weight, targetNode>
-        Queue<int[]> pq = new PriorityQueue<>((a,b) -> (a[0] - b[0]));
-        
-        pq.add(new int[]{0, K});
-        
+//         generate heap<<target, weight>
+        Queue<int[]> pq = new PriorityQueue<>((a,b)-> a[1]-b[1]);
+//         generate visited
         Set<Integer> visited = new HashSet<>();
-        int res = 0;
+
+        pq.add(new int[]{k,0});
+        int returnVal = 0;
         
         while(!pq.isEmpty()){
-            int[] cur = pq.remove();
-            int currNode = cur[1];
-            int currDelayTime = cur[0];
-            
+            int[] curr = pq.poll();
+            int currNode = curr[0];
+            int currWeight = curr[1];
+//             if visited:
+//                 continue
             if(visited.contains(currNode))
                 continue;
+//             add visited
             visited.add(currNode);
+//             for(adjacnecies):
+            returnVal = currWeight;
 
-            res = currDelayTime;
-            if(adjMap.containsKey(currNode)){
-                for(int next : adjMap.get(currNode).keySet()){
-                    int nextWeight = currDelayTime + adjMap.get(currNode).get(next);
-                    pq.add(new int[]{nextWeight, next});
+            if(map.containsKey(currNode)){
+                for(Map.Entry<Integer, Integer> adj: map.get(currNode).entrySet()){
+                    int newNode = adj.getKey();
+                    int newWeight = currWeight +adj.getValue();
+    //                 add adjacencies to heap
+                    pq.add(new int[]{newNode, newWeight});
                 }
             }
         }
-        return visited.size() == N ? res : -1;
+
+        return visited.size() == n? returnVal: -1;
     }
 }
