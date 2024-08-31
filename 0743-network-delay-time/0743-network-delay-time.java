@@ -9,10 +9,10 @@ class Solution {
     */
     public int networkDelayTime(int[][] times, int N, int K) {
         //  <source, <target, weight>>  source -> target
-        Map<Integer, Map<Integer,Integer>> map = new HashMap<>();
+        Map<Integer, Map<Integer,Integer>> adjMap = new HashMap<>();
         for(int[] time : times){
-            map.putIfAbsent(time[0], new HashMap<>());
-            map.get(time[0]).put(time[1], time[2]);
+            adjMap.putIfAbsent(time[0], new HashMap<>());
+            adjMap.get(time[0]).put(time[1], time[2]);
         }
         
         //<weight, targetNode>
@@ -26,15 +26,16 @@ class Solution {
         while(!pq.isEmpty()){
             int[] cur = pq.remove();
             int curNode = cur[1];
-            int curDist = cur[0];
+            int currDelayTime = cur[0];
             if(visited[curNode]) 
                 continue;
             visited[curNode] = true;
-            res = curDist;
+            res = currDelayTime;
             N--;
-            if(map.containsKey(curNode)){
-                for(int next : map.get(curNode).keySet()){
-                    pq.add(new int[]{curDist + map.get(curNode).get(next), next});
+            if(adjMap.containsKey(curNode)){
+                for(int next : adjMap.get(curNode).keySet()){
+                    int newDelayTime = currDelayTime + adjMap.get(curNode).get(next);
+                    pq.add(new int[]{newDelayTime, next});
                 }
             }
         }
