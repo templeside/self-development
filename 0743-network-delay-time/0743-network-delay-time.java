@@ -10,7 +10,7 @@ class Solution {
     public int networkDelayTime(int[][] times, int N, int K) {
         //  <source, <target, weight>>  source -> target
         Map<Integer, Map<Integer,Integer>> adjMap = new HashMap<>();
-        for(int[] time : times){
+        for(int[] time : times){    //times - u(source), v(target), w(weight)
             adjMap.putIfAbsent(time[0], new HashMap<>());
             adjMap.get(time[0]).put(time[1], time[2]);
         }
@@ -20,25 +20,26 @@ class Solution {
         
         pq.add(new int[]{0, K});
         
-        boolean[] visited = new boolean[N+1];
+        Set<Integer> visited = new HashSet<>();
         int res = 0;
         
         while(!pq.isEmpty()){
             int[] cur = pq.remove();
-            int curNode = cur[1];
+            int currNode = cur[1];
             int currDelayTime = cur[0];
-            if(visited[curNode]) 
+            
+            if(visited.contains(currNode))
                 continue;
-            visited[curNode] = true;
+            visited.add(currNode);
+
             res = currDelayTime;
-            N--;
-            if(adjMap.containsKey(curNode)){
-                for(int next : adjMap.get(curNode).keySet()){
-                    int newDelayTime = currDelayTime + adjMap.get(curNode).get(next);
+            if(adjMap.containsKey(currNode)){
+                for(int next : adjMap.get(currNode).keySet()){
+                    int newDelayTime = currDelayTime + adjMap.get(currNode).get(next);
                     pq.add(new int[]{newDelayTime, next});
                 }
             }
         }
-        return N == 0 ? res : -1;
+        return visited.size() == N ? res : -1;
     }
 }
