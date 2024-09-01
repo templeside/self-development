@@ -19,9 +19,8 @@ class Trie {
             return;
         TrieNode node = head;
         for(char ch : word.toCharArray()) {
-            if(!node.charToNode.containsKey(ch)){
+            if(!node.charToNode.containsKey(ch))
                 node.charToNode.put(ch, new TrieNode());
-            }
             node = node.charToNode.get(ch);
         }
         node.isEnd = true;
@@ -33,11 +32,9 @@ class Trie {
             return false;
         TrieNode node = head;
         for(char ch : word.toCharArray()) {
-            if(!node.charToNode.containsKey(ch)){
+            if(!node.charToNode.containsKey(ch))
                 return false;
-            } 
             node = node.charToNode.get(ch);
-            
         }
         return node.isEnd;
         
@@ -49,9 +46,8 @@ class Trie {
             return false;
         TrieNode node = head;
         for(char ch : prefix.toCharArray()) {
-            if(!node.charToNode.containsKey(ch)){
+            if(!node.charToNode.containsKey(ch))
                 return false;
-            } 
             node = node.charToNode.get(ch);
         }
         return true; 
