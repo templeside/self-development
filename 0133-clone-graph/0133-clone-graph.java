@@ -17,41 +17,39 @@ class Node {
     }
 }
 */
+/*
+int val
+List<Node> neighbors
 
-class Solution {
-    /*
-    iterate DFS with oldNode
-    hashMap<oldNode, newNode>
-    visited<oldNode>
-    
-    dfs(){
-        visited.put(oldNode)
-        for(oldNeighbors: neighbors)
-            if(not in hashmap)
-                if(not visited)
-                dfs(oldNeighbors)
-                
-    }
-    
+hashmap <prevnode, newNode>
+do dfs()
+    base case - leafnode & visited
+    if(visited):
+        return hashmap.get(node)
+    for neighbors:
+        newAdjNode = add(dfs(neighbors))
+        newNode.add(newAdjNode);
     return newNode
-    */
+*/
+class Solution {
     public Node cloneGraph(Node node) {
         if(node ==null)return null;
-        HashMap<Node, Node> map = new HashMap<>();
         
-        return dfs(node, map);
+        Map<Node, Node> hashMap =new HashMap<>();
+        Set<Node> visited = new HashSet<>();// Set<oldNodes>
+        return dfs(node, hashMap, visited);
     }
-
-    public Node dfs(Node oldNode, HashMap<Node,Node> map){
-        Node newNode = new Node(oldNode.val);
-        map.put(oldNode, newNode);
+    public Node dfs(Node oldNode, Map<Node, Node> hashMap, Set<Node> visited){
+        if(visited.contains(oldNode))
+            return hashMap.get(oldNode);
         
-        for(Node oldNeighbor: oldNode.neighbors){
-            if(!map.containsKey(oldNeighbor)){
-                dfs(oldNeighbor, map);
-            }
-            
-            newNode.neighbors.add(map.get(oldNeighbor));
+        Node newNode = new Node(oldNode.val);
+        visited.add(oldNode);
+        hashMap.put(oldNode, newNode);
+        
+        for(Node oldAdjNode : oldNode.neighbors){
+            Node newAdjNode = dfs(oldAdjNode, hashMap, visited);
+            newNode.neighbors.add(newAdjNode);
         }
         return newNode;
     }
