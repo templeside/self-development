@@ -14,7 +14,7 @@ class Solution {
     to check visited:
         
 */    
-    boolean[] visited;
+    // boolean[] visited;
 
     public int[] findRedundantConnection(int[][] edges) {
         // <Vertex, List<Edges>> - <U,V>
@@ -24,10 +24,11 @@ class Solution {
         }
 
         for(int[] edge: edges){
-            visited = new boolean[edges.length + 1];
+            // visited = new boolean[edges.length + 1]; //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?
+            boolean[] visited = new boolean[edges.length + 1]; //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?                                                        
             
             //when already having edges, do dfs to find cycle
-            if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty() && dfs(edge[0], edge[1], hashMap)){
+            if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty() && dfs(edge[0], edge[1], hashMap, visited)){
                 return edge;
             }
             
@@ -41,7 +42,7 @@ class Solution {
     }
 
     // checking has it used or not
-    public boolean dfs(int src, int target, HashMap<Integer, List<Integer>> hashMap){
+    public boolean dfs(int src, int target, HashMap<Integer, List<Integer>> hashMap, boolean[] visited){
         if(src == target){
             return true;
         }
@@ -52,7 +53,7 @@ class Solution {
         //if already found adjacency list, that means cycle
         for(int next: adjList){
             if(!visited[next]){
-                if(dfs(next, target, hashMap)){
+                if(dfs(next, target, hashMap, visited)){
                     return true;
                 }
             }
