@@ -25,12 +25,13 @@ class Solution {
 
         for(int[] edge: edges){
             visited = new boolean[edges.length + 1];
+            
             //when already having edges, do dfs to find cycle
             if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty() && dfs(edge[0], edge[1], hashMap)){
                 return edge;
             }
             
-            //add new graph
+            //add new edges to vertex
             hashMap.get(edge[0]).add(edge[1]);
             hashMap.get(edge[1]).add(edge[0]);
         }
@@ -45,9 +46,11 @@ class Solution {
             return true;
         }
         visited[src] = true;
-        List<Integer> edgeList = hashMap.get(src);
+        List<Integer> adjList = hashMap.get(src);
 
-        for(Integer next: edgeList){
+        //get adjacency list
+        //if already found adjacency list, that means cycle
+        for(int next: adjList){
             if(!visited[next]){
                 if(dfs(next, target, hashMap)){
                     return true;
