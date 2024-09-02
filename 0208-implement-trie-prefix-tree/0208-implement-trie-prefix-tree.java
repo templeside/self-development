@@ -1,55 +1,58 @@
 class Trie {
-    class TrieNode{
-        Map<Character, TrieNode> charToNode;
-        boolean isEnd = false;
-        public TrieNode(){
-            charToNode = new HashMap();      
-        }
-    }
-
-    TrieNode head;
-    /** Initialize your data structure here. */   
-    public Trie() {
-        head = new TrieNode();
-    }
-    
-    /** Inserts a word into the trie. */
-    public void insert(String word) {
-        if(word == null)
-            return;
-        TrieNode node = head;
-        for(char ch : word.toCharArray()) {
-            if(!node.charToNode.containsKey(ch))
-                node.charToNode.put(ch, new TrieNode());
-            node = node.charToNode.get(ch);
-        }
-        node.isEnd = true;
-    }
-    
-    /** Returns if the word is in the trie. */
-    public boolean search(String word) {
-        if(word == null)
-            return false;
-        TrieNode node = head;
-        for(char ch : word.toCharArray()) {
-            if(!node.charToNode.containsKey(ch))
-                return false;
-            node = node.charToNode.get(ch);
-        }
-        return node.isEnd;
+    class Node{
+        public boolean isEndOfWord;
+        public Map<Character, Node> childrenMap;
         
+        public Node(){
+            isEndOfWord = false;
+            childrenMap = new HashMap<>();
+        }
+    }
+    Node root;
+    public Trie() {
+        root = new Node();
     }
     
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    public boolean startsWith(String prefix) {
-        if(prefix == null)
-            return false;
-        TrieNode node = head;
-        for(char ch : prefix.toCharArray()) {
-            if(!node.charToNode.containsKey(ch))
-                return false;
-            node = node.charToNode.get(ch);
+    public void insert(String word) {
+        Node iterator = root;
+        for(char currChar : word.toCharArray()){
+            if(!iterator.childrenMap.containsKey(currChar)){
+                iterator.childrenMap.put(currChar, new Node());
+            }
+            iterator = iterator.childrenMap.get(currChar);
         }
-        return true; 
+        iterator.isEndOfWord = true;
+    }
+    
+    public boolean search(String word) {
+        Node iterator = root;
+        for(char currChar : word.toCharArray()){
+            if(!iterator.childrenMap.containsKey(currChar)){
+                return false;
+            }
+            iterator = iterator.childrenMap.get(currChar);
+        }
+        return iterator.isEndOfWord == true;
+
+    }
+    
+    public boolean startsWith(String prefix) {
+        Node iterator = root;
+        for(char currChar : prefix.toCharArray()){
+            if(!iterator.childrenMap.containsKey(currChar)){
+                return false;
+            }
+            iterator = iterator.childrenMap.get(currChar);
+        }
+        return true;
+
     }
 }
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */
