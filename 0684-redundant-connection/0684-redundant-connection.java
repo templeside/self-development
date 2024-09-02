@@ -17,21 +17,25 @@ class Solution {
     boolean[] visited;
 
     public int[] findRedundantConnection(int[][] edges) {
-        // <Vertex, Edges> - <U,V>
+        // <Vertex, List<Edges>> - <U,V>
         HashMap<Integer, List<Integer>> hashMap = new HashMap<Integer, List<Integer>>();
-        for(int i = 0; i < edges.length; i++){
-            hashMap.put(i + 1, new ArrayList<>());
+        for(int i = 1; i <= edges.length; i++){
+            hashMap.put(i, new ArrayList<>());
         }
 
-        for(int i = 0; i < edges.length; i++){
-            int[] edge = edges[i];
+        for(int[] edge: edges){
             visited = new boolean[edges.length + 1];
+            //when already having edges, do dfs to find cycle
             if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty() && dfs(edge[0], edge[1], hashMap)){
                 return edge;
             }
+            
+            //add new graph
             hashMap.get(edge[0]).add(edge[1]);
             hashMap.get(edge[1]).add(edge[0]);
         }
+        
+        //if not found
         return new int[2];
     }
 
