@@ -56,11 +56,20 @@ class Solution {
 
         //get adjacency list
         //if already found adjacency list, that means cycle
+        // for(int next: adjList){
+        //     if(!visited[next]){
+        //         if(isCycle(next, target, hashMap, visited)){
+        //             return true;
+        //         }
+        //     }
+        // }
+        
         for(int next: adjList){
             if(!visited[next]){
                 if(isCycle(next, target, hashMap, visited)){
                     return true;
                 }
+                visited[src] = true;
             }
         }
         return false;
