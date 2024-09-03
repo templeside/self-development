@@ -18,10 +18,13 @@ class Solution {
     
     to check visited:
         iterate the adjacency list:
-            if visited, return true;
+            if visited, skip
             
+            if source ==target:
+                return cycle
+            check adjacencies
 */    
-    public Set<Integer> seen = new HashSet();
+    public Set<Integer> visited = new HashSet();
 
     public int[] findRedundantConnection(int[][] edges) {
         // <Vertex, List<Edges>> - <U,V>
@@ -34,7 +37,7 @@ class Solution {
             //when already having edges, check is this cycle. if cycle, return.
             if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty()){
                 //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?   
-                seen.clear();
+                visited.clear();
                 if(isCycle(edge[0], edge[1], hashMap))
                     return edge;
             }
@@ -47,42 +50,22 @@ class Solution {
         return new int[2];
     }
 
-    // visited or source == target.
     // checking has it used or not. only for checking purpose.
+    // visited means proceeded.
+    // 실질적으로 duplicated 인지 아닌지는 source == target으로 판별.
     public boolean isCycle(int source, int target, HashMap<Integer, List<Integer>> graph){
-        if (!seen.contains(source)) {
-            seen.add(source);
-            if (source == target) return true;
-            for (int neighbor: graph.get(source)) {
-                if (isCycle(neighbor, target, graph)) 
-                    return true;
-            }
+        // base case - source is visited, no cycle detected. return false.
+        if(visited.contains(source))
+            return false;
+            
+        //source is not visited, do something. 
+        visited.add(source);
+        if(source == target) // found cycle
+            return true;
+        for (int neighbor: graph.get(source)) {             //get adjacency list
+            if (isCycle(neighbor, target, graph)) 
+                return true;
         }
         return false;
     }
-
-    
-//         //base case
-//         if(visited[src])
-//             return true;
-        
-//         if(src == target){
-//             return true;
-//         }
-        
-//         visited[src] = true;
-//         List<Integer> adjList = hashMap.get(src);
-
-//         //get adjacency list
-//         //if already found adjacency list, that means cycle
-//         for(int neighbor: adjList){
-//             // if(!visited[neighbor]){
-//                 if(isCycle(neighbor, target, hashMap, visited)){
-//                     return true;
-//                 }
-//                 visited[src] = true;
-//             // }
-//         }
-//         return false;
-//     }
 }
