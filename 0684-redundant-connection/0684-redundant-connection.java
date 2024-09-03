@@ -36,7 +36,6 @@ class Solution {
                 if(isCycle(edge[0], edge[1], hashMap, visited))
                     return edge;
             }
-            
             //add new edges to vertex
             hashMap.get(edge[0]).add(edge[1]);
             hashMap.get(edge[1]).add(edge[0]);
@@ -46,11 +45,17 @@ class Solution {
         return new int[2];
     }
 
+    // visited or source == target.
     // checking has it used or not. only for checking purpose.
     public boolean isCycle(int src, int target, HashMap<Integer, List<Integer>> hashMap, boolean[] visited){
+        //base case
+        if(visited[src])
+            return true;
+        
         if(src == target){
             return true;
         }
+        
         visited[src] = true;
         List<Integer> adjList = hashMap.get(src);
 
