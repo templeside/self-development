@@ -1,71 +1,61 @@
-class Solution {
-    // for each edge(u,v), traverse the graph with a depth-first search to see if we can connect u to v.
-    // seen으로 visited 했는지 안했는지 확인.
-    
-    
-    //Since the question require us to remove the redundant edge, when we constructing the graph, we do dfs on each edge to see is it redundant, if yes return the edge, if no add the edge into the graph.
+class UnionFind {
+    public int[] parent;
+    public int[] rank;
 
-// Why dfs can find redundant. Actually a redundant edge means after we add this edge, the graph will contain a cycle. So, when we came across a new edge, we do dfs from its start and its end, if there already exist a path from start to end, this new edge is redundant.
-
-/*
-    construct graph - because verticies are [1, n], we can easily generate it
-        generate adjacency list
-    for each edges:
-        check is it preconstructed vertex or not
-        if preconstructed vertex, 
-            check visited or not.
-        add current edge
-    
-    to check visited:
-        iterate the adjacency list:
-            if visited, skip
-            
-            if source ==target:
-                return cycle
-            check adjacencies
-*/    
-    public Set<Integer> visited = new HashSet();
-
-    public int[] findRedundantConnection(int[][] edges) {
-        // <Vertex, List<Edges>> - <U,V>
-        HashMap<Integer, List<Integer>> hashMap = new HashMap<Integer, List<Integer>>();
-        for(int i = 1; i <= edges.length; i++){
-            hashMap.put(i, new ArrayList<>());
+    // Constructor
+    public UnionFind(int n) {
+        parent = new int[n + 1];
+        rank = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            rank[i] = 1;
         }
-
-        for(int[] edge: edges){
-            //when already having edges, check is this cycle. if cycle, return.
-            if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty()){
-                //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?   
-                visited.clear();
-                if(isCycle(edge[0], edge[1], hashMap))
-                    return edge;
-            }
-            //add new edges to vertex
-            hashMap.get(edge[0]).add(edge[1]);
-            hashMap.get(edge[1]).add(edge[0]);
-        }
-        
-        //if not found
-        return new int[2];
     }
 
-    // checking has it used or not. only for checking purpose.
-    // visited means proceeded.
-    // 실질적으로 duplicated 인지 아닌지는 source == target으로 판별.
-    public boolean isCycle(int source, int target, HashMap<Integer, List<Integer>> graph){
-        // base case - source is visited, no cycle detected. return false.
-        if(visited.contains(source))
-            return false;
-            
-        //source is not visited, do something. 
-        visited.add(source);
-        if(source == target) // found cycle
-            return true;
-        for (int neighbor: graph.get(source)) {             //get adjacency list
-            if (isCycle(neighbor, target, graph)) 
-                return true;
+    // Function to find which subset a particular element belongs to
+    // Returns FALSE if both vertices have the same parent, otherwise, updates the parent and rank lists by making a connection based on the passed edge
+    // Returns TRUE if no cycle exits in the graph
+    public int find(int v) {
+        if (parent[v] != v) {
+            parent[v] = find(parent[v]);
         }
-        return false;
+        return parent[v];
+    }
+
+    // Function to join two subsets into a single subset
+    public boolean union(int v1, int v2) {
+        // Find the root parents of v1 and v2
+        int p1 = find(v1);
+        int p2 = find(v2);
+
+        if (p1 == p2) {
+            return false;
+        } 
+        // Updates the parent and rank lists otherwise 
+        else if (rank[p1] > rank[p2]) {
+            parent[p2] = p1;
+            rank[p1] += rank[p2];
+        } 
+        else {
+            parent[p1] = p2;
+            rank[p2] += rank[p1];
+        }
+        return true;
     }
 }
+
+class Solution {
+    public int[] findRedundantConnection(int[][] edges) {
+        UnionFind connections = new UnionFind(edges.length);
+
+        for (int[] edge : edges) {
+            int v1 = edge[0];
+            int v2 = edge[1];
+            if (!connections.union(v1, v2)) {
+                return edge;
+            }
+        }
+        return new int[]{};
+    }
+}
+
