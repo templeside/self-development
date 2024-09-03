@@ -10,8 +10,16 @@ class Solution {
 /*
     construct graph - because verticies are [1, n], we can easily generate it
         generate adjacency list
-    check visited or not.
+    for each edges:
+        check is it preconstructed vertex or not
+        if preconstructed vertex, 
+            check visited or not.
+        add current edge
+    
     to check visited:
+        iterate the adjacency list:
+            if visited, return true;
+            
 */    
     public int[] findRedundantConnection(int[][] edges) {
         // <Vertex, List<Edges>> - <U,V>
@@ -21,10 +29,12 @@ class Solution {
         }
 
         for(int[] edge: edges){
-            boolean[] visited = new boolean[edges.length + 1]; //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?                                                        
-            //when already having edges, do dfs to find cycle
-            if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty() && dfs(edge[0], edge[1], hashMap, visited)){
-                return edge;
+            //when already having edges, check is this cycle. if cycle, return.
+            if(!hashMap.get(edge[0]).isEmpty() && !hashMap.get(edge[1]).isEmpty()){
+                //왜 visited가 edge마다 달라야 하는가???? 그 ndoe가 문제있는지 확인해야 되서..?   
+                boolean[] visited = new boolean[edges.length + 1]; 
+                if(isCycle(edge[0], edge[1], hashMap, visited))
+                    return edge;
             }
             
             //add new edges to vertex
@@ -37,7 +47,7 @@ class Solution {
     }
 
     // checking has it used or not. only for checking purpose.
-    public boolean dfs(int src, int target, HashMap<Integer, List<Integer>> hashMap, boolean[] visited){
+    public boolean isCycle(int src, int target, HashMap<Integer, List<Integer>> hashMap, boolean[] visited){
         if(src == target){
             return true;
         }
@@ -48,12 +58,11 @@ class Solution {
         //if already found adjacency list, that means cycle
         for(int next: adjList){
             if(!visited[next]){
-                if(dfs(next, target, hashMap, visited)){
+                if(isCycle(next, target, hashMap, visited)){
                     return true;
                 }
             }
         }
-
         return false;
     }
 }
