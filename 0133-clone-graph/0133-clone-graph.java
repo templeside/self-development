@@ -17,40 +17,24 @@ class Node {
     }
 }
 */
-/*
-int val
-List<Node> neighbors
 
-hashmap <prevnode, newNode>
-do dfs()
-    base case - leafnode & visited
-    if(visited):
-        return hashmap.get(node)
-    for neighbors:
-        newAdjNode = add(dfs(neighbors))
-        newNode.add(newAdjNode);
-    return newNode
-*/
 class Solution {
     public Node cloneGraph(Node node) {
-        if(node ==null)return null;
+        if(node == null)
+            return null;
+        HashMap<Node, Node> oldNew = new HashMap<>();
         
-        Map<Node, Node> hashMap =new HashMap<>();
-        Set<Node> visited = new HashSet<>();// Set<oldNodes>
-        return dfs(node, hashMap, visited);
+        return recursion(node, oldNew);
     }
-    public Node dfs(Node oldNode, Map<Node, Node> hashMap, Set<Node> visited){
-        if(visited.contains(oldNode))
-            return hashMap.get(oldNode);
+    public Node recursion(Node oldCurr, HashMap<Node,Node> oldNew){
+        if(oldNew.containsKey(oldCurr))
+            return oldNew.get(oldCurr);
         
-        Node newNode = new Node(oldNode.val);
-        visited.add(oldNode);
-        hashMap.put(oldNode, newNode);
-        
-        for(Node oldAdjNode : oldNode.neighbors){
-            Node newAdjNode = dfs(oldAdjNode, hashMap, visited);
-            newNode.neighbors.add(newAdjNode);
+        Node newCurr = new Node(oldCurr.val);
+        oldNew.put(oldCurr, newCurr);
+        for(Node oldNeighbor: oldCurr.neighbors){
+            newCurr.neighbors.add(recursion(oldNeighbor, oldNew));
         }
-        return newNode;
+        return newCurr;
     }
 }
