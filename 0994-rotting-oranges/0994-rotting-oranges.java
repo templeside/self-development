@@ -48,17 +48,14 @@ class Solution {
                 
                 
                 for(int[] adj: dirs){
-                    
                     int newR = currR+adj[0];
                     int newC = currC+adj[1];
-                    //if found adj grid[newR][newC] == 1
-                    
+
+                    //if found adj grid[newR][newC] == 1, update, numWholeOrange, add queue, update grid                    
                     if(newR>=0 && newR< m && newC>=0 && newC< n && grid[newR][newC] == 1){
                         numWholeOrange--;
                         iterator.add(new int[]{newR, newC});
                         grid[newR][newC] = 2;
-
-                        
                     }
                 }
             }
