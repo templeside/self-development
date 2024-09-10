@@ -1,69 +1,69 @@
 class Solution {
-//     class UnionFind {
-//         int[] parent;
-//         int[] weight;
-        
-//         public UnionFind(int num) {
-//             parent = new int[num];
-//             weight = new int[num];
-            
-//             for(int i =  0; i < num; i++) {
-//                 parent[i] = i;
-//                 weight[i] = 1;
-//             }
-//         }
-        
-//         public void union(int a, int  b) {
-//             int rootA = find(a);
-//             int rootB = find(b);
-            
-//             if (rootA == rootB) {
-//                 return;
-//             }
-            
-//             if (weight[rootA] > weight[rootB]) {
-//                 parent[rootB] = rootA;
-//                 weight[rootA] += weight[rootB];
-//             } else {
-//                 parent[rootA] = rootB;
-//                 weight[rootB] += weight[rootA];
-//             }
-//         }
-        
-//         public int find(int a) {
-//             if (parent[a] == a) {
-//                 return a;
-//             }
-            
-//             parent[a] = find(parent[a]);
-//             return parent[a];
-//         }
-//     }
-
     class UnionFind {
-        private Map<Integer, Integer> parents;
-        public UnionFind(int n) {
-            parents = new HashMap<>();
-            for (int i = 0; i < n; i++) {
-                parents.put(i,i);
+        int[] parent;
+        int[] weight;
+        
+        public UnionFind(int num) {
+            parent = new int[num];
+            weight = new int[num];
+            
+            for(int i =  0; i < num; i++) {
+                parent[i] = i;
+                weight[i] = 1;
             }
         }
-
-        public int find(int node) {
-            if(parents.get(node) == node){
-                return node;
+        
+        public void union(int a, int  b) {
+            int rootA = find(a);
+            int rootB = find(b);
+            
+            if (rootA == rootB) {
+                return;
             }
-            return find(parents.get(node));
+            
+            if (weight[rootA] > weight[rootB]) {
+                parent[rootB] = rootA;
+                weight[rootA] += weight[rootB];
+            } else {
+                parent[rootA] = rootB;
+                weight[rootB] += weight[rootA];
+            }
         }
-
-        public void union(int node1, int node2) {
-            int rootNode1 = find(node1);
-            int rootNode2 = find(node2);
-            if (rootNode1 != rootNode2) {
-                parents.put(rootNode2, rootNode1);
+        
+        public int find(int a) {
+            if (parent[a] == a) {
+                return a;
             }
+            
+            parent[a] = find(parent[a]);
+            return parent[a];
         }
     }
+
+//     class UnionFind {
+//         private Map<Integer, Integer> parents;
+//         public UnionFind(int n) {
+//             parents = new HashMap<>();
+//             for (int i = 0; i < n; i++) {
+//                 parents.put(i,i);
+//             }
+//         }
+
+//         public int find(int node) {
+//             if(parents.get(node) == node){
+//                 return node;
+//             }
+//             return find(parents.get(node));
+//         }
+
+//         public void union(int node1, int node2) {
+//             int rootNode1 = find(node1);
+//             int rootNode2 = find(node2);
+//             if (rootNode1 != rootNode2) {
+//                 parents.put(rootNode2, rootNode1);
+//             }
+//         }
+//     }
 
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
         int size = accounts.size();
