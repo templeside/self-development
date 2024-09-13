@@ -1,47 +1,76 @@
 class Solution {
+    /*
+Input: numCourses = 2, 
+               target source
+prerequisites = [[1,0]]
+        source -> target
+Output: [0,1]
+
+generate map<vertex, List<adjacencies>> graph
+in-Degree map<vertex, # incoming degrees>
+
+find 0 indegree
+    add to bfsIterator.
+
+while iteration:
+    add to order(curr)
+    
+    for adjacencies:
+        decrement indegree
+        if(indegree ==0)
+            add to iterator
+return order.size() == numCourses? order: empty array
+    */
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        HashMap<Integer, List<Integer>> adjList = new HashMap<>();  // courses looking for child courses
-        HashMap<Integer, Integer> numPrerequisite = new HashMap<>();
-        
-        // add to hashmap
+        List<Integer> order = new ArrayList<>();
+//         generate map<vertex, List<adjacencies>> graph
+//         in-Degree map<vertex, # incoming degrees>
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+//         find 0 indegree
+        Map<Integer, Integer> inDegree= new HashMap<>();
+        //add prerequisites
         for(int i=0; i< numCourses; i++){
-            adjList.put(i, new ArrayList<>());
-            numPrerequisite.put(i, 0);
+            graph.put(i, new ArrayList<>());
+            inDegree.put(i,0);
         }
-        // add prerequisites
         for(int[] prerequisite: prerequisites){
-            int prereq=prerequisite[1];
-            int currCourse = prerequisite[0];
-            adjList.get(prereq).add(currCourse);    // currCourse is child course. prereq -> currCourse
-            numPrerequisite.put(currCourse, numPrerequisite.get(currCourse)+1);
+            int target = prerequisite[0];
+            int source = prerequisite[1];
+            graph.get(source).add(target);
+            inDegree.put(target, inDegree.get(target)+1);
         }
-        
-        List<Integer> courseOrder = new LinkedList<>();
-        Queue<Integer> bfsIterator = new LinkedList<>();
-        
-		// find no requisite
-        for(Map.Entry<Integer,Integer> entry: numPrerequisite.entrySet()){
-            if(entry.getValue() == 0)
-                bfsIterator.add(entry.getKey());
+//             add to bfsIterator.
+        Queue<Integer> bfsIterator = new ArrayDeque<>();
+        for(int i=0; i<numCourses; i++){
+            if(inDegree.get(i) ==0)
+                bfsIterator.add(i);
         }
-		
-		// do bfs
-        while(bfsIterator.size()>0){
+//         while iteration:
+        while(!bfsIterator.isEmpty()){
             int currCourse = bfsIterator.poll();
-            courseOrder.add(currCourse);
-            
-            for(int childCourse: adjList.get(currCourse)){
-                numPrerequisite.put(childCourse, numPrerequisite.get(childCourse)-1);
-                if(numPrerequisite.get(childCourse)==0)
-                    bfsIterator.add(childCourse);
+//             add to order(curr)
+            order.add(currCourse);
+//             for adjacencies:
+            for(int adj: graph.get(currCourse)){
+//                 decrement indegree
+                inDegree.put(adj, inDegree.get(adj)-1);
+//                 if(indegree ==0)
+                if(inDegree.get(adj) == 0)
+//                     add to iterator
+                    bfsIterator.add(adj);
             }
         }
-        if(courseOrder.size() != numCourses)return new int[]{};
-        
-        int[] returnOrder = new int[numCourses];
-        for(int i=0; i<numCourses; i++){
-            returnOrder[i] = courseOrder.get(i);
+        if(order.size() == numCourses){
+            int[] returnVal = new int[numCourses];
+            for(int i=0; i< numCourses;i++){
+                returnVal[i] = order.get(i);
+            }
+            return returnVal;
+        }else{
+            return new int[]{};
         }
-        return returnOrder;
+            
+        
+
     }
 }
