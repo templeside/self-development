@@ -15,47 +15,27 @@
  */
 class Solution {
     /*
-    [-10,9,20,null,null,15,7]
-    -10
-    /   \
-    9   20
-        /\
-      15   7
-
-updating the max and left, right child is different.
+    updating the maxPath through global variable
+        maxPath = Math.max(maxPath, root.left + root.right + root)
+    return max path 
     */
     public int maxSum;
     public int maxPathSum(TreeNode root) {
+        if(root ==null)
+            return 0;
         maxSum = Integer.MIN_VALUE;
-        if(root ==null)return 0;
-        
-        recursion(root);
+        dfs(root);
         return maxSum;
     }
-    public int recursion(TreeNode root){
-        //base case - if leaf
-        if(root.left == null && root.right == null){
-            maxSum = Math.max(maxSum, root.val);
-            return root.val;
-        }            
+    public int dfs(TreeNode root){
+        if(root == null)
+            return 0;
         
-        //get left val, get right val
-        int leftVal=0, rightVal=0;
-        if(root.left !=null)
-            leftVal = recursion(root.left);
-        if(root.right !=null)
-            rightVal = recursion(root.right);
+        int left = dfs(root.left);
+        int right = dfs(root.right);
         
-        //updating the path sum
-        int pathSum = root.val;
-        if(leftVal>=0) 
-            pathSum += leftVal;
-        if(rightVal>=0)
-            pathSum += rightVal;
-        maxSum = Math.max(pathSum, maxSum);
-        maxSum = Math.max(maxSum, root.val);
+        maxSum = Math.max(maxSum, left+right+root.val);
         
-        //return max path val
-        return Math.max(Math.max(leftVal, rightVal)+root.val, root.val);
+        return Math.max(Math.max(left,right)+root.val, 0);
     }
 }
