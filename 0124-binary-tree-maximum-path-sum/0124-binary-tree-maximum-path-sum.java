@@ -15,42 +15,47 @@
  */
 class Solution {
     /*
-    need a global updates. 
-    global updates in the new things...... 그게 무엇일까....?
-    
-    having left subtree, right subtree.
-    currSum = left+right + current.
-    comparing those three values and return max...이라기엔 once path is returning, its returning weird value.
-    instead we are returning the left most edges sum and right most edges sum.
-    
-    global path sum..for tracking the maxPathSum.
-    
-    so instead, we are having algorithm:
-    return value: max edges sum
-    
-    recursion:
-        left = recursion(root.left)
-        right = recursion(root.right)
-        
-        currPath = left+right+curr.val;
-        update path
-        return max(left, right)+ curr.val;
+    [-10,9,20,null,null,15,7]
+    -10
+    /   \
+    9   20
+        /\
+      15   7
+
+updating the max and left, right child is different.
     */
-    public static int maxSum;
+    public int maxSum;
     public int maxPathSum(TreeNode root) {
         maxSum = Integer.MIN_VALUE;
-        postOrder(root);
-        return maxSum;
-    }
-    public int postOrder(TreeNode root){
         if(root ==null)return 0;
         
-        int left = Math.max(postOrder(root.left),0);
-        int right = Math.max(postOrder(root.right),0);
+        recursion(root);
+        return maxSum;
+    }
+    public int recursion(TreeNode root){
+        //base case - if leaf
+        if(root.left == null && root.right == null){
+            maxSum = Math.max(maxSum, root.val);
+            return root.val;
+        }            
         
-        int currPath = left+right+ root.val;
-        maxSum = Math.max(currPath, maxSum);        //
+        //get left val, get right val
+        int leftVal=0, rightVal=0;
+        if(root.left !=null)
+            leftVal = recursion(root.left);
+        if(root.right !=null)
+            rightVal = recursion(root.right);
         
-        return Math.max(left, right)+ root.val;
+        //updating the path sum
+        int pathSum = root.val;
+        if(leftVal>=0) 
+            pathSum += leftVal;
+        if(rightVal>=0)
+            pathSum += rightVal;
+        maxSum = Math.max(pathSum, maxSum);
+        maxSum = Math.max(maxSum, root.val);
+        
+        //return max path val
+        return Math.max(Math.max(leftVal, rightVal)+root.val, root.val);
     }
 }
