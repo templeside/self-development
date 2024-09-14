@@ -18,9 +18,6 @@ right      ^
             int remainder = limit-people[right];
             if(left<= right && remainder>= people[left]){
                 left++;
-                right--;        
-                count++;
-                continue;
             }
             right--;
             count++;
