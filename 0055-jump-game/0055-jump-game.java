@@ -16,8 +16,10 @@ jumpable     = [          T]
                 // update it
             for(int j=1; j<= jump; j++){
                 int newIdx = i+j;
-                if(newIdx< n &&  dp[newIdx] ==true)
+                if(newIdx< n &&  dp[newIdx] ==true){
                     dp[i] = true;
+                    break;
+                }
             }
         }
         return dp[0];
