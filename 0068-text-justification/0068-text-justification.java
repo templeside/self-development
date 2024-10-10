@@ -1,59 +1,90 @@
 class Solution {
     /*
-    문제 얼마나 잘 읽고 따라했는지 read and write ability test.
+    words
+    maxWidth
+    
+    lines - maxwidth
+    paddings
+    offsets - left first.
+    
+    last line - single lines
+    
+    data structures
+        List<String> returnVal
+        List<String> currCharArr = each line builder
+    
+    for each line, we have stirng builder
+    
+    for(word: words)
+        calculate is valid string if adding a word
+            if not valid - if(currCharNum + currCharArr.size()-1 > maxWidth)
+                add the previous currCharArr to the returnVal
+                recreate currCharArr
+            currCharArr.add(word)
+            currCharNum += word
+    
+    done with iteration, check still has remaining last line
+        generate the string with spacing 1, and having remaining spaces on the right
     */
     public List<String> fullJustify(String[] words, int maxWidth) {
-        int left = 0; List<String> result = new ArrayList<>();
+        List<String> returnVal = new ArrayList<>();
+        List<String> currWords = new ArrayList<>(); // Words in the current line
+        int currCharsNum = 0; // Total number of characters in currWords (excluding spaces)
         
-        while (left < words.length) {
-            int right = findRight(left, words, maxWidth);
-            result.add(justify(left, right, words, maxWidth));
-            left = right + 1;
+        for (String word : words) {
+            // Check if adding the next word exceeds the maxWidth
+            if (currCharsNum + word.length() + currWords.size() > maxWidth) {
+                // Generate the justified line and add it to the result
+                String currLine = generateLine(currWords, currCharsNum, maxWidth, false);
+                returnVal.add(currLine);
+                // Reset for the next line
+                currWords = new ArrayList<>();
+                currCharsNum = 0;
+            }
+            currWords.add(word);
+            currCharsNum += word.length();
         }
-        
-        return result;
+        // Handle the last line
+        String lastLine = generateLine(currWords, currCharsNum, maxWidth, true);
+        returnVal.add(lastLine);
+        return returnVal;
     }
-    
-    private int findRight(int left, String[] words, int maxWidth) {
-        int right = left;
-        int sum = words[right++].length();
-        
-        while (right < words.length && (sum + 1 + words[right].length()) <= maxWidth)
-            sum += 1 + words[right++].length();
-            
-        return right - 1;
-    }
-    
-    private String justify(int left, int right, String[] words, int maxWidth) {
-        if (right - left == 0) return padResult(words[left], maxWidth);
-        
-        boolean isLastLine = right == words.length - 1;
-        int numSpaces = right - left;
-        int totalSpace = maxWidth - wordsLength(left, right, words);
-        
-        String space = isLastLine ? " " : blank(totalSpace / numSpaces);
-        int remainder = isLastLine ? 0 : totalSpace % numSpaces;
-        
-        StringBuilder result = new StringBuilder();
-        for (int i = left; i <= right; i++)
-            result.append(words[i])
-                .append(space)
-                .append(remainder-- > 0 ? " " : "");
-        
-        return padResult(result.toString().trim(), maxWidth);
-    }
-    
-    private int wordsLength(int left, int right, String[] words) {
-        int wordsLength = 0;
-        for (int i = left; i <= right; i++) wordsLength += words[i].length();
-        return wordsLength;
-    }
-    
-    private String padResult(String result, int maxWidth) {
-        return result + blank(maxWidth - result.length());
-    }
-    
-    private String blank(int length) {
-        return new String(new char[length]).replace('\0', ' ');
+
+    public String generateLine(List<String> words, int currCharsNum, int maxWidth, boolean isLastLine) {
+        StringBuilder sb = new StringBuilder();
+        int numWords = words.size();
+        int numSpaces = maxWidth - currCharsNum; // Total spaces to distribute
+
+        if (numWords == 1 || isLastLine) {
+            // Left-justified: words are separated by a single space
+            for (int i = 0; i < numWords; i++) {
+                sb.append(words.get(i));
+                if (i != numWords - 1) {
+                    sb.append(" ");
+                    numSpaces--;
+                }
+            }
+            // Fill the remaining spaces at the end
+            for (int i = 0; i < numSpaces; i++) {
+                sb.append(" ");
+            }
+        } else {
+            // Fully justified
+            int spacesBetweenWords = numWords - 1;
+            int spacesEach = numSpaces / spacesBetweenWords; // Minimum spaces to add between words
+            int extraSpaces = numSpaces % spacesBetweenWords; // Extra spaces to distribute
+
+            for (int i = 0; i < numWords; i++) {
+                sb.append(words.get(i));
+                if (i != numWords - 1) {
+                    // Distribute extra spaces to the left slots
+                    int spacesToAdd = spacesEach + (i < extraSpaces ? 1 : 0);
+                    for (int j = 0; j < spacesToAdd; j++) {
+                        sb.append(" ");
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 }
