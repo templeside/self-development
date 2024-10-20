@@ -1,16 +1,25 @@
 class Solution {
+    /*
+    find difference.
+    having hashset can find the offset.
+    if we alreay found before, we can return the current num with visited num.
+    
+    set<Integer> visited
+    */
     public int[] twoSum(int[] nums, int target) {
-        // val, idx becuzz i need to return the indexof the values
-        HashMap<Integer, Integer> map = new HashMap<>();
         int n = nums.length;
+        if(n<2)
+            return null;
+        Map<Integer,Integer> visited = new HashMap<>();
         
-        for(int i=0; i< n; i++){
-            int remainder = target-nums[i];
-            if(map.containsKey(remainder)){
-                return new int[]{i, map.get(remainder)};
+        for(int i=0; i<n; i++){
+            int num = nums[i];
+            int offset = target - num;
+            if(visited.containsKey(offset)){
+                return new int[]{visited.get(offset), i};
             }
             
-            map.put(nums[i], i);
+            visited.put(num, i);
         }
         return null;
     }
