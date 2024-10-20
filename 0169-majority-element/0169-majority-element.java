@@ -1,20 +1,46 @@
 class Solution {
     /*
-    3,3,4
-num     ^ 
-element 3
-count 2
+    can use the hashmap.
+    
+    better than that,
+    
+    
+    모두 합친거 보다 majority가 더 많다.
+    그렇다면, majority count > others
+    
+    if i have majority count, it makes sense.
+    
+    if majority,
+        majorityCount ++;
+    if not majority
+        majorityCount --;
+        if majorityCount <0
+            update majority
+            
+nums = [2,2,1,1,1,2,2]
+                    ^
+majority = 2
+majorityCount = -1
     */
     public int majorityElement(int[] nums) {
-        Integer element = null;
-        int count = 0;
+        int n = nums.length;
+        if(n==1)
+            return nums[0];
+        int majorityCount = 1;
+        int majority = nums[0];
         
-        for(int num: nums){
-            if(count == 0)
-                element = num;
+        for(int i=1; i< n;i++){
+            int currNum = nums[i];
+            if(majority == currNum)
+                majorityCount++;
+            else
+                majorityCount--;
             
-            count = element == num? count+1: count-1;
+            if(majorityCount<0){
+                majorityCount=1;
+                majority = currNum;
+            }
         }
-        return element;
+        return majority;
     }
 }
