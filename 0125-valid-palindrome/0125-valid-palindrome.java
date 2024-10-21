@@ -1,25 +1,23 @@
 class Solution {
-    /*
-    "race a car"
-     ^        ^
-     
-    */
     public boolean isPalindrome(String s) {
-        s = s.toLowerCase();
-        int left=0;
-        int right =s.length()-1;
+        s=s.toLowerCase();
+        int left =0;
+        int right = s.length()-1;
         
         while(left<right){
-            if(!Character.isAlphabetic(s.charAt(left)) && !Character.isDigit(s.charAt(left))){
+            char leftChar = s.charAt(left);
+            char rightChar = s.charAt(right);
+            
+            if(!Character.isLetterOrDigit(leftChar)){
                 left++;
                 continue;
             }
-            else if (!Character.isAlphabetic(s.charAt(right)) && !Character.isDigit(s.charAt(right))){
+            if(!Character.isLetterOrDigit(rightChar)){
                 right--;
                 continue;
             }
             
-            if(s.charAt(left)!= s.charAt(right))
+            if(leftChar != rightChar)
                 return false;
             
             left++;
