@@ -1,26 +1,27 @@
 class Solution {
     /*
-    height = [1,8,6,2,5,4,8,3,7]
-left          ^
-right                         ^
-    7
+    area = width * height
+    width = right-left+1
+    height = Math.min(left, right)
+    area = width * height
+    update area
     */
     public int maxArea(int[] height) {
-        int maxArea = 0;
-        int leftIdx=0;
-        int rightIdx = height.length-1;
+        int max = 0;
+        int left=0;
+        int right = height.length-1;
         
-        while(leftIdx<rightIdx){
-            int width = rightIdx-leftIdx;
-            int length = Math.min(height[leftIdx], height[rightIdx]);
+        while(left<right){
+            int width = right-left;
+            int currHeight = Math.min(height[left], height[right]);
+            int currArea = currHeight * width;
+            max = Math.max(max, currArea);
             
-            maxArea = Math.max(width * length , maxArea);
-            
-            if(height[leftIdx]< height[rightIdx]){
-                leftIdx++;
+            if(height[left]< height[right]){
+                left++;
             }else
-                rightIdx--;
+                right--;
         }
-        return maxArea;
+        return max;
     }
 }
