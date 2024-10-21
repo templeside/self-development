@@ -1,36 +1,45 @@
 class Solution {
+    /*
+    matched
+    Map<Character, Integer> 
+    
+    incrment:
+        add val
+        if all matched
+            add to returnVal
+    shrink - when length is same
+        remove from the original values
+        shift end
+    */
     public List<Integer> findAnagrams(String s, String p) {
-        List<Integer> anagrams = new ArrayList<>();
-        int windowStart = 0;
-        int matchedKey = 0;
-        HashMap<Character, Integer> counter = new HashMap<>();
-        
+        int endIdx= 0;
+        Map<Character ,Integer> map = new HashMap<>();
         for(char c: p.toCharArray()){
-            counter.put(c, counter.getOrDefault(c, 0)+1);
+            map.put(c, map.getOrDefault(c, 0)+1);
         }
-        
-        for(int windowEnd =0; windowEnd<s.length(); windowEnd++ ){
-            char endChar = s.charAt(windowEnd);
-            if(counter.containsKey(endChar)){
-                counter.put(endChar, counter.get(endChar)-1);
-                if(counter.get(endChar)== 0)
-                    matchedKey++;
+        List<Integer> result = new ArrayList<>();
+        int matched = 0;
+        for(int startIdx=0; startIdx< s.length(); startIdx++){
+            char currChar = s.charAt(startIdx);
+            if(map.containsKey(currChar)){
+                map.put(currChar, map.get(currChar)-1);
+                if(map.get(currChar) == 0)
+                    matched ++;
+                
+                if(matched == map.size())
+                    result.add(endIdx);
             }
             
-            if(matchedKey == counter.size())
-                anagrams.add(windowStart);
-            
-            if(windowEnd-windowStart+1>=p.length()){
-                char startChar = s.charAt(windowStart);
-                if(counter.containsKey(startChar)){
-                    if(counter.get(startChar)== 0)
-                        matchedKey--;
-                    counter.put(startChar, counter.get(startChar)+1);
-                    
+            while(startIdx-endIdx+1 ==p.length()){
+                char endChar = s.charAt(endIdx);
+                if(map.containsKey(endChar)){
+                    if(map.get(endChar) == 0)
+                        matched--;
+                    map.put(endChar, map.get(endChar)+1);
                 }
-                windowStart++;
+                endIdx++;
             }
         }
-        return anagrams;
+        return result;
     }
 }
