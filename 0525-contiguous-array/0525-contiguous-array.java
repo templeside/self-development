@@ -1,5 +1,6 @@
 class Solution {
     /*
+    if made it to 0, it is valid.
     1. change all 0 to -1
     2. for iteration:
         update currSum
