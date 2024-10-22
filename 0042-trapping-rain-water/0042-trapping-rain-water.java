@@ -1,55 +1,36 @@
 class Solution {
     /*
-    area = width * height
-    area = 1 * Math.min(left, right) - currHeight
+    currWater = currWall - height
+    currWall = Math.min(left, right)
+    keep in track of left, right
+    left[i] = leftMax of height[i]
+    right[i] = rightMax of height[i]
     
-    add all the value.
-    
-    height = [0,1,0,2,1,0,1,3,2,1,2,1]
-    leftMax   0 1 1 2 2 2 2 3 3 3 3 3
-    rightMax                            
-    
-    leftMax = Math.max(height[i], leftMax[i-1])
-    rightMax = Math.max(height[i], rightMax[i+1])
-    
-    height = Math.min(leftMax[left-1], rightMax[right+1]) - currHeight
-    
-    algo:
-    // 1. update leftMax
-    // 2. update rightMax
-    // 3. calculate height & update area
+height = [0,1,0,2,1,0,1,3,2,1,2,1]
+left      0 0 1 1 2 2 2 2 3 3 3 3 
+right     3 3 3 3 3 3 3 2 2 2 1 0
+left[i] = Math.max(height[i-1], left[i-1])
+right[i] = Math.max(height[i+1], left[i+1])
+currWal = Math.min(left[i], right[i]);
     */
     public int trap(int[] height) {
-        int totalArea = 0;
         int n = height.length;
+        int[] leftWall = new int[n];
+        int[] rightWall = new int[n];
         
-        // 1. update leftMax
-        int[] leftMax = new int[n];
-        for(int i=0; i< n; i++){
-            if(i ==0){
-                leftMax[i] = height[i];
-                continue;
-            }
-            leftMax[i] = Math.max(leftMax[i-1], height[i]);
+        for(int i=1; i<n; i++){
+            leftWall[i] = Math.max(height[i-1], leftWall[i-1]);
         }
-        // 2. update rightMax
-        int[] rightMax = new int[n];
-        for(int i=n-1; i>=0; i--){
-            if(i ==n-1){
-                rightMax[i] = height[i];
-                continue;
-            }
-            rightMax[i] = Math.max(rightMax[i+1], height[i]);
-        }
-        // 3. calculate height & update area
-        for(int i=1; i< n-1; i++){
-            int minWall = Math.min(leftMax[i-1], rightMax[i+1]);
-            if(minWall> height[i]){
-                int currArea = minWall-height[i];
-                totalArea += currArea;
-            }
+        for(int i=n-2; i>=0; i--){
+            rightWall[i] = Math.max(height[i+1], rightWall[i+1]);
         }
         
-        return totalArea;
+        int waters = 0;
+        for(int i=0; i<n;i++){
+            int currWall = Math.min(leftWall[i], rightWall[i]);
+            int currWater = currWall - height[i];
+            waters = currWater>0? waters+currWater: waters;
+        }
+        return waters;
     }
 }
