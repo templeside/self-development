@@ -1,32 +1,36 @@
 class Solution {
     /*
-    two prefix sum
-    leftPrefix
-    rightPrefix
-    
+nums = [1,2,3,4]
+        ^
+        
+left    1 1 2 6
+right   24124 1
+
+left = left[i-1] * nums[i-1]
+right = right[i+1] * nums[i+1]
+
+product = left[i] * right[i]
+
     */
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
-        int[] leftPrefix = new int[n];
-        int[] rightPrefix = new int[n];
+        int[] left = new int[n];
+        int[] right= new int[n];
         
-        leftPrefix[0] = nums[0];
-        rightPrefix[n-1] = nums[n-1];
+        left[0] = 1;
+        right[n-1] = 1;
+        
         for(int i=1; i<n; i++){
-            leftPrefix[i] = leftPrefix[i-1] * nums[i];
-            rightPrefix[n-1-i] = rightPrefix[n-i] * nums[n-1-i];
+            left[i] = left[i-1] * nums[i-1];
+        }
+        for(int i=n-2; i>=0; i--){
+            right[i] = right[i+1] * nums[i+1];
         }
         
-        
-        int[] returnVal = new int[n];
-        
-        returnVal[0]=rightPrefix[1];
-        returnVal[n-1] = leftPrefix[n-2];
-        for(int i=1; i<n-1; i++){
-            int left = leftPrefix[i-1];
-            int right = rightPrefix[i+1];
-            returnVal[i] = left*right;
+        int[] result = new int[n];
+        for(int i=0; i<n; i++){
+            result[i] = left[i]*right[i];
         }
-        return returnVal;
+        return result;
     }
 }
