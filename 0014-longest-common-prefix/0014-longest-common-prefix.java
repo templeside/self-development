@@ -1,28 +1,15 @@
 class Solution {
-    /*
-    for loop:
-        find prefix.
-    */
     public String longestCommonPrefix(String[] strs) {
-        String commonPrefix = strs[0];
-        for(int i=1; i< strs.length; i++){
-            commonPrefix = findPrefix(strs[i], commonPrefix);
-        }
-        return commonPrefix;
-    }
-    
-    public String findPrefix(String a, String b){
-        String shorter = a.length()< b.length()? a:b;
-        String longer = shorter.equals(a)? b: a;
+        int idx =0;
         
-        StringBuilder sb = new StringBuilder();
-        
-        for(int i=0; i< shorter.length(); i++){
-            if(a.charAt(i) != b.charAt(i))
-                break;
+        for(; idx< strs[0].length(); idx++){
+            char currChar = strs[0].charAt(idx);
             
-            sb.append(a.charAt(i));
+            for(String str: strs){
+                if(idx>= str.length() || str.charAt(idx) != currChar)
+                    return str.substring(0,idx);
+            }
         }
-        return sb.toString();
+        return strs[0];
     }
 }
