@@ -19,7 +19,6 @@ endIdx         ^
             return nums[0] == target? 0: -1;
         
         int endIdx = findEnd(nums);
-        System.out.println("end index is "+endIdx+" "+nums[endIdx]);
         if(nums[0]<= target && target<=nums[endIdx])
             return find(0, endIdx, target, nums);
         if(nums[endIdx+1]<= target && target<= nums[nums.length-1])
@@ -32,9 +31,7 @@ endIdx         ^
         int right = nums.length-2;
         
         while(left<=right){
-            
             int mid = left+(right-left)/2;
-            System.out.println("left is:"+left+" right is:"+right+ " mid is:"+mid);
             if(nums[mid]> nums[mid+1]){
                 return mid;
             }
@@ -52,7 +49,6 @@ endIdx         ^
 endIdx         ^
     */
     public int find(int left, int right, int target, int[] nums){
-        System.out.println(left+" "+right);
         while(left<=right){
             int mid = left+(right-left)/2;
             int midVal = nums[mid];
