@@ -1,60 +1,51 @@
 class Solution {
     /*
-    find starting point
-    closing point    
-         0 1 2 3 4 5 6
-        [4,5,6,7,0,1,2]     target=0
-left           ^
-right          ^
-mid            ^          3+(5-3)/2 = 4
-         0 1 2 3 4 5 6
-        [4,5,6,7,0,1,2]     target=0
-endIdx         ^
+    find the starting point
+    
+    binary search - 
+        if(nums[i] > nums[i+1])
+        
+    checking the left, middle
+    if(nums[left] < nums[mid]) - sorted
+        left = mid+1;
+    else
+        right = mid-1;
+        
+    search the range
     */
     public int search(int[] nums, int target) {
-        if(nums.length == 0)
-            return -1;
-
         if(nums.length == 1)
             return nums[0] == target? 0: -1;
+        int endIdx= findEnd(nums);
         
-        int endIdx = findEnd(nums);
-        if(nums[0]<= target && target<=nums[endIdx])
-            return find(0, endIdx, target, nums);
-        if(nums[endIdx+1]<= target && target<= nums[nums.length-1])
-            return find(endIdx+1, nums.length-1, target, nums);
-        return -1;
+        if(nums[0] <= target && target<= nums[endIdx]){
+            return search(0, endIdx, nums, target);
+        }
+        return search(endIdx+1, nums.length-1, nums, target);
     }
     
     public int findEnd(int[] nums){
         int left=0;
-        int right = nums.length-2;
+        int right =nums.length-2;
         
-        while(left<=right){
+        while(left<= right){
             int mid = left+(right-left)/2;
-            if(nums[mid]> nums[mid+1]){
+            
+            if(nums[mid]> nums[mid+1])
                 return mid;
-            }
-            else if(nums[left]<= nums[mid])
+            else if(nums[left] <= nums[mid])
                 left = mid+1;
             else
-                right =mid-1;
+                right = mid-1;
         }
-        return 0;
+        return nums.length-1;
     }
-    
-    /*
-         0 1 2 3 4 5 6
-        [4,5,6,7,0,1,2]     target=0
-endIdx         ^
-    */
-    public int find(int left, int right, int target, int[] nums){
+    public int search(int left, int right, int[] nums, int target){
         while(left<=right){
             int mid = left+(right-left)/2;
-            int midVal = nums[mid];
-            if(midVal == target){
+            if(nums[mid] == target){
                 return mid;
-            }else if(midVal>target){
+            }else if(nums[mid]> target){
                 right = mid-1;
             }else
                 left = mid+1;
