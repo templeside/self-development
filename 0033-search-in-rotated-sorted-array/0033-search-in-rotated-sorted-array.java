@@ -14,8 +14,8 @@ class Solution {
     search the range
     */
     public int search(int[] nums, int target) {
-        if(nums.length == 1)
-            return nums[0] == target? 0: -1;
+        // if(nums.length == 1)
+        //     return nums[0] == target? 0: -1;
         int endIdx= findEnd(nums);
         
         if(nums[0] <= target && target<= nums[endIdx]){
