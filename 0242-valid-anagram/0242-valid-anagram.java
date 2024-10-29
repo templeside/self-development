@@ -1,20 +1,25 @@
 class Solution {
+    /*
+    check is that valid anagram
+    check counters.
+    find matched
+    */
     public boolean isAnagram(String s, String t) {
         if(s.length() != t.length())
             return false;
         
-        Map<Character, Integer> frequency = new HashMap<>();
+        Map<Character, Integer> sFreq = new HashMap<>();
         for(char c: s.toCharArray()){
-            frequency.put(c, frequency.getOrDefault(c,0)+1);
+            sFreq.put(c, sFreq.getOrDefault(c, 0)+1);
         }
         
         for(char c: t.toCharArray()){
-            if(!frequency.containsKey(c))
+            if(!sFreq.containsKey(c))
                 return false;
-            frequency.put(c, frequency.get(c)-1);
-            if(frequency.get(c)==0)
-                frequency.remove(c);
+            sFreq.put(c, sFreq.get(c)-1);
+            if(sFreq.get(c) <0)
+                return false;
         }
-        return frequency.size() ==0;
+        return true;
     }
 }
