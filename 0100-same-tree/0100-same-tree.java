@@ -15,26 +15,12 @@
  */
 class Solution {
     /*
-    recursion comparing together
-    left, right
-    return true or false
-    recursion:
-        if p==null && q ==null
-            return true
-        if p!=null || q !=null
-            return false;
-        
-        if(p !=q)
-            return false
-            
-        recursion(p.left, q.left)
-        reqursion(p.right, q.right)
-        return true
+    going together to check is that the same tree.
     */
     public boolean isSameTree(TreeNode p, TreeNode q) {
         if(p == null && q == null)
             return true;
-        else if(p==null || q ==null)
+        else if(p ==null || q==null)
             return false;
         
         if(p.val != q.val)
