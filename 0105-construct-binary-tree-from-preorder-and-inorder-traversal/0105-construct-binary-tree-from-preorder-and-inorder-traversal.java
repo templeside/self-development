@@ -57,12 +57,13 @@ how to find the root then?
     public TreeNode recursion(int left, int right, int[] preorder, int[] inorder, Map<Integer, Integer> inorderMap){
         if(left> right)
             return null;
-        
-        TreeNode currRoot = new TreeNode(preorder[preorderIdx]);
+        int currRootVal = preorder[preorderIdx];
         preorderIdx++;
+        int currRootInorderIdx = inorderMap.get(currRootVal);
         
-        int currRootInorderIdx = inorderMap.get(currRoot.val);
-        
+        //create new node
+        TreeNode currRoot = new TreeNode(currRootVal);
+
         currRoot.left = recursion(left, currRootInorderIdx-1, preorder, inorder, inorderMap);
         currRoot.right = recursion(currRootInorderIdx+1, right, preorder, inorder, inorderMap);
         
