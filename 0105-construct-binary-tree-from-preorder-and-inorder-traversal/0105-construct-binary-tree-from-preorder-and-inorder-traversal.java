@@ -15,40 +15,57 @@
  */
 class Solution {
     /*
-    dfs: 
-        nextRootIdx++
-        mid value = preorder[nextRootIdx]에서 가져오고
-        left, right range = inorder에서 mid 가져오고 given left, right검색.
+    have the preorder and inorder traversal.
+    preorder - it can keep in the range of 
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
 
-        left = dfs(left, mid-1)
-        right = dfs(mid+1, right)
+        3
+    9       20
+          15   7
 
-        return node
+the preorder takes out the level [3,9,20,15,7]
+                                   |    |
+inorder defines the left, right [9,3,15,20,7]
+                                   ^
+                                   
+preorder - currRoot
+inorder - left, right.
+val.left = leftval
+val.right = rightval
+how to find the root then?
+    preorder - define root.
+    global preorderIdx - keep track of curr root
+    
+    inorder - define left, right range
+    
     */
-    public int currRootIdx;
+    public int preorderIdx;
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        int n = preorder.length;
-        //inorder의<value,idx>
+        int n = inorder.length;
+        // <inorderval, idx>
         Map<Integer, Integer> inorderMap = new HashMap<>();
-        for(int i=0; i<n; i++)
+        preorderIdx = 0;
+        for(int i=0; i<n; i++){
             inorderMap.put(inorder[i], i);
-        
-        currRootIdx = 0;
-        int left =0, right = n-1;
-        
-        return dfs(left,right, preorder, inorder, inorderMap);
+        }
+        int left=0;
+        int right = n-1;
+        return recursion(left, right, preorder, inorder, inorderMap);
     }
-    public TreeNode dfs(int left,int right, int[] preorder, int[] inorder, Map<Integer, Integer>inorderMap){
-        if(left> right)return null;
+    
+    public TreeNode recursion(int left, int right, int[] preorder, int[] inorder, Map<Integer, Integer> inorderMap){
+        if(left> right)
+            return null;
         
-        int currRootVal = preorder[currRootIdx];// midval
-        currRootIdx++;
+        TreeNode currRoot = new TreeNode(preorder[preorderIdx]);
+        preorderIdx++;
         
-        TreeNode currRoot = new TreeNode(currRootVal);
-        int midIdx = inorderMap.get(currRootVal);
+        int currRootInorderIdx = inorderMap.get(currRoot.val);
         
-        currRoot.left = dfs(left,midIdx-1, preorder, inorder, inorderMap);
-        currRoot.right = dfs(midIdx+1,right, preorder, inorder, inorderMap);
+        currRoot.left = recursion(left, currRootInorderIdx-1, preorder, inorder, inorderMap);
+        currRoot.right = recursion(currRootInorderIdx+1, right, preorder, inorder, inorderMap);
+        
         return currRoot;
     }
 }
