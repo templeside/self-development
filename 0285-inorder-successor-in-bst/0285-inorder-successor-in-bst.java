@@ -8,23 +8,31 @@
  * }
  */
 class Solution {
+    /*
+    if prev is p, return the currRoot.
+    if not found, return prev.
+    */
     public TreeNode prev;
-    public TreeNode returnVal;
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        if(root==null)
+            return null;
         prev = null;
-        inorder(root, p);
-        return returnVal;
+        return inorder(root, p);
     }
-    public void inorder(TreeNode root, TreeNode p){
-        if(root ==null)
-            return;
-        
-        inorder(root.left, p);
-        
+
+    public TreeNode inorder(TreeNode root, TreeNode p){
+        if(root ==null){
+            return null;
+        }
+
+        TreeNode left = inorder(root.left, p);
+        if(left !=null)
+            return left;
+
         if(prev == p)
-            returnVal = root;
+            return root;
         prev = root;
-        
-        inorder(root.right, p);
+
+        return inorder(root.right, p);
     }
 }
