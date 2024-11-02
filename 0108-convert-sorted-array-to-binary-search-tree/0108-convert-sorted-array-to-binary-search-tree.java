@@ -15,33 +15,30 @@
  */
 class Solution {
     /*
-    find middle
-    middle = root
-    root.left = middle [0, middle-1]
-    root.right = [middle+1, n-1]
-    
-     
+       0  1 2 3 4
+    [-10,-3,0,5,9]
 
-     [-10,-3,0,5,9]
-     0     1 2 3 4
-    mid = 0+4/2 = 2
+mid = left+(right-left)/2;
+left = [left, mid-1]
+right = [mid+1, right]
+    we get the middle, and define left or right
     */
     public TreeNode sortedArrayToBST(int[] nums) {
-        int n = nums.length;
-        int left = 0;
-        int right = n-1;
-        
-        return recursion(left, right, nums);
+        int leftIdx=0;
+        int rightIdx=nums.length-1;
+        return recursion(nums, leftIdx, rightIdx);
     }
-    
-    public TreeNode recursion(int left, int right, int[] nums){
-        if(left> right)
+
+    public TreeNode recursion(int[] nums, int leftIdx, int rightIdx){
+        if(leftIdx> rightIdx)
             return null;
-        
-        int mid = left+(right-left)/2;
-        TreeNode root = new TreeNode(nums[mid]);
-        root.left = recursion(left,mid-1,nums);
-        root.right = recursion(mid+1, right, nums);
-        return root;
+
+        int mid = leftIdx+(rightIdx-leftIdx)/2;
+
+        TreeNode currRoot = new TreeNode(nums[mid]);
+        currRoot.left = recursion(nums, leftIdx, mid-1);
+        currRoot.right = recursion(nums, mid+1, rightIdx);
+
+        return currRoot;
     }
 }
