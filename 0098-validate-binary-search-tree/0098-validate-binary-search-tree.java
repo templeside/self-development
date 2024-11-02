@@ -1,24 +1,42 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 class Solution {
+    /*
+    check the binary search tree in order.
+    if we check through dfs withinorder traversal, comparing prevNode < currNode
+    it is valid.
+
+    left recursion
+
+    compare with prev node
+
+    right recursion
+    */
+    public TreeNode prev ;
     public boolean isValidBST(TreeNode root) {
-        Deque<TreeNode> stack = new ArrayDeque<>();
-        Integer prev = null;
+        if(root ==null)
+            return true;
+        
+        if(!isValidBST(root.left))
+            return false;
 
-        while (!stack.isEmpty() || root != null) {
-            while (root != null) {
-                stack.push(root);
-                root = root.left;
-            }
-            root = stack.pop();
-
-            // If next element in inorder traversal
-            // is smaller than the previous one
-            // that's not BST.
-            if (prev != null && root.val <= prev) {
-                return false;
-            }
-            prev = root.val;
-            root = root.right;
-        }
-        return true;
+        if(prev!= null && prev.val>= root.val)
+            return false;
+        prev = root;
+        
+        return isValidBST(root.right);
     }
 }
