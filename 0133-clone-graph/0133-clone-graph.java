@@ -19,22 +19,40 @@ class Node {
 */
 
 class Solution {
+    /*
+    check is this already have been or not.
+    
+    do recursion:
+        create newNode
+        add to map
+        for neighbor: node.neighbors:
+            newNode.neighbors.add(recursion(neighbor))
+        return newNode
+        
+    also for datastructure:
+        Map<node, newNode>
+
+    */
     public Node cloneGraph(Node node) {
-        if(node == null)
-            return null;
-        HashMap<Node, Node> oldNew = new HashMap<>();
-        
-        return recursion(node, oldNew);
+        Map<Node, Node> map = new HashMap<>();
+
+        return recursion(node, map);
     }
-    public Node recursion(Node oldCurr, HashMap<Node,Node> oldNew){
-        if(oldNew.containsKey(oldCurr))
-            return oldNew.get(oldCurr);
-        
-        Node newCurr = new Node(oldCurr.val);
-        oldNew.put(oldCurr, newCurr);
-        for(Node oldNeighbor: oldCurr.neighbors){
-            newCurr.neighbors.add(recursion(oldNeighbor, oldNew));
+    public Node recursion(Node oldNode, Map<Node, Node> map){
+        if(oldNode == null){
+            return null;
         }
-        return newCurr;
+        
+        if(map.containsKey(oldNode)){
+            return map.get(oldNode);
+        }
+
+        Node newNode = new Node(oldNode.val);
+        map.put(oldNode, newNode);
+
+        for(Node oldNeighbor: oldNode.neighbors){
+            newNode.neighbors.add(recursion(oldNeighbor, map));
+        }        
+        return newNode;
     }
 }
