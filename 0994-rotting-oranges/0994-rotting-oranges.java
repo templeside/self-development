@@ -1,66 +1,72 @@
 class Solution {
     /*
-        
-[[2,1,1],
- [1,1,0],
- [0,1,1]]
- 
- 0 empty
- 1 fresh
- 2 rotten
- 
- 
+    add to queue.
+    every level, it has its own rotting orange level.
+    rotting only 4 directionally adjacent to a rotten orange level.
+
+    count all the oranges
+    first, find out all the rotten oranges and add to BFS queue
+    
+    then, do the bfs with this given value
+    bfs:
+        each level:
+            minMinutes++
+            each coordinate:
+                change oragne status - grid[r][c] = 2
+                look for adjacencies:
+                    check is valid coordinate
+                    if it is fresh
+                        add to queue.
+
+    check all the oranges are rotten 
+    if(count !=0)
+        return -1;
+    
+    return the minMinutes
     */
     public int orangesRotting(int[][] grid) {
-        Queue<int[]> iterator = new ArrayDeque<>();
-        int m = grid.length;
-        int n= grid[0].length;
-        int numWholeOrange = 0;
-
-        //find all rotten tiems
+        Queue<int[]> queue = new ArrayDeque<>();
+        int minMinutes = 0;
+        int orangeCount =0;
+        
+        int m= grid.length;
+        int n = grid[0].length;
         for(int r=0; r< m; r++){
-            for(int c=0; c< n; c++){
-                //add to queue
-                if(grid[r][c] == 2){
-                    iterator.add(new int[]{r,c});
+            for(int c=0; c<n; c++){
+                if(grid[r][c] == 1){
+                    orangeCount++;
+                }else if(grid[r][c] == 2){
+                    orangeCount++;
+                    queue.add(new int[]{r,c});
+                    grid[r][c] = 2;
                 }
-                if(grid[r][c] ==1)
-                    numWholeOrange++;
             }
         }
-        
-        if(numWholeOrange == 0)
+        if(orangeCount ==0){
             return 0;
-
-        int count =-1;
+        }
         int[][] dirs = new int[][]{{0,1},{0,-1},{1,0},{-1,0}};
-        //while bfs:
-        while(!iterator.isEmpty()){
-            count++;
-            int iteratorSize = iterator.size();
-            
-            // having for loop level by level
-            for(; iteratorSize>0; iteratorSize--){
-                // update grid
-                int[] curr = iterator.poll();
-                int currR = curr[0];
-                int currC = curr[1];
-                
-                
-                for(int[] adj: dirs){
-                    int newR = currR+adj[0];
-                    int newC = currC+adj[1];
+        while(!queue.isEmpty()){
+            int qSize = queue.size();
+            minMinutes++;
+            for(int i=0; i< qSize; i++){
+                int[] currCoordinate = queue.poll();
+                int currR = currCoordinate[0];
+                int currC = currCoordinate[1];
 
-                    //if found adj grid[newR][newC] == 1, update, numWholeOrange, add queue, update grid                    
-                    if(newR>=0 && newR< m && newC>=0 && newC< n && grid[newR][newC] == 1){
-                        numWholeOrange--;
-                        iterator.add(new int[]{newR, newC});
+                orangeCount--;
+                
+                for(int[] dir: dirs){
+                    int newR = currR+dir[0];
+                    int newC = currC+dir[1];
+                    if(newR>=0 && newR< m && newC>=0 && newC<n && grid[newR][newC] == 1){
                         grid[newR][newC] = 2;
+                        queue.add(new int[]{newR, newC});
                     }
                 }
             }
         }
-    
-        return numWholeOrange == 0? count: -1;
+        
+        return orangeCount ==0? minMinutes-1: -1;
     }
 }
