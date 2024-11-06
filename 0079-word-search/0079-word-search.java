@@ -1,40 +1,51 @@
-class Solution {
-    public static boolean exist(char[][] grid, String word) {
-        // Replace this placeholder return statement with your code
-        boolean[][] visited = new boolean[grid.length][grid[0].length];
-        for(int r=0; r< grid.length; r++){
-            for(int c=0; c< grid[0].length; c++){
-                visited[r][c] = true;
-                if(backtrack(r, c, ""+ grid[r][c], grid, word, visited))
-                    return true;
-                visited[r][c] = false;
+public class Solution {
+    public boolean exist(char[][] board, String word) {
+        if (word.length() == 0)
+            return true;
+
+        int m = board.length;
+        int n = board[0].length;
+
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (board[r][c] == word.charAt(0)) { // Start DFS if the first character matches
+                    if (dfs(board, word, r, c, 0)) {
+                        return true;
+                    }
+                }
             }
         }
-        return  false;
+        return false; // Return false if no matching path is found
     }
-    public static int[] xdir = new int[]{1,-1,0,0};
-    public static int[] ydir = new int[]{0,0,1,-1};
-    public static boolean backtrack(int r, int c, String currStr, char[][] grid, String word, boolean[][] visited){
-        if(!word.startsWith(currStr))
-            return false;
-        
-        if(currStr.length() == word.length()){
+
+    public boolean dfs(char[][] board, String word, int currR, int currC, int currIdx) {
+        if (currIdx >= word.length()) { // Base case: all characters matched
             return true;
         }
 
-        for(int i=0; i< 4; i++){
-            int newR = r+ xdir[i];
-            int newC = c+ ydir[i];
+        int m = board.length;
+        int n = board[0].length;
 
-            if(newR>=0 && newR<grid.length && newC>=0 && newC<grid[0].length && grid[newR][newC] == word.charAt(currStr.length()) && !visited[newR][newC]){
-                visited[newR][newC] = true;
-                boolean ans = backtrack(newR, newC , currStr + grid[newR][newC], grid, word, visited);
-                visited[newR][newC] = false;
-                if(ans)
-                    return true;
+        // Check boundaries and whether the current cell matches the word character
+        if (currR < 0 || currR >= m || currC < 0 || currC >= n || board[currR][currC] != word.charAt(currIdx)) {
+            return false;
+        }
+
+        // Temporarily mark the cell as visited
+        char temp = board[currR][currC];
+        board[currR][currC] = '#';
+
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        for (int[] dir : directions) {
+            int newR = currR + dir[0];
+            int newC = currC + dir[1];
+            if (dfs(board, word, newR, newC, currIdx + 1)) { // Recurse to next cell
+                return true;
             }
         }
+
+        // Revert the cell back to its original value after exploring all directions
+        board[currR][currC] = temp;
         return false;
     }
-
 }
