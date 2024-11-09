@@ -1,76 +1,59 @@
 class Solution {
     /*
-Input: numCourses = 2, 
-               target source
-prerequisites = [[1,0]]
-        source -> target
-Output: [0,1]
-
-generate map<vertex, List<adjacencies>> graph
-in-Degree map<vertex, # incoming degrees>
-
-find 0 indegree
-    add to bfsIterator.
-
-while iteration:
-    add to order(curr)
+    does well when having the 
     
-    for adjacencies:
-        decrement indegree
-        if(indegree ==0)
-            add to iterator
-return order.size() == numCourses? order: empty array
+    starting from indegree of 0, shift to the end
+    
+    add to queue
+    iterate over adjacnecies:
+        if(adj valid)
+            add to queue.
+        
     */
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        List<Integer> order = new ArrayList<>();
-//         generate map<vertex, List<adjacencies>> graph
-//         in-Degree map<vertex, # incoming degrees>
+        Queue<Integer> queue =new ArrayDeque<>();
         Map<Integer, List<Integer>> graph = new HashMap<>();
-//         find 0 indegree
-        Map<Integer, Integer> inDegree= new HashMap<>();
-        //add prerequisites
-        for(int i=0; i< numCourses; i++){
-            graph.put(i, new ArrayList<>());
-            inDegree.put(i,0);
-        }
-        for(int[] prerequisite: prerequisites){
-            int target = prerequisite[0];
-            int source = prerequisite[1];
-            graph.get(source).add(target);
-            inDegree.put(target, inDegree.get(target)+1);
-        }
-//             add to bfsIterator.
-        Queue<Integer> bfsIterator = new ArrayDeque<>();
-        for(int i=0; i<numCourses; i++){
-            if(inDegree.get(i) ==0)
-                bfsIterator.add(i);
-        }
-//         while iteration:
-        while(!bfsIterator.isEmpty()){
-            int currCourse = bfsIterator.poll();
-//             add to order(curr)
-            order.add(currCourse);
-//             for adjacencies:
-            for(int adj: graph.get(currCourse)){
-//                 decrement indegree
-                inDegree.put(adj, inDegree.get(adj)-1);
-//                 if(indegree ==0)
-                if(inDegree.get(adj) == 0)
-//                     add to iterator
-                    bfsIterator.add(adj);
-            }
-        }
-        if(order.size() == numCourses){
-            int[] returnVal = new int[numCourses];
-            for(int i=0; i< numCourses;i++){
-                returnVal[i] = order.get(i);
-            }
-            return returnVal;
-        }else{
-            return new int[]{};
-        }
-            
+        Map<Integer, Integer> inDegree = new HashMap<>();
         
-
+        for(int i=0; i<numCourses; i++){
+            graph.put(i, new ArrayList<>());
+            inDegree.put(i, 0);
+        }
+        for(int[] prereq: prerequisites){   // 1,0  0 is required, 1 is course  required -> course
+            int required = prereq[1];
+            int course = prereq[0];
+            inDegree.put(course, inDegree.get(course)+1);
+            graph.get(required).add(course);
+        }
+        
+        for(int course=0; course< numCourses; course++){
+            if(inDegree.get(course) == 0)
+                queue.add(course);
+        }
+        
+        List<Integer> courseOrder = new ArrayList<>();
+        while(!queue.isEmpty()){
+            int currCourse = queue.poll();
+            courseOrder.add(currCourse);
+            
+            // look for adjacencies
+            for(int adj: graph.get(currCourse)){
+                inDegree.put(adj, inDegree.get(adj)-1);
+                
+                if(inDegree.get(adj)== 0){
+                    queue.add(adj);
+                }
+            }            
+        }
+        
+        if(courseOrder.size() !=numCourses)
+            return new int[]{};
+        
+        int[] returnVal = new int[courseOrder.size()];
+        for(int i=0; i<courseOrder.size(); i++){
+            returnVal[i] = courseOrder.get(i);
+        }
+        
+        return returnVal;
     }
 }
