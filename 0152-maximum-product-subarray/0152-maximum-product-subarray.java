@@ -11,23 +11,23 @@ class Solution {
     **/
     public int maxProduct(int[] nums) {
         int ans = nums[0];
-        int dpMin = nums[0]; // Tracks the minimum product up to the current position
-        int dpMax = nums[0]; // Tracks the maximum product up to the current position
+        int prevMin = nums[0]; // Tracks the minimum product up to the current position
+        int prevMax = nums[0]; // Tracks the maximum product up to the current position
 
         for (int i = 1; i < nums.length; ++i) {
             int num = nums[i];
 
             if (num < 0) {
                 // Swap dpMin and dpMax because multiplying by a negative flips signs
-                int temp = dpMax;
-                dpMax = dpMin;
-                dpMin = temp;
+                int temp = prevMax;
+                prevMax = prevMin;
+                prevMin = temp;
             }
 
-            dpMax = Math.max(num, dpMax * num);
-            dpMin = Math.min(num, dpMin * num);
+            prevMax = Math.max(num, prevMax * num);
+            prevMin = Math.min(num, prevMin * num);
 
-            ans = Math.max(ans, dpMax); // Update the answer with the maximum product found so far
+            ans = Math.max(ans, prevMax); // Update the answer with the maximum product found so far
         }
         return ans;
     }
