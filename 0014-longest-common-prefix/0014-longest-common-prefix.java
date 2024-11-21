@@ -1,15 +1,31 @@
 class Solution {
+    /*
+    by iteration, you can find out whats the problem
+    
+    if all seems same,
+        increment prefix
+    
+    return prefix
+    
+["flower"
+,"flow"
+,"flight"]
+i ^
+j
+currChar = f
+    */
     public String longestCommonPrefix(String[] strs) {
-        int idx =0;
-        
-        for(; idx< strs[0].length(); idx++){
-            char currChar = strs[0].charAt(idx);
+        StringBuilder sb=  new StringBuilder();
+        for(int i=0; i< strs[0].length(); i++){
+            char currChar = strs[0].charAt(i);
             
-            for(String str: strs){
-                if(idx>= str.length() || str.charAt(idx) != currChar)
-                    return str.substring(0,idx);
+            for(int j=1; j< strs.length; j++){
+                // System.out.println(strs[j]);
+                if(strs[j].length()<= i || strs[j].charAt(i) != currChar)
+                    return sb.toString();
             }
+            sb.append(strs[0].charAt(i));
         }
-        return strs[0];
+        return sb.toString();
     }
 }
