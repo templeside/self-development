@@ -1,50 +1,67 @@
 class Solution {
     /*
-Input: matrix = 
-    [[5,1,9,11],        
-     [2,4,8,10],
-     [13,3,6,7],
-     [15,14,12,16]]
-     
-    [[15,13,2,5],        
-     [14,4,8,1],
-     [12,3,6,9],
-     [16,7,10,11]]
-     
-Output: 
-    [[15,13,2,5],
-     [14,3,4,1],
-     [12,6,8,9],
-     [16,7,10,11]]
+    i could rotate image by using technique
     
+    transpose the items
+    then flip matrix.
     
-    1. set starting index
-    2. swap the rows
-        - save the north rows.
-        - west -> north
-        - south -> west
-        - east -> south
-        - north -> east
+    transpose - matrix
+    left          right
+top 0,0     0,1     0,2
+    1,0     1,1     1,2
+bot 2,0     2,1     2,2
 
+from start to n/2, 
+iterating (i=0; i< n; i++)
+    for(j= i+1; j<n; j++)
+        swap matrix[i][j] = matrix[j][i]
+    we'll get the transpose
+    
+ [[1,2,3],
+  [4,5,6],
+  [7,8,9]]
+  
 
-	int temp = matrix[n - 1 - j][i];                    // west
-	matrix[n - 1 - j][i] = matrix[n - 1 - i][n - j - 1];// west val -> south
-	matrix[n - 1 - i][n - j - 1] = matrix[j][n - 1 -i]; // south val -> east
-	matrix[j][n - 1 - i] = matrix[i][j];                // east val -> north
-	matrix[i][j] = temp;                                // north val -> west
-        
-        while swapping, save the prev value
     */
     public void rotate(int[][] matrix) {
-        int n = matrix.length, depth = n / 2;
-        for (int i = 0; i < depth; i++) {
-            int len = n - 2 * i - 1, opp = n - 1 - i;
-            for (int j = 0; j < len; j++) {
-                int temp = matrix[i][i+j];    
-				matrix[i][i+j] = matrix[opp-j][i];        // west value -> north
-                matrix[opp-j][i] = matrix[opp][opp-j];    // south value-> west
-                matrix[opp][opp-j] = matrix[i+j][opp];    // east value -> south
-                matrix[i+j][opp] = temp;             // north value-> east
+        transpose(matrix);
+        flip(matrix);
+    }
+    /*
+ [[1,4,7],
+  [2,5,8],
+  [3,6,9]]
+    */
+    public void transpose(int[][] matrix){
+        int m = matrix.length;
+        int n = matrix[0].length;
+        
+        for(int i=0; i< m; i++){
+            for(int j=i+1; j<n; j++){
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+/*
+ [[7,4,1],
+  [8,5,2],
+  [9,6,3]]
+  col is changing
+  matrix[r][i] = matrix[r][j]
+*/
+    public void flip(int[][] matrix){
+
+        for(int r=0; r< matrix.length; r++){
+            int left =0;
+            int right = matrix[0].length-1;
+            while(left< right){
+                int temp = matrix[r][left];
+                matrix[r][left] = matrix[r][right];
+                matrix[r][right] = temp;
+                left++;
+                right--;
             }
         }
     }
