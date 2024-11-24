@@ -1,59 +1,92 @@
 class Solution {
     /*
-    does well when having the 
+    prerequisites[a,b]
+                - b -> a
     
-    starting from indegree of 0, shift to the end
+    handle indegree - 0, 1...
     
-    add to queue
-    iterate over adjacnecies:
-        if(adj valid)
-            add to queue.
-        
+    algo:
+        create graph
+        for prerequisites:
+            count indegree
+        for indegree:
+            find 0-indegree
+            add to BFS queue
+        while BFS queue:
+            add ordering to queue.
+            
+            for adj of currCourse:
+                decrement indegree
+                if(adj indegree == 0)
+                    add to queue.
+                    
+        if n != ordering, return empty, or return the order
+    data structure
+        Map<course, #indegree> indegree
+        Map<course, List<nextCourse>> graph
+        List<Integer> order
     */
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        Queue<Integer> queue =new ArrayDeque<>();
+        // Map<course, #indegree> indegree
+        // Map<course, List<nextCourse>> graph
+        // List<Integer> order
+        Map<Integer, Integer> inDegree =new HashMap<>();
         Map<Integer, List<Integer>> graph = new HashMap<>();
-        Map<Integer, Integer> inDegree = new HashMap<>();
+        List<Integer> order = new ArrayList<>();
+        // Set<Integer> visited = new HashSet<>();
         
-        for(int i=0; i<numCourses; i++){
-            graph.put(i, new ArrayList<>());
-            inDegree.put(i, 0);
-        }
-        for(int[] prereq: prerequisites){   // 1,0  0 is required, 1 is course  required -> course
-            int required = prereq[1];
-            int course = prereq[0];
-            inDegree.put(course, inDegree.get(course)+1);
-            graph.get(required).add(course);
-        }
-        
+        // create graph
         for(int course=0; course< numCourses; course++){
-            if(inDegree.get(course) == 0)
-                queue.add(course);
+            inDegree.put(course, 0);
+            graph.put(course, new ArrayList<>());
+        }
+        // for prerequisites: [a,b] b-> a
+            // count indegree
+        for(int[] prereq: prerequisites){
+            int a = prereq[0];
+            int b = prereq[1];
+            graph.get(b).add(a);
+            inDegree.put(a, inDegree.get(a)+1);
         }
         
-        List<Integer> courseOrder = new ArrayList<>();
+        Queue<Integer> queue =new ArrayDeque<>();
+        // for indegree:
+        for(int course=0; course< numCourses; course++){
+            // find 0-indegree
+            // add to BFS queue
+            if(inDegree.get(course) == 0){
+                queue.add(course);
+                // visited.add(course);
+            }
+        }
+        
+        // while BFS queue:
         while(!queue.isEmpty()){
             int currCourse = queue.poll();
-            courseOrder.add(currCourse);
             
-            // look for adjacencies
+            // add ordering to queue.
+            order.add(currCourse);
+            
+            // for adj of currCourse:
             for(int adj: graph.get(currCourse)){
+                // decrement indegree
                 inDegree.put(adj, inDegree.get(adj)-1);
-                
+                // if(adj indegree == 0 && not visited)
                 if(inDegree.get(adj)== 0){
+                    // add to queue.
                     queue.add(adj);
                 }
-            }            
+            }
         }
-        
-        if(courseOrder.size() !=numCourses)
+        // if n != ordering, return empty, or return the order
+        if(numCourses != order.size()){
             return new int[]{};
-        
-        int[] returnVal = new int[courseOrder.size()];
-        for(int i=0; i<courseOrder.size(); i++){
-            returnVal[i] = courseOrder.get(i);
         }
         
+        int[] returnVal = new int[numCourses];
+        for(int i=0; i< numCourses; i++){
+            returnVal[i] = order.get(i);
+        }
         return returnVal;
     }
 }
