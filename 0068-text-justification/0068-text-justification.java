@@ -1,90 +1,76 @@
 class Solution {
     /*
-    words
-    maxWidth
+    how would you like that???
+    pad extra
+    something somethings
     
-    lines - maxwidth
-    paddings
-    offsets - left first.
+    so i need to have the previous texts as much as possible. 
     
-    last line - single lines
+    each line, has remaining spaces
     
-    data structures
-        List<String> returnVal
-        List<String> currCharArr = each line builder
-    
-    for each line, we have stirng builder
-    
-    for(word: words)
-        calculate is valid string if adding a word
-            if not valid - if(currCharNum + currCharArr.size()-1 > maxWidth)
-                add the previous currCharArr to the returnVal
-                recreate currCharArr
-            currCharArr.add(word)
-            currCharNum += word
-    
-    done with iteration, check still has remaining last line
-        generate the string with spacing 1, and having remaining spaces on the right
+    it in last line, 
     */
     public List<String> fullJustify(String[] words, int maxWidth) {
-        List<String> returnVal = new ArrayList<>();
-        List<String> currWords = new ArrayList<>(); // Words in the current line
-        int currCharsNum = 0; // Total number of characters in currWords (excluding spaces)
-        
-        for (String word : words) {
-            // Check if adding the next word exceeds the maxWidth
-            if (currCharsNum + word.length() + currWords.size() > maxWidth) {
-                // Generate the justified line and add it to the result
-                String currLine = generateLine(currWords, currCharsNum, maxWidth, false);
-                returnVal.add(currLine);
-                // Reset for the next line
-                currWords = new ArrayList<>();
-                currCharsNum = 0;
-            }
-            currWords.add(word);
-            currCharsNum += word.length();
-        }
-        // Handle the last line
-        String lastLine = generateLine(currWords, currCharsNum, maxWidth, true);
-        returnVal.add(lastLine);
-        return returnVal;
-    }
+        List<String> result = new ArrayList<>(); // To store the final justified text
+        int index = 0; // Pointer to traverse the words array
+        int n = words.length; // Total number of words
 
-    public String generateLine(List<String> words, int currCharsNum, int maxWidth, boolean isLastLine) {
-        StringBuilder sb = new StringBuilder();
-        int numWords = words.size();
-        int numSpaces = maxWidth - currCharsNum; // Total spaces to distribute
+        while (index < n) {
+            int totalChars = words[index].length(); // Total characters in the current line
+            int last = index + 1; // Pointer to determine the end of the current line
 
-        if (numWords == 1 || isLastLine) {
-            // Left-justified: words are separated by a single space
-            for (int i = 0; i < numWords; i++) {
-                sb.append(words.get(i));
-                if (i != numWords - 1) {
-                    sb.append(" ");
-                    numSpaces--;
-                }
+            // Determine how many words can fit into the current line
+            while (last < n) {
+                if (totalChars + 1 + words[last].length() > maxWidth) break;
+                totalChars += 1 + words[last].length(); // 1 for the space
+                last++;
             }
-            // Fill the remaining spaces at the end
-            for (int i = 0; i < numSpaces; i++) {
-                sb.append(" ");
-            }
-        } else {
-            // Fully justified
-            int spacesBetweenWords = numWords - 1;
-            int spacesEach = numSpaces / spacesBetweenWords; // Minimum spaces to add between words
-            int extraSpaces = numSpaces % spacesBetweenWords; // Extra spaces to distribute
 
-            for (int i = 0; i < numWords; i++) {
-                sb.append(words.get(i));
-                if (i != numWords - 1) {
-                    // Distribute extra spaces to the left slots
-                    int spacesToAdd = spacesEach + (i < extraSpaces ? 1 : 0);
-                    for (int j = 0; j < spacesToAdd; j++) {
+            int numberOfWords = last - index; // Number of words in the current line
+            int numberOfSpaces = maxWidth - totalChars + (numberOfWords - 1); // Total spaces to distribute
+
+            StringBuilder sb = new StringBuilder();
+
+            // If it's the last line or the line contains only one word, left-justify
+            if (last == n || numberOfWords == 1) {
+                for (int i = index; i < last; i++) {
+                    sb.append(words[i]);
+                    if (i != last - 1) {
                         sb.append(" ");
                     }
                 }
+                // Fill the remaining spaces
+                int remaining = maxWidth - sb.length();
+                while (remaining > 0) {
+                    sb.append(" ");
+                    remaining--;
+                }
+            } else {
+                // Calculate spaces to distribute
+                int totalSpaces = maxWidth - (totalChars - (numberOfWords - 1));
+                int spaceBetweenWords = totalSpaces / (numberOfWords - 1);
+                int extraSpaces = totalSpaces % (numberOfWords - 1);
+
+                for (int i = index; i < last; i++) {
+                    sb.append(words[i]);
+                    if (i != last - 1) {
+                        // Add spaces
+                        for (int s = 0; s < spaceBetweenWords; s++) {
+                            sb.append(" ");
+                        }
+                        // Distribute extra spaces to the left slots
+                        if (extraSpaces > 0) {
+                            sb.append(" ");
+                            extraSpaces--;
+                        }
+                    }
+                }
             }
+
+            result.add(sb.toString());
+            index = last; // Move to the next line
         }
-        return sb.toString();
+
+        return result;
     }
 }
