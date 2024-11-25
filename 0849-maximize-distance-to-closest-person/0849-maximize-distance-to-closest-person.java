@@ -1,39 +1,48 @@
 class Solution {
-    //in the middle
-    //most left
-    //most right
+    /*
+    case difference - two cases:
+        edge
+        between
+    no people from start
+    [0 .... 1]
+    dist = window
+    
+    in between
+    [...1.....1...]
+    dist = window/2
+    
+    no people from end
+    [..... 0]       [1,0,0,0] = 3 
+    window
+    */
     public int maxDistToClosest(int[] seats) {
-        if(seats == null || seats.length ==0)return 0;
-        
-        int n = seats.length;
         int maxDist = 0;
-        int emptyCount = 0;
         
-        // in the middle, (val+1)/2
-        for(int i=0; i< n; i++){
-            if(seats[i] == 1)
-                emptyCount=0;
-            else{
-                emptyCount++;
-                maxDist = Math.max(maxDist, (emptyCount+1)/2);
+        //from start
+        int i=0;
+        while(seats[i] !=1){
+            i++;
+        }
+        maxDist = Math.max(maxDist, i);
+        
+        //between [1,0,0,0,1] window = 5-1/2 = 2
+        //between [1,0,0,1] window = 4-1/2 = 1
+        int prev = i;
+        for(int curr = i+1; curr< seats.length; curr++){
+            if(seats[curr] == 1){
+                int windowSize = curr-prev+1;
+                int currDist = (windowSize-1)/2;
+                maxDist = Math.max(maxDist, currDist);
+                prev = curr;
             }
         }
         
-        //most left
-        for(int i=0; i<n; i++){
-            if(seats[i] ==1){
-                maxDist = Math.max(maxDist, i);
-                break;
-            }
+        //from end
+        int j=seats.length-1;
+        while(seats[j] !=1){
+            j--;
         }
-        
-        //most right
-        for(int i=n-1; i>=0; i--){
-            if(seats[i] ==1){
-                maxDist = Math.max(maxDist, n-i-1);
-                break;
-            }
-        }
+        maxDist = Math.max(maxDist, seats.length-1-j);
         return maxDist;
     }
 }
