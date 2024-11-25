@@ -23,7 +23,6 @@ class Solution {
     bfs로 source에서 target 가는 법
         
     */
-    private Map<String, List<Pair>> graph = new HashMap<>();
 
     // 엣지 정보를 저장할 Pair 클래스
     private static class Pair {
@@ -36,6 +35,7 @@ class Solution {
         }
     }
 
+    private Map<String, List<Pair>> graph = new HashMap<>();//global variable
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
         // 그래프 구축
         buildGraph(equations, values);
