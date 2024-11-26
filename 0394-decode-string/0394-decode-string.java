@@ -1,61 +1,65 @@
 class Solution {
     /*
-    find the digit
-        recursion with the matching brackets
-            multiply by the digits
-            add to the returning value
+    they would want to have the problem solved.
+    3[a]2[bc]
+    
+    starting form left, iterate over
+        openIdx = findNext([, idx)
+        closeIdx = findNext(], idx)
+    
+    if no openIdx,
+        return current string
+    digit = substring(currIdx, openIdx)
+    str = s.substring(openIdx+1, closeIdx)
+        
     */
     public String decodeString(String s) {
-        int n = s.length();
-        return recursion(s, 0, n-1);
-    }
-    public String recursion(String s, int startIdx, int endIdx){
+        int currIdx=0;
         StringBuilder sb = new StringBuilder();
+        int n = s.length();
         
-        // find the digit
-        for(int i=startIdx; i<= endIdx; i++){
-            char currChar = s.charAt(i);
+        // starting form left, iterate over
+        while(currIdx< n){
+            char currChar = s.charAt(currIdx);
             if(Character.isDigit(currChar)){
-                int digitEnd = i;
-                while(Character.isDigit(s.charAt(digitEnd)))
-                    digitEnd++;
+                int openIdx = findOpen(currIdx, s);
+                int closeIdx = findClose(openIdx, s);
+
+                int digit = Integer.parseInt(s.substring(currIdx, openIdx));
+                String str = decodeString(s.substring(openIdx+1, closeIdx));
                 
-                //find left
-                int newStartIdx = digitEnd;
-                //find right
-                int newEndIdx = findMatchingEnd(newStartIdx, s);
-                
-                // System.out.println(" newStartIdx: "+ newStartIdx +" newEndIdx: "+newEndIdx);
-                // recursion with the matching brackets
-                String decoded = recursion(s, newStartIdx, newEndIdx);
-                
-                // multiply by the digits
-                for(int a=0; a< Integer.valueOf(s.substring(i, digitEnd)); a++){
-                    //add to the returning value
-                    sb.append(decoded);
-                    // System.out.println(sb.toString());
+                for(int i=0; i< digit; i++){
+                    sb.append(str);
                 }
-                    
-                i = newEndIdx-1;
-            }else if(Character.isLetter(currChar)){
+                currIdx = closeIdx+1;
+            }
+            else{
                 sb.append(currChar);
+                currIdx++;
             }
         }
         return sb.toString();
     }
-    
-    public int findMatchingEnd(int startIdx, String s){
-        Stack<Character> stack =new Stack<>();
-        for(int i= startIdx; i< s.length(); i++){
-            char currChar = s.charAt(i);
-            if(currChar =='[')
-                stack.push(currChar);
-            else if(currChar ==']'){
-                stack.pop();
-                if(stack.size() ==0)
-                    return i;
+    public int findOpen(int currIdx, String s){
+        for(int i=currIdx; i< s.length(); i++){
+            if(s.charAt(i) =='[')
+                return i;
+        }
+        return s.length();
+    }
+    public int findClose(int openIdx, String s) {
+        int openCount = 1;
+        for (int i = openIdx + 1; i < s.length(); i++) { // Ensure i doesn't exceed length
+            if (s.charAt(i) == '[') {
+                openCount++;
+            } else if (s.charAt(i) == ']') { // Properly count closing brackets
+                openCount--;
+            }
+            if (openCount == 0) { // When count balances, return the index
+                return i;
             }
         }
-        return -1;
+        throw new IllegalArgumentException("No matching closing bracket found");
     }
+
 }
